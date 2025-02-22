@@ -4,17 +4,25 @@ import puppeteer from 'puppeteer-extra';
 import StealtPlugin from 'puppeteer-extra-plugin-stealth';
 
 
-export const scrapCodechefRating =  async (username) => {
-    const url = `https://www.codechef.com/users/${username}`;
+export const scrapCodechefData = async (username) => {
+  const url = `https://www.codechef.com/users/${username}`;
 
-    const response = await request(url);
+  const response = await request(url);
+  let $ = cheerio.load(response);
 
-    let $ = cheerio.load(response);
+  let currentRating = $('div[class="rating-number"]').text().trim();
+  let stars = $('span[class="rating"]').text().trim();
 
-    let currentRating = $('div[class="rating-number"]').text();
+  let contests = $('h3:contains("Contests")').text().match(/\d+/)?.[0] || "0";
+  let totalProblemsSolved = $('h3:contains("Total Problems Solved")').text().match(/\d+/)?.[0] || "0";
 
-    return currentRating; 
-}
+  console.log("Current Rating:", currentRating);
+  console.log("Stars:", stars);
+  console.log("Contests Count:", contests);
+  console.log("Total Problems Solved:", totalProblemsSolved);
+
+  return { currentRating, stars, contests, totalProblemsSolved };
+};
 
 
 export const scrapCodeforcesRating = async(username) => {

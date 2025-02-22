@@ -3,7 +3,9 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";  
 
-import { scrapCodechefRating, scrapCodeforcesRating, scrapLeetcodeRating } from "../webscrapping/scrapRating.js";  
+import { scrapCodechefData } from "../webscrapping/scrapRating.js";  
+import { leetDataFetch } from "./leetapi.controller.js";
+import { forcesDataFetch } from "./forcesapi.controller.js";
 
 export const signup = async (req, res) => {
   const { fullname, email, password, branch, year, college, ccId, cfId, leetId } = req.body;
@@ -26,28 +28,33 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    let ccrating = 0; let cfrating = 0; let leetcoderating = 0;
-    await scrapCodechefRating(ccId)
-    .then(rating => {    console.log(rating); 
-        ccrating = rating
-    })
-    .catch(error => {      console.log("error in fetching cc rating: ",error);   
-         res.status(500).json({message:"Internal Server Error in fetching CC rating."})
-    })
+    let chefRating = -1; let forcesRating = -1; let leetRating = -1; 
+    let chefStars = 'stars'; let chefTotalProblemSolved = -1; let chefContestCount = -1;
 
-    await scrapCodeforcesRating(cfId)
-    .then(rating => {  console.log(rating);
-      cfrating = rating })
-    .catch(error => {      console.log("error in fetching cf rating: ",error);
-         res.status(500).json({message:"Internal Server Error in fetching CF rating."})
-    })
+    try{
+      const {currentRating, stars, contests, totalProblemsSolved} = await scrapCodechefData(ccId);
+      chefRating = currentRating;
+      chefStars = stars;
+      chefTotalProblemSolved = totalProblemsSolved;
+      chefContestCount = contests;
+    }catch(error){
+      console.log("Error in scraping codechef rating : ", error);
+    }
 
-    await scrapLeetcodeRating(leetId)
-    .then(rating => {      console.log(rating);
-      leetcoderating = rating })
-    .catch(error => {      console.log("error in fetching leetcode rating: ",error);
-         res.status(500).json({message:"Internal Server Error in fetching Leetcode rating."})
-    })
+    let updatedLeetData = null;
+    try{
+      updatedLeetData = await leetDataFetch(leetId);
+    }catch(error){
+      console.log("Error in fetching leet data : ", error);
+    }
+
+    let updatedForcesData = null
+    try{
+      updatedForcesData = await forcesDataFetch(cfId);
+      console.log("FORCES RATING: ", updatedForcesData.forcesRating);
+    }catch(error){
+      console.log("Error in fetching forces data : ", error);
+    }
 
     const newUser = new User({
       fullname,
@@ -59,9 +66,34 @@ export const signup = async (req, res) => {
       codechefId: ccId,
       codeforcesId: cfId,
       leetcodeId: leetId,
-      codechefRating: ccrating,
-      codeforcesRating: cfrating,
-      leetcodeRating: leetcoderating,
+      totalLeetQuestions: updatedLeetData.totalLeetQuestions,
+      easyLeetQuestions: updatedLeetData.easyLeetQuestions,
+      mediumLeetQuestions: updatedLeetData.mediumLeetQuestions,
+      hardLeetQuestions: updatedLeetData.hardLeetQuestions,
+      totalSolvedLeetQuestions: updatedLeetData.totalSolvedLeetQuestions,
+      easySolvedLeetQuestions: updatedLeetData.easySolvedLeetQuestions,
+      mediumSolvedLeetQuestions: updatedLeetData.mediumSolvedLeetQuestions,
+      hardSolvedLeetQuestions: updatedLeetData.hardSolvedLeetQuestions,
+      leetReputation: updatedLeetData.leetReputation,
+      leetRanking: updatedLeetData.leetRanking,
+      leetContestCount: updatedLeetData.leetContestCount,
+      leetRating: updatedLeetData.leetRating,
+      leetGlobalRanking: updatedLeetData.leetGlobalRanking,
+      leetTotalParticipants: updatedLeetData.leetTotalParticipants,
+      leetTopPercentage: updatedLeetData.leetTopPercentage,
+      leetBadges: updatedLeetData.leetBadges,
+      forcesRating: updatedForcesData.forcesRating,
+      forcesRank: updatedForcesData.forcesRank,
+      forcesMaxRating: updatedForcesData.forcesMaxRating,
+      forcesMaxRank: updatedForcesData.forcesMaxRank,
+      forcesContestCount: updatedForcesData.forcesContestCount,
+      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
+      forcesTotalProblemsolvedByRating: updatedForcesData.forcesTotalProblemsolvedByRating,
+      chefRating,
+      chefStars,
+      chefTotalProblemSolved,
+      chefContestCount,
+
     });
 
     if (newUser) {
@@ -69,12 +101,7 @@ export const signup = async (req, res) => {
       generateToken(newUser._id, res);
       await newUser.save();
 
-      res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-      });
+      res.status(201).json(newUser);
     } else {
       res.status(400).json({ message: "Invalid user data" });
     }
@@ -87,7 +114,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();  //.lean() converts user(a mongoose document) to a js object as i was destructuring it below and removing password field form it.
 
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -100,12 +127,9 @@ export const login = async (req, res) => {
 
     generateToken(user._id, res);
 
-    res.status(200).json({
-      _id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      profilePic: user.profilePic,
-    });
+    const { password : userPassword, ...userWithoutPassword } = user;    // password ka naam userPassword de diya, as it was creating problem as req.body se bhi password mil rha hai, so ye usse confuse kr rha tha.
+    res.status(200).send(userWithoutPassword);
+
   } catch (error) {
     console.log("Error in login controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
@@ -147,6 +171,7 @@ export const updateProfile = async (req, res) => {
 
 export const checkAuth = (req, res) => {
   try {
+    console.log("chechAuth function in backend: ", req.user);
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);

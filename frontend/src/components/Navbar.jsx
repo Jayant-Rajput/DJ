@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/useAuthStore';
 
-
-
 const Navbar = () => {
 
   const { authUser } = useAuthStore();
@@ -16,6 +14,8 @@ const Navbar = () => {
           <Link to="/" className="hover:text-gray-300">Home</Link>
           {!authUser && <Link to="/signup" className="hover:text-gray-300">Signup</Link>}
           {!authUser && <Link to="/login" className="hover:text-gray-300">Login</Link>}
+          {authUser && <Link to="/profile" className="hover:text-gray-300">Profile</Link>}
+          <Link to="/checkpage" className="hover:text-gray-300">Check</Link>
           
         </div>
       </div>

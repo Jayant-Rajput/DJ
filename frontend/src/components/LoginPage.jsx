@@ -10,7 +10,7 @@ const Signin = () => {
     password: "",
   });
 
-  const { login, isLoggingIn } = useAuthStore();
+  const { login, isLoggingIn, authUser } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +20,7 @@ const Signin = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     await login(formData);
-    // navigate("/");
+    navigate("/");
   }
 
   if(isLoggingIn){
