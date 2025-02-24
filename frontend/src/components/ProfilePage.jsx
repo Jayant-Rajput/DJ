@@ -17,7 +17,7 @@ const ProfilePage = () => {
           <h2 className="text-xl font-semibold">{authUser.fullname}</h2>
           <p className="text-gray-600">{authUser.email}</p>
           <p className="text-gray-500">
-            Branch: {authUser.branch===1 ? "ECE" : "CSE"}, year: {authUser.year}
+            Branch: {authUser.branch==='1' ? "ECE" : "CSE"}, year: {authUser.year}
           </p>
           <p className="text-gray-500">{authUser.college}</p>
         </div>
