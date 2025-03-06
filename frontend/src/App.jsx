@@ -11,6 +11,9 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import ProfilePage from './components/ProfilePage';
 import CheckPage from './components/CheckPage'
+import CreateBlogPage from './components/CreateBlogPage';
+import AllBlogsPage from './components/AllBlogsPage';
+import BlogDetails from './components/BlogDetailPage';
 
 function App() {
 
@@ -34,6 +37,9 @@ function App() {
           <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
           <Route path="/checkpage" element={ <CheckPage /> } />
+          <Route path="/createBlog" element={ <CreateBlogPage /> } />
+          <Route path="/blogs" element={ <AllBlogsPage /> } />
+          <Route path="/blogs/:blogid" element={ <BlogDetails /> } />
         </Routes>
 
         <Toaster />

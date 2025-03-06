@@ -6,6 +6,7 @@ import cors from 'cors';
 import { connectDB } from './lib/db.js';
 
 import authRoutes from './routes/auth.route.js';
+import blogRoutes from './routes/blog.route.js';
 
 import axios from 'axios'
 
@@ -24,6 +25,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/blog", blogRoutes);
 
 app.listen(PORT, () => {
     console.log("server is running on PORT: ", PORT);
