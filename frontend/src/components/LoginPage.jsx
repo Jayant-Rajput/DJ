@@ -28,7 +28,7 @@ const Signin = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 text-black">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
           Sign In

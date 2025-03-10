@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
-.postcontent{
+/* .postcontent{
     h1{
         font-size: 2.5rem;
         font-weight: bold;
     }
-}
+} */

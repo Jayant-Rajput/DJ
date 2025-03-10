@@ -5,7 +5,7 @@ const ProfilePage = () => {
   const { authUser } = useAuthStore();
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black">
       {/* authUser Info */}
       <div className="flex items-center gap-4 border-b pb-4">
         <img

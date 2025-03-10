@@ -18,6 +18,8 @@ const Navbar = () => {
           <Link to="/checkpage" className="hover:text-gray-300">Check</Link>
           <Link to="/blogs" className="hover:text-gray-300">Blog</Link>
           {authUser && <Link to="/createBlog" className="hover:text-gray-300">CreateBlog</Link> }
+          <Link to="/chat" className="hover:text-gray-300">Chat</Link>
+          {authUser && <Link to="/logout" className="hover:text-gray-300">Logout</Link> }
 
         </div>
       </div>
