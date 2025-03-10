@@ -11,10 +11,12 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import ProfilePage from './components/ProfilePage';
 import CheckPage from './components/CheckPage'
+import Contact from './components/Contact';
+import MultiStepForm from "./components/MultiStepForm.jsx";
 
 function App() {
 
-  const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth, fullName } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -34,6 +36,8 @@ function App() {
           <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
           <Route path="/checkpage" element={ <CheckPage /> } />
+          <Route path='/contact' element={ authUser ? <Contact /> : <Navigate to="/login" />} />
+          <Route path='/oauth-form' element={fullName ? <MultiStepForm /> : <Navigate to="/login" /> } />
         </Routes>
 
         <Toaster />

@@ -2,10 +2,11 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";  
-
+import ApiError from "../constants.js/ApiError.js";
 import { scrapCodechefData } from "../webscrapping/scrapRating.js";  
 import { leetDataFetch } from "./leetapi.controller.js";
 import { forcesDataFetch } from "./forcesapi.controller.js";
+import nodemailer from "nodemailer";
 
 export const signup = async (req, res) => {
   const { fullname, email, password, branch, year, college, ccId, cfId, leetId } = req.body;
@@ -93,7 +94,7 @@ export const signup = async (req, res) => {
       chefStars,
       chefTotalProblemSolved,
       chefContestCount,
-
+      authProvider: "local",
     });
 
     if (newUser) {
@@ -178,3 +179,152 @@ export const checkAuth = (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const oauthLoginUser = async(req,res) => {
+  try {
+    const {fullName, email, authProvider} = req.body
+
+    if(
+        [fullName, email, authProvider].some((field) => field?.trim()==="")
+    ){
+        return res.status(404).json({message: "All fields are required"});
+    }
+
+    const curr_user = await User.findOne({email: email});
+
+    if(!curr_user){
+      return res.status(404).json({message: "user doesn't exists"});
+    }
+    return res.status(200).send(curr_user);
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+export const oauthUser = async (req, res) => {
+  console.log("AMigo");
+  console.log(req.body);
+  try {
+    const {fullName, email, authProvider, branch, college, year, ccId, cfId, leetId} = req.body
+    if(
+        [fullName, email, authProvider, branch, college, year, ccId, cfId, leetId].some((field) => field?.trim()==="")
+    ){
+        return res.status(404).json({message: "All fields are required"});
+    }
+
+    const oauthClient = await User.create({
+        email,
+        fullname: fullName,
+        authProvider,
+        branch,
+        college,
+        year,
+        codechefId: ccId,
+        codeforcesId: cfId,
+        leetcodeId: leetId
+    })
+
+    if(!oauthClient){
+        throw new ApiError(500, "Something went wrong while registering the user");
+    }
+
+    return res.status(200).json({message: "Registration done successfully"})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const generateOTP = async (req, res) => {
+  console.log("HOla");
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ error: 'Please provide registered email address' });
+    }
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+        user: process.env.EMAIL_USER,      
+        pass: process.env.EMAIL_PASS  
+        }
+    });
+
+    const randomSixDigitNumber = Math.floor(100000 + Math.random() * 900000);
+
+    let mailOptions = {
+        from: process.env.EMAIL_RECEIVER,
+        to: `<${email}>`, 
+        subject: `New contact form submission from ${process.env.EMAIL_RECEIVER}`,
+        text: `Hey user\n Welcome to HACC \n Your OTP is ${randomSixDigitNumber}`
+    };
+
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.messageId);
+        await User.findOneAndUpdate(
+          { email: email }, 
+          { $set: { otp: randomSixDigitNumber } }, 
+          { $set: {authProvider: "otp"}},
+        );
+        res.json({ message: 'Your message has been sent successfully.' });
+    }catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'There was an error sending your message.' });
+    }
+}
+
+export const loginWithOTP = async (req, res) => {
+  try {
+    const { email, OTP } = req.body;
+    console.log(OTP);
+    console.log(email);
+    if (!email || !OTP) {
+      return res.status(400).json({ error: 'Please provide registered email address and OTP'});
+    }
+    const curr_user = await User.findOne({email: email});
+    console.log(curr_user.otp);
+  
+    if(!curr_user || String(curr_user.otp) !== String(OTP)){
+      return res.status(400).json({message: "Invalid Credentials"});
+    }
+  
+    generateToken(curr_user._id, res);
+  
+    const { password : userPassword, ...userWithoutPassword } = curr_user;    
+    res.status(200).send(userWithoutPassword);
+  } catch (error) {
+    console.log("Error in login controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+
+}
+
+export const changePassword = async (req, res) => {
+  try {
+    const {email, oldPassword, newPassword} = req.body;
+    if(!oldPassword || !newPassword || !email){
+      return res.status(400).json({ error: 'Please provide required credentials'});
+    }
+    
+    const curr_user = await User.findOne({email: email});
+    if(!curr_user){
+      return res.status(400).json({message: "user doesn't exists"});
+    }
+
+    if(curr_user.password !== oldPassword){
+      return res.status(400).json({message: "Incorrect Old Password"});
+    }
+
+    curr_user.password = newPassword;
+    await curr_user.save({validateBeforeSave: false});
+
+    return res.status(200).json({message: "Password changed successfully"});
+
+  } catch (error) {
+    console.log("Error in changing password", error.message);
+  }
+}
+
+
+
+

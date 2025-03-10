@@ -6,7 +6,7 @@ import cors from 'cors';
 import { connectDB } from './lib/db.js';
 
 import authRoutes from './routes/auth.route.js';
-
+import contactRoutes from './routes/contact.route.js'
 import axios from 'axios'
 
 dotenv.config();
@@ -24,6 +24,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
 
 app.listen(PORT, () => {
     console.log("server is running on PORT: ", PORT);

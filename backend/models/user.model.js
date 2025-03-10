@@ -3,7 +3,7 @@ import mongoose  from "mongoose";
 const userSchema = new mongoose.Schema({
     fullname: { type:String, required: true },
     email: { type:String, required: true, unique:true },
-    password: { type:String, required: true },
+    password: { type:String, required: function(){ return this.authProvider === "local" } },
     branch: { type:String },
     year: { type:String },
     college: { type:String },
@@ -45,7 +45,8 @@ const userSchema = new mongoose.Schema({
     chefStars: { type: String },
     chefTotalProblemSolved: { type: Number },
     chefContestCount: { type: Number },
-
+    authProvider: {type: String, enum: ["local", "google", "otp"], required: true},
+    otp: {type: Number},
 }, {timestamps:true});
 
 const User = mongoose.model('User', userSchema);
