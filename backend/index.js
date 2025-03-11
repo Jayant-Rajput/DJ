@@ -6,6 +6,8 @@ import cors from 'cors';
 import { connectDB } from './lib/db.js';
 
 import authRoutes from './routes/auth.route.js';
+import contactRoutes from './routes/contact.route.js'
+import axios from 'axios'
 import blogRoutes from './routes/blog.route.js';
 import messageRoutes from './routes/message.route.js';
 
@@ -26,6 +28,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/messages", messageRoutes);
 

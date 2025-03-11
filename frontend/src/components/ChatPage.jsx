@@ -8,6 +8,7 @@ import MessageInput from './MessageInput.jsx';
 const ChatPage = () => {
   const {isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
   const { authUser } = useAuthStore();
+  console.log(authUser);
 
   const messageEndRef = useRef(null);
 

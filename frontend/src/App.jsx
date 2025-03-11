@@ -11,6 +11,8 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import ProfilePage from './components/ProfilePage';
 import CheckPage from './components/CheckPage'
+import Contact from './components/Contact';
+import MultiStepForm from "./components/MultiStepForm.jsx";
 import CreateBlogPage from './components/CreateBlogPage';
 import AllBlogsPage from './components/AllBlogsPage';
 import BlogDetails from './components/BlogDetailPage';
@@ -19,7 +21,7 @@ import LogoutPage from './components/LogoutPage';
 
 function App() {
 
-  const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth, fullName } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -40,6 +42,8 @@ function App() {
           <Route path="/logout" element={authUser ? <LogoutPage /> : <Navigate to="/" />} />
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
           <Route path="/checkpage" element={ <CheckPage /> } />
+          <Route path='/contact' element={ authUser ? <Contact /> : <Navigate to="/login" />} />
+          <Route path='/oauth-form' element={fullName ? <MultiStepForm /> : <Navigate to="/login" /> } />
           <Route path="/createBlog" element={ <CreateBlogPage /> } />
           <Route path="/blogs" element={ <AllBlogsPage /> } />
           <Route path="/blogs/:blogid" element={ <BlogDetails /> } />
