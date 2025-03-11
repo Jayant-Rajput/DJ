@@ -3,6 +3,9 @@ import { persist } from "zustand/middleware";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { getAuth, signOut } from "firebase/auth";
+import io from "socket.io-client";
+
+const BASE_URL = "http://localhost:5001";
 
 export const useAuthStore = create(
   persist(
@@ -20,16 +23,19 @@ export const useAuthStore = create(
       ccId: null,
       cfId: null,
       leetid: null,
+      onlineUserCount: 0,
+      socket: null,
 
       // Your actions...
       checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
-          console.log("checkAuth ke andar hu bhai");
           const res = await axiosInstance.get("/auth/check");
           console.log(res);
           set({ authUser: res.data });
+          get().connectSocket();
         } catch (error) {
+          console.log("Error in checkAuth: ", error);
           set({ authUser: null });
         } finally {
           set({ isCheckingAuth: false });
@@ -42,9 +48,10 @@ export const useAuthStore = create(
           const res = await axiosInstance.post("/auth/signup", data);
           set({ authUser: res.data });
           toast.success("Account Created Successfully");
+          get().connectSocket();
         } catch (error) {
           set({ authUser: null });
-          toast.error(error.response?.data?.message || "Signup failed");
+          toast.error(error.response.data.message);
           console.log("Error in signup: ", error);
         } finally {
           set({ isSigninUp: false });
@@ -58,18 +65,20 @@ export const useAuthStore = create(
           set({ authUser: res.data });
           console.log(get().authUser);
           toast.success("Logged in Successfully");
+          get().connectSocket();
         } catch (error) {
           set({ authUser: null });
           console.log("Error in login: ", error);
-          toast.error(error.response?.data?.message || "Login failed");
+          toast.error(error.response.data.message);
         } finally {
           set({ isLoggingIn: false });
         }
       },
 
-      logOut: async (navigate) => {
-        try{
+      logout: async (navigate) => {
+        try {
           const { authProvider } = get();
+          await axiosInstance.post("/auth/logout");
           if (authProvider !== "local") {
             const auth = getAuth();
             signOut(auth)
@@ -79,26 +88,47 @@ export const useAuthStore = create(
                   email: null,
                   authProvider: null,
                   authUser: null,
+                  branch: null,
+                  college: null,
+                  year: null,
+                  ccId: null,
+                  cfId: null,
+                  leetid: null,
                 });
                 navigate("/login");
-                toast.success("Logged out Successfully");
+                // toast.success("Logged out Successfully");
               })
               .catch((error) => {
                 console.error("Error Logging out:", error);
               });
-          }else{
-            const res = await axiosInstance.get("/api/auth");
-            set({ authUser: null });
-            if(res.status===200){
-              navigate("/login");
-              toast.success("Logged out Successfully");
-            }
+          } else {
+            set({
+              authUser: null,
+            });
+            get().disconnectSocket();
           }
-        }catch(error){
-          console.log(error);
-        }finally{
-
+          toast.success("Logged Out Successfully");
+        } catch (error) {
+          toast.error(error.response.data.message);
         }
+      },
+
+      connectSocket: () => {
+        const { authUser } = get();
+        if (!authUser || get().socket?.connected) return;
+
+        const socket = io(BASE_URL);
+        socket.connect();
+
+        set({ socket: socket });
+
+        socket.on("getOnlineUserCount", (cnt) => {
+          set({ onlineUserCount: cnt });
+        });
+      },
+
+      disconnectSocket: () => {
+        if (get().socket?.connected) get().socket().disconnect();
       },
 
       oAuthLogin: async (user, navigate) => {
@@ -144,7 +174,17 @@ export const useAuthStore = create(
         set({ isSigninUp: true });
         try {
           console.log("Inside oAuthSignup");
-          const { fullName, email, authProvider, branch, college, year, ccId, cfId, leetid } = get();
+          const {
+            fullName,
+            email,
+            authProvider,
+            branch,
+            college,
+            year,
+            ccId,
+            cfId,
+            leetid,
+          } = get();
           const response = await axiosInstance.post(
             "/auth/oauthuser",
             {
@@ -193,10 +233,10 @@ export const useAuthStore = create(
           email: data.email,
           authProvider: "google",
         });
-      },    
-      
+      },
+
       loginWithOTP: async (data) => {
-        set({isLoggingIn: true});
+        set({ isLoggingIn: true });
         try {
           console.log(data.OTP);
           const res = await axiosInstance.post("/auth/login-OTP", data);
@@ -205,8 +245,10 @@ export const useAuthStore = create(
           toast.success("Logged in Successfully");
         } catch (error) {
           console.log("Error in login: ", error);
-          toast.error(error.response?.data?.message || "Login failed");
-        } finally{
+          toast.error(
+            error.response?.data?.message || "Login failed"
+          );
+        } finally {
           set({ isLoggingIn: false });
         }
       },
@@ -217,7 +259,9 @@ export const useAuthStore = create(
           toast.success("OTP sent Successfully");
         } catch (error) {
           console.log("Error in Sending OTP: ", error);
-          toast.error(error.response?.data?.message || "Error in generating OTP");
+          toast.error(
+            error.response?.data?.message || "Error in generating OTP"
+          );
         }
       },
 
@@ -227,24 +271,19 @@ export const useAuthStore = create(
           toast.success("Password changed Successfully");
         } catch (error) {
           console.log("Error in changing Password: ", error);
-          toast.error(error.response?.data?.message || "Error in changing Password");
+          toast.error(
+            error.response?.data?.message || "Error in changing Password"
+          );
         }
       },
-
-      // forgetPassword: async (data) => {
-      //   try {
-      //     await axiosInstance.post("/forget-password", data);
-      //     toast.success("Password changed Successfully");
-      //   } catch (error) {
-      //     console.log("Error in changing Password: ", error);
-      //     toast.error(error.response?.data?.message || "Error in changing Password");
-      //   }
-      // }
-
-
     }),
     {
       name: "auth-store", // Unique name for localStorage key
+      partialize: (state) => {
+        // Exclude non-serializable values like socket from being persisted
+        const { socket, ...persistedState } = state;
+        return persistedState;
+      },
     }
   )
 );

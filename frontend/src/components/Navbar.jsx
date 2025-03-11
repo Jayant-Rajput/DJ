@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
 
   const navigate = useNavigate();
-  const { authUser,logOut } = useAuthStore();
+  const { authUser,logout } = useAuthStore();
 
   const handleLogOut = () => {
-    logOut(navigate);
+    logout(navigate);
   };
 
 
@@ -26,7 +26,10 @@ const Navbar = () => {
           {authUser && <Link to="/profile" className="hover:text-gray-300">Profile</Link>}
           {authUser && <Link to="/login" onClick={handleLogOut}>Logout</Link>}
           <Link to="/checkpage" className="hover:text-gray-300">Check</Link>
-          
+          <Link to="/blogs" className="hover:text-gray-300">Blog</Link>
+          {authUser && <Link to="/createBlog" className="hover:text-gray-300">CreateBlog</Link> }
+          <Link to="/chat" className="hover:text-gray-300">Chat</Link>
+
         </div>
       </div>
     </nav>

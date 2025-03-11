@@ -8,9 +8,13 @@ import { connectDB } from './lib/db.js';
 import authRoutes from './routes/auth.route.js';
 import contactRoutes from './routes/contact.route.js'
 import axios from 'axios'
+import blogRoutes from './routes/blog.route.js';
+import messageRoutes from './routes/message.route.js';
+
+import {app, server} from './lib/socket.js';
 
 dotenv.config();
-const app = express();
+// const app = express();
 
 const PORT = process.env.PORT;
 
@@ -25,8 +29,10 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/blog", blogRoutes);
+app.use("/api/messages", messageRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("server is running on PORT: ", PORT);
     connectDB();
 })

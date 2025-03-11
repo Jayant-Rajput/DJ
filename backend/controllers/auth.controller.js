@@ -172,7 +172,7 @@ export const updateProfile = async (req, res) => {
 
 export const checkAuth = (req, res) => {
   try {
-    console.log("chechAuth function in backend: ", req.user);
+    // console.log("chechAuth function in backend: ", req.user);
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
@@ -195,7 +195,13 @@ export const oauthLoginUser = async(req,res) => {
     if(!curr_user){
       return res.status(404).json({message: "user doesn't exists"});
     }
-    return res.status(200).send(curr_user);
+
+    generateToken(curr_user._id, res);
+  
+    const { password : userPassword, ...userWithoutPassword } = curr_user;    
+    res.status(200).send(userWithoutPassword);
+
+    return res.status(200).send(curr_user).json({message: "OAuth logged in successfully"});
   } catch (error) {
       console.log(error);
   }
@@ -228,7 +234,10 @@ export const oauthUser = async (req, res) => {
         throw new ApiError(500, "Something went wrong while registering the user");
     }
 
-    return res.status(200).json({message: "Registration done successfully"})
+    generateToken(oauthClient._id, res);
+  
+    const { password : userPassword, ...userWithoutPassword } = oauthClient;    
+    return res.status(200).send(userWithoutPassword).json({message: "OAuth Registration done successfully"});
   } catch (error) {
     console.log(error);
   }
@@ -282,7 +291,7 @@ export const loginWithOTP = async (req, res) => {
       return res.status(400).json({ error: 'Please provide registered email address and OTP'});
     }
     const curr_user = await User.findOne({email: email});
-    console.log(curr_user.otp);
+    // console.log(curr_user.otp);
   
     if(!curr_user || String(curr_user.otp) !== String(OTP)){
       return res.status(400).json({message: "Invalid Credentials"});
