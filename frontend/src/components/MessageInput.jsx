@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { useChatStore } from "../stores/useChatStore.js"; 
+import { useChatStore } from "../stores/useChatStore.js";
+import { useAuthStore } from "../stores/useAuthStore.js"; 
 import { Send } from "lucide-react";
 
 const MessageInput = () => {
+    
+    const { authUser } = useAuthStore();
     const [text,setText] = useState("");
     const { sendMessage } = useChatStore();
 
@@ -29,9 +32,9 @@ const MessageInput = () => {
                 className="w-full input input-bordered rounded-lg input-sm sm:input-md"
                 placeholder="Type a message..."
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                disabled={authUser===null ? true : false }
+                onChange={(e) => setText(e.target.value)}   
               />
-
             </div>
             <button
               type="submit"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const MultiStepForm = () => {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ const MultiStepForm = () => {
     await formValues(formData);
     console.log("ab khel shuru hoga");
     await oAuthSignup(navigate);
-    alert("Form submitted successfully!");
+    toast.success("Form submitted successfully!")
+    // alert("Form submitted successfully!");
   };
 
   console.log(fullName);

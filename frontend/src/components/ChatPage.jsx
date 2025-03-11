@@ -7,22 +7,24 @@ import MessageInput from './MessageInput.jsx';
 
 const ChatPage = () => {
   const {isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
-  const { authUser } = useAuthStore();
-  console.log(authUser);
+  const { authUser,checkAuth } = useAuthStore();
+  // console.log(authUser);
 
   const messageEndRef = useRef(null);
 
   useEffect(()=>{
-    getMessages();
-    subscribeToMessage();
-
-    return () => unsubscribeToMessage();
+    const fetchMessages = async () => {
+      await getMessages();
+    }
+    fetchMessages();
   },[]);
 
   useEffect(()=>{
+    subscribeToMessage();
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+    return () => unsubscribeToMessage();
   },[messages]);
 
   if(isMessagesLoading){
@@ -32,7 +34,8 @@ const ChatPage = () => {
   return (
     <div>
      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
-      {messages.map((eachmsg) => (
+      {messages.filter((eachmsg) => eachmsg.senderId !== null)
+        .map((eachmsg) => (
         <div
               key={eachmsg._id}
               className={`chat ${eachmsg.senderId._id === authUser._id ? "chat-end" : "chat-start"}`}

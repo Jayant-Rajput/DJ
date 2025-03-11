@@ -246,10 +246,11 @@ export const oauthUser = async (req, res) => {
 export const generateOTP = async (req, res) => {
   console.log("HOla");
     const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ error: 'Please provide registered email address' });
-    }
+    if (!email) return res.status(400).json({ error: 'Please provide registered email address' });
 
+    const matchedMail = User.findOne({email});
+    if(!matchedMail) return res.status(400).json({ error: 'Please provide registered email address' });
+    
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -290,7 +291,7 @@ export const loginWithOTP = async (req, res) => {
     if (!email || !OTP) {
       return res.status(400).json({ error: 'Please provide registered email address and OTP'});
     }
-    const curr_user = await User.findOne({email: email});
+    const curr_user = await User.findOne({email}).lean();
     // console.log(curr_user.otp);
   
     if(!curr_user || String(curr_user.otp) !== String(OTP)){
@@ -301,6 +302,7 @@ export const loginWithOTP = async (req, res) => {
   
     const { password : userPassword, ...userWithoutPassword } = curr_user;    
     res.status(200).send(userWithoutPassword);
+
   } catch (error) {
     console.log("Error in login controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });

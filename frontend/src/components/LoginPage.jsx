@@ -18,7 +18,7 @@ const Signin = () => {
     OTP: "",
   });
 
-  const { login, isLoggingIn, oAuthLogin, loginWithOTP, generateOTP } = useAuthStore();
+  const { login, isLoggingIn, oAuthLogin, loginWithOTP, generateOTP,isSendingOtp } = useAuthStore();
 
 
   const handleChange = (e) => {
@@ -92,6 +92,9 @@ const Signin = () => {
 
   if(isLoggingIn){
     return <h1>Loggin In...</h1>
+  }
+  if(isSendingOtp){
+    return <h1>Ruk ja bhai tereko ek mail bhejta hu</h1>
   }
 
   return !genOtpForm ? (

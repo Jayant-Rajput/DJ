@@ -7,22 +7,21 @@ import io from "socket.io-client";
 
 const BASE_URL = "http://localhost:5001";
 
-export const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      fullName: null,
+export const useAuthStore = create((set, get) => ({
+      fullname: null,
       email: null,
       authProvider: null,
-      authUser: null,
-      isSigninUp: false,
-      isLoggingIn: false,
-      isCheckingAuth: false,
-      branch: null,
+      bracnh: null,
       year: null,
       college: null,
       ccId: null,
       cfId: null,
       leetid: null,
+      authUser: null,
+      isSigninUp: false,
+      isLoggingIn: false,
+      isCheckingAuth: false,
+      isSendingOtp: false,
       onlineUserCount: 0,
       socket: null,
 
@@ -31,7 +30,6 @@ export const useAuthStore = create(
         set({ isCheckingAuth: true });
         try {
           const res = await axiosInstance.get("/auth/check");
-          console.log(res);
           set({ authUser: res.data });
           get().connectSocket();
         } catch (error) {
@@ -121,6 +119,7 @@ export const useAuthStore = create(
         socket.connect();
 
         set({ socket: socket });
+        console.log("SOCKET AFTER CONNECTION: ", get().socket);
 
         socket.on("getOnlineUserCount", (cnt) => {
           set({ onlineUserCount: cnt });
@@ -205,8 +204,8 @@ export const useAuthStore = create(
 
           if (response.status === 200) {
             set({ authUser: response.data });
-            navigate("/");
             toast.success("Account Created Successfully!");
+            navigate("/");
           }
         } catch (error) {
           console.log("Error in oAuthSignup:", error);
@@ -254,14 +253,15 @@ export const useAuthStore = create(
       },
 
       generateOTP: async (data) => {
+        set({isSendingOtp: true});
         try {
           await axiosInstance.post("/auth/gen-OTP", data);
           toast.success("OTP sent Successfully");
         } catch (error) {
           console.log("Error in Sending OTP: ", error);
-          toast.error(
-            error.response?.data?.message || "Error in generating OTP"
-          );
+          toast.error(error.response?.data?.message || "Error in generating OTP");
+        }finally{
+          set({isSendingOtp: false});
         }
       },
 
@@ -285,5 +285,4 @@ export const useAuthStore = create(
         return persistedState;
       },
     }
-  )
 );
