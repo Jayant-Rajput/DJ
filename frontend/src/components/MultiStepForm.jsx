@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const MultiStepForm = () => {
+  const { isSigninUp } = useAuthStore();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ const MultiStepForm = () => {
     leetId: "",
   });
 
-  const { formValues, branch, oAuthSignup, fullName } = useAuthStore();
+  const { formValues, oAuthSignup } = useAuthStore();
 
   const handleSubmit = async () => {
     console.log("Hola");
@@ -23,10 +24,7 @@ const MultiStepForm = () => {
     console.log("ab khel shuru hoga");
     await oAuthSignup(navigate);
     toast.success("Form submitted successfully!")
-    // alert("Form submitted successfully!");
   };
-
-  console.log(fullName);
 
   const steps = [
     {
@@ -106,6 +104,10 @@ const MultiStepForm = () => {
         formData.leetId.trim() !== "",
     },
   ];
+
+  if(isSigninUp){
+    return<h1>Wait for a while...</h1>
+  }
 
   return (
     <div className="flex flex-col items-center p-6 border rounded-lg shadow-lg bg-white max-w-lg mx-auto mt-10 text-black">
