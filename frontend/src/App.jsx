@@ -21,7 +21,7 @@ import LogoutPage from './components/LogoutPage';
 
 function App() {
 
-  const { authUser, isCheckingAuth, checkAuth, fullName } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth, fullname } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -43,7 +43,7 @@ function App() {
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
           <Route path="/checkpage" element={ <CheckPage /> } />
           <Route path='/contact' element={ authUser ? <Contact /> : <Navigate to="/login" />} />
-          <Route path='/oauth-form' element={fullName ? <MultiStepForm /> : <Navigate to="/login" /> } />
+          <Route path='/oauth-form' element={fullname ? <MultiStepForm /> : <Navigate to="/login" /> } />
           <Route path="/createBlog" element={ <CreateBlogPage /> } />
           <Route path="/blogs" element={ <AllBlogsPage /> } />
           <Route path="/blogs/:blogid" element={ <BlogDetails /> } />

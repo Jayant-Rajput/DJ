@@ -184,26 +184,19 @@ export const oauthLoginUser = async(req,res) => {
   try {
     const {fullName, email, authProvider} = req.body
 
-    if(
-        [fullName, email, authProvider].some((field) => field?.trim()==="")
-    ){
-        return res.status(404).json({message: "All fields are required"});
-    }
+    if( [fullName, email, authProvider].some((field) => field?.trim()==="")) return res.status(404).json({message: "All fields are required"});
 
     const curr_user = await User.findOne({email: email});
-
-    if(!curr_user){
-      return res.status(404).json({message: "user doesn't exists"});
-    }
-
+    if(!curr_user) return res.status(404).json({message: "user doesn't exists"});
+    
     generateToken(curr_user._id, res);
   
     const { password : userPassword, ...userWithoutPassword } = curr_user;    
     res.status(200).send(userWithoutPassword);
 
-    return res.status(200).send(curr_user).json({message: "OAuth logged in successfully"});
   } catch (error) {
-      console.log(error);
+    console.log("Error in oauthLoginUser controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -211,35 +204,98 @@ export const oauthUser = async (req, res) => {
   console.log("AMigo");
   console.log(req.body);
   try {
-    const {fullName, email, authProvider, branch, college, year, ccId, cfId, leetId} = req.body
-    if(
-        [fullName, email, authProvider, branch, college, year, ccId, cfId, leetId].some((field) => field?.trim()==="")
-    ){
-        return res.status(404).json({message: "All fields are required"});
+    const {fullname, email, authProvider, branch, college, year, ccId, cfId, leetId} = req.body
+    if([fullname, email, authProvider, branch, college, year, ccId, cfId, leetId].some((field) => field?.trim()===""))
+    { return res.status(404).json({message: "All fields are required"}); }
+
+    const user = await User.findOne({ email });
+
+    if (user) return res.status(400).json({ message: "Email already exists" });
+
+    const password = "123456";
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    let chefRating = -1; let forcesRating = -1; let leetRating = -1; 
+    let chefStars = 'stars'; let chefTotalProblemSolved = -1; let chefContestCount = -1;
+
+    try{
+      const {currentRating, stars, contests, totalProblemsSolved} = await scrapCodechefData(ccId);
+      chefRating = currentRating;
+      chefStars = stars;
+      chefTotalProblemSolved = totalProblemsSolved;
+      chefContestCount = contests;
+    }catch(error){
+      console.log("Error in scraping codechef rating : ", error);
     }
 
-    const oauthClient = await User.create({
-        email,
-        fullname: fullName,
-        authProvider,
-        branch,
-        college,
-        year,
-        codechefId: ccId,
-        codeforcesId: cfId,
-        leetcodeId: leetId
-    })
-
-    if(!oauthClient){
-        throw new ApiError(500, "Something went wrong while registering the user");
+    let updatedLeetData = null;
+    try{
+      updatedLeetData = await leetDataFetch(leetId);
+    }catch(error){
+      console.log("Error in fetching leet data : ", error);
     }
 
-    generateToken(oauthClient._id, res);
-  
-    const { password : userPassword, ...userWithoutPassword } = oauthClient;    
-    return res.status(200).send(userWithoutPassword).json({message: "OAuth Registration done successfully"});
+    let updatedForcesData = null
+    try{
+      updatedForcesData = await forcesDataFetch(cfId);
+      console.log("FORCES RATING: ", updatedForcesData.forcesRating);
+    }catch(error){
+      console.log("Error in fetching forces data : ", error);
+    }
+
+    const newUser = new User({
+      fullname,
+      email,
+      password: hashedPassword,
+      branch,
+      year,
+      college,
+      codechefId: ccId,
+      codeforcesId: cfId,
+      leetcodeId: leetId,
+      totalLeetQuestions: updatedLeetData.totalLeetQuestions,
+      easyLeetQuestions: updatedLeetData.easyLeetQuestions,
+      mediumLeetQuestions: updatedLeetData.mediumLeetQuestions,
+      hardLeetQuestions: updatedLeetData.hardLeetQuestions,
+      totalSolvedLeetQuestions: updatedLeetData.totalSolvedLeetQuestions,
+      easySolvedLeetQuestions: updatedLeetData.easySolvedLeetQuestions,
+      mediumSolvedLeetQuestions: updatedLeetData.mediumSolvedLeetQuestions,
+      hardSolvedLeetQuestions: updatedLeetData.hardSolvedLeetQuestions,
+      leetReputation: updatedLeetData.leetReputation,
+      leetRanking: updatedLeetData.leetRanking,
+      leetContestCount: updatedLeetData.leetContestCount,
+      leetRating: updatedLeetData.leetRating,
+      leetGlobalRanking: updatedLeetData.leetGlobalRanking,
+      leetTotalParticipants: updatedLeetData.leetTotalParticipants,
+      leetTopPercentage: updatedLeetData.leetTopPercentage,
+      leetBadges: updatedLeetData.leetBadges,
+      forcesRating: updatedForcesData.forcesRating,
+      forcesRank: updatedForcesData.forcesRank,
+      forcesMaxRating: updatedForcesData.forcesMaxRating,
+      forcesMaxRank: updatedForcesData.forcesMaxRank,
+      forcesContestCount: updatedForcesData.forcesContestCount,
+      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
+      forcesTotalProblemsolvedByRating: updatedForcesData.forcesTotalProblemsolvedByRating,
+      chefRating,
+      chefStars,
+      chefTotalProblemSolved,
+      chefContestCount,
+      authProvider
+    });
+
+    if (newUser) {
+      // generate jwt token here
+      generateToken(newUser._id, res);
+      await newUser.save();
+
+      res.status(201).json(newUser);
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
+    }
   } catch (error) {
-    console.log(error);
+    console.log("Error in oauthUser controller", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
