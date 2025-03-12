@@ -7,6 +7,25 @@ import { scrapCodechefData } from "../webscrapping/scrapRating.js";
 import { leetDataFetch } from "./leetapi.controller.js";
 import { forcesDataFetch } from "./forcesapi.controller.js";
 import nodemailer from "nodemailer";
+import dns from "dns";
+import axios from "axios";
+
+export const isDisposableEmail = async (email) => {
+  const domain = email.split('@')[1];
+  const response = await axios.get(`https://open.kickbox.com/v1/disposable/${domain}`);
+  return response.data.disposable;
+}
+
+export const checkMXRecords = async (email, callback) => {
+  const domain = email.split('@')[1];
+  dns.resolveMx(domain, (err, addresses) => {
+    if(err || addresses.length===0){
+      callback(false); // Invalid email Domain
+    }else{
+      callback(true); // valid email Domain
+    }
+  })
+}
 
 export const signup = async (req, res) => {
   const { fullname, email, password, branch, year, college, ccId, cfId, leetId } = req.body;
@@ -14,6 +33,7 @@ export const signup = async (req, res) => {
   console.log("req.body received to backend : ", req.body);
 
   try {
+
     if (!fullname || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -21,6 +41,21 @@ export const signup = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
+
+    const isDisposable = await isDisposableEmail(email);
+    if (isDisposable) {
+      return res.status(400).json({ message: "Fake email Id detected" });
+    }
+
+    const mxValid = await new Promise((resolve) => {
+      checkMXRecords(email, (isValid) => {
+        resolve(isValid);
+      });
+    });
+    if (!mxValid) {
+      return res.status(400).json({ message: "Invalid email domain" });
+    }
+
 
     const user = await User.findOne({ email });
 

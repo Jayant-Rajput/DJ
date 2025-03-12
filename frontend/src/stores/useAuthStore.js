@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { getAuth, signOut } from "firebase/auth";
@@ -8,7 +7,7 @@ import io from "socket.io-client";
 const BASE_URL = "http://localhost:5001";
 
 export const useAuthStore = create((set, get) => ({
-      fullname: null,
+      fullName: null,
       email: null,
       authProvider: null,
       bracnh: null,
@@ -277,12 +276,4 @@ export const useAuthStore = create((set, get) => ({
         }
       },
     }),
-    {
-      name: "auth-store", // Unique name for localStorage key
-      partialize: (state) => {
-        // Exclude non-serializable values like socket from being persisted
-        const { socket, ...persistedState } = state;
-        return persistedState;
-      },
-    }
 );
