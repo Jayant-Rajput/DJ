@@ -10,6 +10,7 @@ import contactRoutes from './routes/contact.route.js'
 import axios from 'axios'
 import blogRoutes from './routes/blog.route.js';
 import messageRoutes from './routes/message.route.js';
+import contestRoutes from "./routes/contest.route.js";
 
 import {app, server} from './lib/socket.js';
 
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/contest", contestRoutes);
 
 server.listen(PORT, () => {
     console.log("server is running on PORT: ", PORT);

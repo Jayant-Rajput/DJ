@@ -1,4 +1,6 @@
 import axios from "axios";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core/core.cjs";
+
 export const leetDataFetch = async (username) => {
   
   console.log("INSIDE LEETAPI CONTROLLER");
@@ -98,4 +100,79 @@ export const leetDataFetch = async (username) => {
   };
 
   return updatedLeetData;
+};
+
+export const leetCodeContestList = async () => {
+  const client = new ApolloClient({
+    uri: "https://leetcode.com/graphql",
+    cache: new InMemoryCache(),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+
+  const fetchContestsList = async () => {
+    try {
+      const response = await client.query({
+        query: gql`
+          query {
+            allContests {
+              title
+              titleSlug
+              startTime
+              duration
+            }
+          }
+        `,
+      });
+
+      const contests = [];
+      const currentTime = new Date();
+
+      const contestsData = response.data.allContests;
+
+      contestsData.forEach((data) => {
+        const title = data.title;
+        const url = `https://leetcode.com/contest/${data.titleSlug}`;
+
+        const startTimeUTC = new Date(data.startTime * 1000);
+        const startTimeIST = new Intl.DateTimeFormat("en-IN", {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        }).format(startTimeUTC);
+
+        const endTimeUTC = new Date(startTimeUTC.getTime() + data.duration * 1000);
+
+        if (endTimeUTC <= currentTime) {
+          return;
+        }
+
+        const hours = Math.floor(data.duration / 3600);
+        const minutes = Math.floor((data.duration % 3600) / 60);
+        const durationFormatted = `${hours} hours ${minutes} minutes`;
+
+        contests.push({
+          platform: "LeetCode",
+          title: title,
+          url: url,
+          start_time: startTimeIST,
+          duration: durationFormatted,
+        });
+      });
+
+      // console.log(contests);
+      return contests;
+    } catch (error) {
+      console.error("Error fetching contests:", error);
+      return [];
+    }
+  };
+
+  return fetchContestsList();
 };
