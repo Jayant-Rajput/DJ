@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const useContestStore = create((set, get) => ({
   isfetchingContests: false,
+  bookmarkContest: [],
 
   fetchContests: async () => {
     set({ isfetchingContests: true });
@@ -20,4 +21,6 @@ export const useContestStore = create((set, get) => ({
       set({ isfetchingContests: false });
     }
   },
+
+
 }));

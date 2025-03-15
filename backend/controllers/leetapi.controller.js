@@ -128,13 +128,11 @@ export const leetCodeContestList = async () => {
 
       const contests = [];
       const currentTime = new Date();
-
       const contestsData = response.data.allContests;
 
       contestsData.forEach((data) => {
         const title = data.title;
         const url = `https://leetcode.com/contest/${data.titleSlug}`;
-
         const startTimeUTC = new Date(data.startTime * 1000);
         const startTimeIST = new Intl.DateTimeFormat("en-IN", {
           timeZone: "Asia/Kolkata",
@@ -146,12 +144,9 @@ export const leetCodeContestList = async () => {
           second: "2-digit",
           hour12: true,
         }).format(startTimeUTC);
-
         const endTimeUTC = new Date(startTimeUTC.getTime() + data.duration * 1000);
 
-        if (endTimeUTC <= currentTime) {
-          return;
-        }
+        if (endTimeUTC <= currentTime) return;
 
         const hours = Math.floor(data.duration / 3600);
         const minutes = Math.floor((data.duration % 3600) / 60);
@@ -159,14 +154,15 @@ export const leetCodeContestList = async () => {
 
         contests.push({
           platform: "LeetCode",
-          title: title,
-          url: url,
+          title,
+          url,
           start_time: startTimeIST,
           duration: durationFormatted,
+          raw_start_time: startTimeUTC,
+          raw_duration: data.duration, 
         });
       });
 
-      // console.log(contests);
       return contests;
     } catch (error) {
       console.error("Error fetching contests:", error);
@@ -176,3 +172,4 @@ export const leetCodeContestList = async () => {
 
   return fetchContestsList();
 };
+

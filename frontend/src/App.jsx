@@ -18,7 +18,7 @@ import AllBlogsPage from './components/AllBlogsPage';
 import BlogDetails from './components/BlogDetailPage';
 import ChatPage from './components/ChatPage';
 import LogoutPage from './components/LogoutPage';
-import { Contest } from './components/ContestPage.jsx';
+import { ContestPage } from './components/ContestPage.jsx';
 
 function App() {
 
@@ -49,7 +49,7 @@ function App() {
           <Route path="/blogs" element={ <AllBlogsPage /> } />
           <Route path="/blogs/:blogid" element={ <BlogDetails /> } />
           <Route path="/chat" element={ authUser ? <ChatPage /> : <Navigate to="/login" /> } />
-          <Route path="/contest-list" element ={<Contest/>} />
+          <Route path="/contest-list" element ={<ContestPage/>} />
         </Routes>
 
         <Toaster />

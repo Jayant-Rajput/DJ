@@ -51,11 +51,12 @@ export const forcesDataFetch = async (username) => {
 };
 
 export const forcesContestDataFetch = async () => {
-  const response = await axios.get('https://codeforces.com/api/contest.list?gym=false');
+  const response = await axios.get("https://codeforces.com/api/contest.list?gym=false");
   const contestData = response.data.result;
   const contests = [];
-  if(response.status==200){
-    contestData.forEach(data => {
+
+  if (response.status === 200) {
+    contestData.forEach((data) => {
       const title = data["name"];
       const url = `https://codeforces.com/contests/${data["id"]}`;
       const start_time_timestamp = data["startTimeSeconds"];
@@ -72,25 +73,28 @@ export const forcesContestDataFetch = async () => {
       });
       const duration_timestamp = data["durationSeconds"];
       const duration_ms = new Date(duration_timestamp * 1000);
-      const hours = duration_ms.getHours().toString().padStart(2, '0'); // Get hours (00-23)
-      const minutes = duration_ms.getMinutes().toString().padStart(2, '0');
-
+      const hours = duration_ms.getUTCHours().toString().padStart(2, "0");
+      const minutes = duration_ms.getUTCMinutes().toString().padStart(2, "0");
       const duration = `${hours} hours ${minutes} minutes`;
-
 
       const startDate = new Date(start_time_timestamp * 1000);
       const endDate = new Date(startDate.getTime() + duration_timestamp * 1000);
-      const currentIST = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-      if(currentIST < endDate){
+      const currentIST = new Date(
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
+      if (currentIST < endDate) {
         contests.push({
-          "title": title,
-          "platform": "codeforces",
-          "url": url,
-          "start_time": start_date,
-          "duration": duration,
-        })
+          title,
+          platform: "Codeforces",
+          url,
+          start_time: start_date,
+          duration,
+          raw_start_time: date,
+          raw_duration: duration_timestamp, // in seconds
+        });
       }
     });
   }
   return contests;
-} 
+};
+ 
