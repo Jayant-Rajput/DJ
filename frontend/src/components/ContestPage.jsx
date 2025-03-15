@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useContestStore } from "../stores/useContestStore";
-import { ContestCard } from "./ContestCards.jsx";
+import { ContestCard } from "./ContestCards";
 
 export const ContestPage = () => {
   const { fetchContests } = useContestStore();
