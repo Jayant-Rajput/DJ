@@ -22,5 +22,5 @@ export const useContestStore = create((set, get) => ({
     }
   },
 
-
+  updateBookmarkContest: (newBookmarks) => set({ bookmarkContest: newBookmarks }),
 }));

@@ -21,11 +21,11 @@ export const ContestPage = () => {
     fetchContests()
       .then((contestsData) => {
         console.log("Fetched Contests:", contestsData);
-        setContests(contestsData || []); // Ensure it's never undefined
+        setContests(contestsData || []); 
       })
       .catch((error) => {
         console.error("Error fetching contests:", error);
-        setContests([]); // Fallback to empty array on error
+        setContests([]);
       });
   }, []);
 
@@ -105,7 +105,7 @@ export const ContestPage = () => {
         ) : (
           <p className="text-center text-gray-400 mt-4">No bookmarked contests available.</p>
         )
-      ) : contests.length > 0 ? ( // Prevent undefined error
+      ) : contests.length > 0 ? ( 
         contests
           .filter((contest) => filterArray.length === 0 || filterArray.includes(contest.platform))
           .map((contest, idx) => (

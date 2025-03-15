@@ -19,22 +19,20 @@ export const ContestCard = ({
   const [countdownSeconds, setCountdownSeconds] = useState(0);
   const [bookmark, setBookmark] = useState(false);
 
-  const { bookmarkContest } = useContestStore();
+  const { bookmarkContest, updateBookmarkContest } = useContestStore();
 
   useEffect(() => {
     if (bookmark) {
-      bookmarkContest.push(contest);
-    } else if (bookmarkContest.includes(contest)) {
-      // Remove contest from bookmarkContest array without mutating it directly.
-      // This assumes bookmarkContest is managed appropriately in your store.
-      // Adjust the logic if you are using a setter function.
-      const updatedBookmarks = bookmarkContest.filter(
-        (item) => item !== contest
-      );
-      // Example: update the store with the new array (if available)
-      // updateBookmarkContest(updatedBookmarks);
+        console.log(bookmark);
+        console.log(bookmarkContest);
+      if (!bookmarkContest.includes(contest)) {
+        updateBookmarkContest([...bookmarkContest, contest]);
+      }
+    } else {
+      if (bookmarkContest.includes(contest)) {
+        updateBookmarkContest(bookmarkContest.filter(item => item !== contest));
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmark]);
 
   const bgColor = {
@@ -64,7 +62,7 @@ export const ContestCard = ({
     return parts.join(", ");
   };
 
-  console.log(statusArray);
+//   console.log(statusArray);
 
   useEffect(() => {
     const now = Date.now();
