@@ -21,19 +21,16 @@ export const ContestCard = ({
 
   const { bookmarkContest, updateBookmarkContest } = useContestStore();
 
-  useEffect(() => {
-    if (bookmark) {
-        console.log(bookmark);
-        console.log(bookmarkContest);
+  const handleBookmark = () => {
+    if (!bookmark) {
       if (!bookmarkContest.includes(contest)) {
         updateBookmarkContest([...bookmarkContest, contest]);
       }
     } else {
-      if (bookmarkContest.includes(contest)) {
-        updateBookmarkContest(bookmarkContest.filter(item => item !== contest));
-      }
+      updateBookmarkContest(bookmarkContest.filter((item) => item !== contest));
     }
-  }, [bookmark]);
+    setBookmark((prev) => !prev);
+  };
 
   const bgColor = {
     upcoming: "bg-green-500 text-white",
@@ -61,8 +58,6 @@ export const ContestCard = ({
 
     return parts.join(", ");
   };
-
-//   console.log(statusArray);
 
   useEffect(() => {
     const now = Date.now();
@@ -94,7 +89,7 @@ export const ContestCard = ({
     }, 1000);
 
     return () => clearInterval(countdownTimer);
-  }, [status, contestStartTime, contestEndTime, title]);
+  }, [contestStartTime, contestEndTime, title]);
 
   const handleAddToCalendar = (calendarType) => {
     const startDate = contestStartTime
@@ -191,14 +186,10 @@ export const ContestCard = ({
             )}
           </div>
           <button
-            onClick={() => setBookmark(!bookmark)}
+            onClick={handleBookmark}
             className="cursor-pointer flex items-center space-x-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-1 px-3 rounded-md border border-purple-700"
           >
-            <svg
-              className="w-6 h-6"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z" />
             </svg>
             <span>Bookmark</span>
