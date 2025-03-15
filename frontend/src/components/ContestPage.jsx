@@ -46,10 +46,22 @@ export const ContestPage = () => {
 
   console.log("Filter Array:", filterArray);
 
+  const handleAllClick = () => {
+    setCodechef(false);
+    setCodeforces(false);
+    setLeetcode(false);
+    setUpcoming(false);
+    setOngoing(false);
+    setCompleted(false);
+    setFilterArray([]);
+    setStatusArray([]);
+    setBookmarked(false);
+  }
+
   return (
     <div>
       <div className="flex justify-center space-x-4 my-4">
-        <div onClick={() => setFilterArray([])} className="cursor-pointer px-4 py-2 bg-gray-700 text-white rounded-lg">
+        <div onClick={handleAllClick} className="cursor-pointer px-4 py-2 bg-gray-700 text-white rounded-lg">
           All
         </div>
 
