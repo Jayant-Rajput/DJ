@@ -8,26 +8,23 @@ export const codechefContestList = async () => {
     const contests = [];
   
     if (response.status === 200) {
-      const contests_data = [...presentContests, ...futureContests, ...pastContests];
-      contests_data.forEach((data) => {
+      // const contests_data = [...presentContests, ...futureContests, ...pastContests];
+      futureContests.forEach((data) => {
         const title = data["contest_name"];
         const url = `https://www.codechef.com/${data["contest_code"]}`;
         const start_date = data["contest_start_date"];
-        const startDateUTC = new Date(Date.parse(start_date + " UTC"));
+        const dateObject = new Date(start_date);
+        const start_date_millisecond = dateObject.getTime();
         const durationInMinutes = data["contest_duration"];
-        const duration_hours = Math.floor(durationInMinutes / 60);
-        const duration_minutes = durationInMinutes % 60;
-        const duration = `${duration_hours} hours ${duration_minutes} minutes`;
-  
+        const duration_millisecond = durationInMinutes*60*1000;
+
         contests.push({
           title,
           platform: "CodeChef",
           url,
-          start_time: start_date,
-          duration,
+          raw_start_time: start_date_millisecond,
           reg_participants: data["distinct_users"],
-          raw_start_time: startDateUTC,
-          raw_duration: durationInMinutes * 60,
+          raw_duration: duration_millisecond,
         });
       });
     }

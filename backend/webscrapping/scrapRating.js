@@ -16,11 +16,6 @@ export const scrapCodechefData = async (username) => {
   let contests = $('h3:contains("Contests")').text().match(/\d+/)?.[0] || "0";
   let totalProblemsSolved = $('h3:contains("Total Problems Solved")').text().match(/\d+/)?.[0] || "0";
 
-  console.log("Current Rating:", currentRating);
-  console.log("Stars:", stars);
-  console.log("Contests Count:", contests);
-  console.log("Total Problems Solved:", totalProblemsSolved);
-
   return { currentRating, stars, contests, totalProblemsSolved };
 };
 

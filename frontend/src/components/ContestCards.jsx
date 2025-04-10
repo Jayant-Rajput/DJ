@@ -1,201 +1,49 @@
-import React, { useEffect, useState } from "react";
-import { useContestStore } from "../stores/useContestStore";
+import React from 'react';
+import { useContestStore } from '../stores/useContestStore.js';
+import { useAuthStore } from '../stores/useAuthStore.js';
 
-const calendarOptions = ["Google", "Outlook", "Apple"];
+const ContestCards = ({ contest, isBookmarked }) => {
 
-export const ContestCard = ({
-  title,
-  platform,
-  url,
-  start_time,
-  raw_start_time,
-  raw_duration,
-  reg_participants,
-  statusArray,
-  contest,
-}) => {
-  const [calendarDropdown, setCalendarDropdown] = useState(false);
-  const [status, setStatus] = useState("");
-  const [countdownSeconds, setCountdownSeconds] = useState(0);
-  const [bookmark, setBookmark] = useState(false);
+    const { addBookmark, removeBookmark} = useContestStore();
+    const { authUser } = useAuthStore();
 
-  const { bookmarkContest, updateBookmarkContest } = useContestStore();
-
-  const handleBookmark = () => {
-    if (!bookmark) {
-      if (!bookmarkContest.includes(contest)) {
-        updateBookmarkContest([...bookmarkContest, contest]);
-      }
-    } else {
-      updateBookmarkContest(bookmarkContest.filter((item) => item !== contest));
-    }
-    setBookmark((prev) => !prev);
-  };
-
-  const bgColor = {
-    upcoming: "bg-green-500 text-white",
-    ongoing: "bg-orange-500 text-white",
-    completed: "bg-red-500 text-white",
-  };
-
-  const contestStartTime = new Date(raw_start_time);
-  const contestEndTime = new Date(raw_start_time);
-  contestEndTime.setSeconds(contestStartTime.getSeconds() + raw_duration);
-
-  const formatCountdown = (seconds) => {
-    if (seconds <= 0) return "00:00";
-
-    const days = Math.floor(seconds / (24 * 3600));
-    const hrs = Math.floor((seconds % (24 * 3600)) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    const parts = [];
-    if (days > 0) parts.push(`${days} days`);
-    if (hrs > 0) parts.push(`${hrs} hrs`);
-    if (mins > 0) parts.push(`${mins} minutes`);
-    if (secs > 0) parts.push(`${secs} seconds`);
-
-    return parts.join(", ");
-  };
-
-  useEffect(() => {
-    const now = Date.now();
-    if (contestStartTime > now) {
-      setStatus("Upcoming");
-      setCountdownSeconds(((contestStartTime - now) / 1000).toFixed());
-    } else if (contestStartTime <= now && now <= contestEndTime) {
-      setStatus("Ongoing");
-      setCountdownSeconds(((contestEndTime - now) / 1000).toFixed());
-    } else {
-      setStatus("Completed");
-      setCountdownSeconds(0);
+    const handleBookmark = async (e) => {
+        e.preventDefault();
+        
+        const data = { contestId: contest._id, userId: authUser._id};
+        console.log("handleBookmark: data: ", data);
+        await addBookmark(data);
+    };
+    const handleRemoveBookmark = async (e) => {
+        e.preventDefault();
+        
+        const data = { contestId: contest._id, userId: authUser._id};
+        await removeBookmark(data);
     }
 
-    const countdownTimer = setInterval(() => {
-      const now = new Date();
-      if (((contestStartTime - now) / 1000).toFixed() === (5 * 60).toString()) {
-        new Notification(`${title} about to start in 5 minutes.`);
-      }
-      if (contestStartTime > now) {
-        setStatus("Upcoming");
-      } else if (contestStartTime <= now && now <= contestEndTime) {
-        setStatus("Ongoing");
-      } else {
-        setStatus("Completed");
-        clearInterval(countdownTimer);
-      }
-      setCountdownSeconds((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(countdownTimer);
-  }, [contestStartTime, contestEndTime, title]);
-
-  const handleAddToCalendar = (calendarType) => {
-    const startDate = contestStartTime
-      .toISOString()
-      .replace(/-|:|\.\d\d\d/g, "");
-    const endDate = contestEndTime
-      .toISOString()
-      .replace(/-|:|\.\d\d\d/g, "");
-
-    let calendarUrl;
-    switch (calendarType) {
-      case "google":
-        calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(
-          platform + " - " + title
-        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
-          "Find more info at " + url
-        )}&location=Online&sf=true&output=xml`;
-        break;
-      case "outlook":
-        calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
-          platform + " - " + title
-        )}&startdt=${contestStartTime.toISOString()}&enddt=${contestEndTime.toISOString()}&body=${encodeURIComponent(
-          "Find more info at " + url
-        )}&location=Online`;
-        break;
-      case "apple":
-        const icsContent = `
-          BEGIN:VCALENDAR
-          VERSION:2.0
-          BEGIN:VEVENT
-          DTSTART:${startDate}
-          DTEND:${endDate}
-          SUMMARY:${platform + " - " + title}
-          DESCRIPTION:Find more info at ${url}
-          LOCATION:Online
-          END:VEVENT
-          END:VCALENDAR
-        `.trim();
-        const blob = new Blob([icsContent], { type: "text/calendar" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${platform} contest ${title}.ics`;
-        link.click();
-        return;
-      default:
-        return;
-    }
-    window.open(calendarUrl, "_blank");
-  };
-
-  return (
-    (statusArray.length === 0 || statusArray.includes(status)) && (
-      <div className="w-full max-w-3xl mx-auto bg-black text-white border border-white rounded-lg p-4 mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <div className="text-lg font-semibold">{platform}</div>
-          <div
-            className={`px-2 py-1 rounded-md text-sm font-semibold ${bgColor[
-              status.toLowerCase()
-            ]}`}
-          >
-            {status}
-          </div>
-        </div>
-        <div className="text-xl font-bold mb-2">{title}</div>
-        <div className="flex items-center space-x-4 text-sm mb-2">
-          <div className="bg-gray-700 px-2 py-1 rounded-md">{start_time}</div>
-          {status !== "Completed" && (
-            <div className="bg-gray-700 px-2 py-1 rounded-md font-mono">
-              {formatCountdown(Number(countdownSeconds))}
-            </div>
-          )}
-        </div>
-        {/* Flex container for Calendar and Bookmark buttons */}
-        <div className="flex justify-between items-center mt-4">
-          <div className="relative">
-            <button
-              onClick={() => setCalendarDropdown(!calendarDropdown)}
-              className="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-1 px-3 rounded-md border border-gray-500"
-            >
-              Add to Calendar
-            </button>
-            {calendarDropdown && (
-              <div className="mt-2 absolute left-0 bg-gray-800 rounded-lg border border-gray-600 shadow-md overflow-hidden z-10">
-                {calendarOptions.map((option) => (
-                  <div
-                    key={option}
-                    onClick={() => handleAddToCalendar(option.toLowerCase())}
-                    className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-center"
-                  >
-                    {option}
-                  </div>
-                ))}
-              </div>
+    return (
+        <div className="bg-white shadow-md rounded-2xl p-4">
+            <h2 className="text-xl font-semibold text-gray-600 mb-2">{contest.title}</h2>
+            <p className="text-gray-600 mb-1">Platform: {contest.platform}</p>
+            <p className="text-gray-600 mb-1">Status: {contest.status}</p>
+            <p className="text-gray-600 mb-1">Start Time: {new Date(contest.rawStartTime).toLocaleString()}</p>
+            <p className="text-gray-600 mb-1">Duration: {Math.floor(contest.rawDuration / 3600000)} hrs</p>
+            <a href={contest.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                View Contest
+            </a>
+            {contest.solutionLink && (
+                <a href={contest.solutionLink} target="_blank" rel="noopener noreferrer" className="block text-green-500 hover:underline mt-2">
+                    View Solution
+                </a>
             )}
-          </div>
-          <button
-            onClick={handleBookmark}
-            className="cursor-pointer flex items-center space-x-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-1 px-3 rounded-md border border-purple-700"
-          >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z" />
-            </svg>
-            <span>Bookmark</span>
-          </button>
+            <button 
+                onClick={isBookmarked ? handleRemoveBookmark : handleBookmark} 
+                className={`mt-2 px-4 py-2 rounded-lg ${isBookmarked ? 'bg-red-400 hover:bg-red-500' : 'bg-yellow-400 hover:bg-yellow-500'} text-white`}
+            >
+                {isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
+            </button>
         </div>
-      </div>
-    )
-  );
+    );
 };
+
+export default ContestCards;

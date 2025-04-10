@@ -1,144 +1,78 @@
-import React, { useEffect, useState } from "react";
-import { useContestStore } from "../stores/useContestStore";
-import { ContestCard } from "./ContestCards";
+import React, { useEffect, useState } from 'react';
+import ContestCards from './ContestCards';
+import { useContestStore } from '../stores/useContestStore';
 
-export const ContestPage = () => {
-  const { fetchContests } = useContestStore();
-  const [contests, setContests] = useState([]);
-  const [Codechef, setCodechef] = useState(false);
-  const [Codeforces, setCodeforces] = useState(false);
-  const [Leetcode, setLeetcode] = useState(false);
-  const [filterArray, setFilterArray] = useState([]);
-  const [Upcoming, setUpcoming] = useState(false);
-  const [Ongoing, setOngoing] = useState(false);
-  const [Completed, setCompleted] = useState(false);
-  const [statusArray, setStatusArray] = useState([]);
-  const [bookmarked, setBookmarked] = useState(false);
+const ContestPage = () => {
+    const { allContests, fetchContests, isfetchingContests, bookmarkContest, isUpdating, triggerBookmark } = useContestStore();
 
-  const { bookmarkContest } = useContestStore();
+    useEffect(() => {
+        fetchContests();
+    }, [triggerBookmark]);
 
-  useEffect(() => {
-    fetchContests()
-      .then((contestsData) => {
-        console.log("Fetched Contests:", contestsData);
-        setContests(contestsData || []); 
-      })
-      .catch((error) => {
-        console.error("Error fetching contests:", error);
-        setContests([]);
-      });
-  }, []);
+    const [filterstate, setfilterstate] = useState(['upcoming']);
 
-  useEffect(() => {
-    let newFilterArray = [];
-    let newStatusArray = [];
+    const handleFilterChange = (newFilter) => {
+        setfilterstate((prevfilterstate) =>
+            prevfilterstate.includes(newFilter)
+                ? prevfilterstate.filter(filter => filter !== newFilter)
+                : [...prevfilterstate, newFilter]
+        );
+    };
+
+    const filteredContests = allContests.filter((contest) => {
+        const platformFilters = ['CodeChef', 'CodeForces', 'LeetCode'].filter(platform => filterstate.includes(platform));
+        const statusFilters = ['upcoming', 'finished'].filter(status => filterstate.includes(status));
     
-    if (Codechef) newFilterArray.push("CodeChef");
-    if (Codeforces) newFilterArray.push("Codeforces");
-    if (Leetcode) newFilterArray.push("LeetCode");
-    if (Upcoming) newStatusArray.push("Upcoming");
-    if (Ongoing) newStatusArray.push("Ongoing");
-    if (Completed) newStatusArray.push("Completed");
+        const platformMatch = platformFilters.length === 0 || platformFilters.some(platform => contest.platform.toLowerCase() === platform.toLowerCase());
+        const statusMatch = (filterstate.includes('upcoming') && contest.rawStartTime > Date.now()) ||
+            (filterstate.includes('finished') && contest.status === 'finished');
     
-    setFilterArray(newFilterArray);
-    setStatusArray(newStatusArray);
-  }, [Codechef, Codeforces, Leetcode, Upcoming, Ongoing, Completed]);
+        const bookmarkMatch = filterstate.includes('Bookmarks') && bookmarkContest.includes(contest._id);
+    
+        if (filterstate.includes('Bookmarks')) {
+            return bookmarkMatch;
+        }
+    
+        if (platformFilters.length && statusFilters.length) {
+            return platformMatch && statusMatch;
+        }
+    
+        return statusFilters.length ? statusMatch : platformMatch;
+    });
+    
 
-  console.log("Filter Array:", filterArray);
+    const filters = ['CodeChef', 'CodeForces', 'LeetCode', 'upcoming', 'finished', 'Bookmarks'];
 
-  const handleAllClick = () => {
-    setCodechef(false);
-    setCodeforces(false);
-    setLeetcode(false);
-    setUpcoming(false);
-    setOngoing(false);
-    setCompleted(false);
-    setFilterArray([]);
-    setStatusArray([]);
-    setBookmarked(false);
-  }
 
-  return (
-    <div>
-      <div className="flex justify-center space-x-4 my-4">
-        <div onClick={handleAllClick} className="cursor-pointer px-4 py-2 bg-gray-700 text-white rounded-lg">
-          All
-        </div>
+    if (isfetchingContests || isUpdating) {
+        return <h1> wait for a while...</h1>;
+    }
 
-        <div onClick={() => setCodechef(!Codechef)} className={`cursor-pointer px-4 py-2 rounded-lg ${Codechef ? "bg-blue-500 text-white" : "bg-gray-700 text-white"}`}>
-          Codechef
-        </div>
+    return (
+        <div className="p-6">
+            <h1 className="text-3xl font-semibold mb-4">Contest List</h1>
 
-        <div onClick={() => setCodeforces(!Codeforces)} className={`cursor-pointer px-4 py-2 rounded-lg ${Codeforces ? "bg-blue-500 text-white" : "bg-gray-700 text-white"}`}>
-          Codeforces
-        </div>
-
-        <div onClick={() => setLeetcode(!Leetcode)} className={`cursor-pointer px-4 py-2 rounded-lg ${Leetcode ? "bg-blue-500 text-white" : "bg-gray-700 text-white"}`}>
-          Leetcode
-        </div>
-
-        <div onClick={() => setOngoing(!Ongoing)} className={`cursor-pointer px-4 py-2 rounded-lg ${Ongoing ? "bg-green-500 text-white" : "bg-gray-700 text-white"}`}>
-          Ongoing
-        </div>
-
-        <div onClick={() => setUpcoming(!Upcoming)} className={`cursor-pointer px-4 py-2 rounded-lg ${Upcoming ? "bg-yellow-500 text-black" : "bg-gray-700 text-white"}`}>
-          Upcoming
-        </div>
-
-        <div onClick={() => setCompleted(!Completed)} className={`cursor-pointer px-4 py-2 rounded-lg ${Completed ? "bg-red-500 text-white" : "bg-gray-700 text-white"}`}>
-          Completed
-        </div>
-
-        {/* 🔹 Add Toggle Bookmark Button */}
-        <div onClick={() => setBookmarked(!bookmarked)} className="cursor-pointer px-4 py-2 bg-purple-500 text-white rounded-lg">
-          {bookmarked ? "Show All Contests" : "Show Bookmarks"}
-        </div>
-      </div>
-
-      {/* 🔹 Show Bookmarked Contests */}
-      {bookmarked ? (
-        bookmarkContest && bookmarkContest.length > 0 ? (
-          bookmarkContest.map((contest, idx) => (
-            <div key={idx}>
-              <ContestCard
-                title={contest.title}
-                platform={contest.platform}
-                url={contest.url}
-                start_time={contest.start_time}
-                raw_start_time={contest.raw_start_time}
-                raw_duration={contest.raw_duration}
-                reg_participants={contest.reg_participants}
-                duration={contest.duration}
-                statusArray={statusArray}
-                contest={contest}
-              />
+            {/* Filter Buttons */}
+            <div className="flex gap-4 mb-6">
+                {filters.map((item, index) => (
+                    <button
+                        key={index}
+                        onClick={() => handleFilterChange(item)}
+                        className={`px-4 py-2 rounded-full ${filterstate.includes(item) ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} hover:bg-blue-400 transition`}
+                    >
+                        {item}
+                    </button>
+                ))}
             </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-400 mt-4">No bookmarked contests available.</p>
-        )
-      ) : contests.length > 0 ? ( 
-        contests
-          .filter((contest) => filterArray.length === 0 || filterArray.includes(contest.platform))
-          .map((contest, idx) => (
-            <div key={idx}>
-              <ContestCard
-                title={contest.title}
-                platform={contest.platform}
-                url={contest.url}
-                start_time={contest.start_time}
-                raw_start_time={contest.raw_start_time}
-                raw_duration={contest.raw_duration}
-                reg_participants={contest.reg_participants}
-                duration={contest.duration}
-                statusArray={statusArray}
-                contest={contest}
-              />
+
+            {/* Contest Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {filteredContests.map((contest, index) => (
+                    <ContestCards key={index} contest={contest} isBookmarked={bookmarkContest.includes(contest._id)}  />
+                ))}
             </div>
-          ))
-      ) : (
-        <p className="text-center text-gray-400 mt-4">No contests available.</p>
-      )}
-    </div>
-  );
+        </div>
+    );
 };
+
+export default ContestPage;

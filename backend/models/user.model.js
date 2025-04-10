@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     codechefId: { type:String, required: true },
     codeforcesId: { type:String, required: true },
     leetcodeId: { type:String, required: true },
-    profilePic: { type: String, default: "null" },
+    profilePic: { type: String, default: null },
 
     totalLeetQuestions: { type: Number },
     easyLeetQuestions: { type: Number },
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     leetGlobalRanking: { type: Number },
     leetTotalParticipants: { type: Number },
     leetTopPercentage: { type: Number },
-    leetBadges: { type: Number },
+    // leetBadges: { type: Number },         //handle it later
 
     forcesRating: { type: Number },
     forcesRank: { type: String },
@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     chefContestCount: { type: Number },
     authProvider: {type: String, enum: ["local", "google", "otp"], required: true},
     otp: {type: Number},
+    bookmarkedContests: [ {type: mongoose.Schema.Types.ObjectId , ref: 'Contest'} ],
 }, {timestamps:true});
 
 const User = mongoose.model('User', userSchema);

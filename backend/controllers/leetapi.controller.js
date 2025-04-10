@@ -2,8 +2,6 @@ import axios from "axios";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core/core.cjs";
 
 export const leetDataFetch = async (username) => {
-  
-  console.log("INSIDE LEETAPI CONTROLLER");
 
   const query = `
     query getUserProfile($username: String!) {
@@ -41,7 +39,6 @@ export const leetDataFetch = async (username) => {
 
   const variables = { username : username };  
 
-  console.log("INSIDE TRY");
   const response = await axios.post(
     `https://leetcode.com/graphql`,
     { query, variables },
@@ -49,7 +46,6 @@ export const leetDataFetch = async (username) => {
   );
 
   const data = response.data.data;
-  console.log("API RESPONSE: ", data);
 
   const totalQuestions = {
 
@@ -130,40 +126,30 @@ export const leetCodeContestList = async () => {
       const currentTime = new Date();
       const contestsData = response.data.allContests;
 
-      contestsData.forEach((data) => {
+      for(const data of contestsData){
         const title = data.title;
         const url = `https://leetcode.com/contest/${data.titleSlug}`;
-        const startTimeUTC = new Date(data.startTime * 1000);
-        const startTimeIST = new Intl.DateTimeFormat("en-IN", {
-          timeZone: "Asia/Kolkata",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        }).format(startTimeUTC);
-        const endTimeUTC = new Date(startTimeUTC.getTime() + data.duration * 1000);
+        const start_time_millisecond = data.startTime * 1000;
+        const duration_time_millisecond = data.duration * 1000;
+        const current_time_millisecond = Date.now();
 
-        if (endTimeUTC <= currentTime) return;
-
-        const hours = Math.floor(data.duration / 3600);
-        const minutes = Math.floor((data.duration % 3600) / 60);
-        const durationFormatted = `${hours} hours ${minutes} minutes`;
+        if(current_time_millisecond>start_time_millisecond){
+          console.log(current_time_millisecond," , ",start_time_millisecond);
+          break;
+        }
 
         contests.push({
           platform: "LeetCode",
           title,
           url,
-          start_time: startTimeIST,
-          duration: durationFormatted,
-          raw_start_time: startTimeUTC,
-          raw_duration: data.duration, 
+          raw_start_time: start_time_millisecond,
+          raw_duration: duration_time_millisecond, 
         });
-      });
+
+      }
 
       return contests;
+
     } catch (error) {
       console.error("Error fetching contests:", error);
       return [];

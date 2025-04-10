@@ -3,6 +3,8 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { getAuth, signOut } from "firebase/auth";
 import io from "socket.io-client";
+import { useContestStore } from "./useContestStore.js";
+
 
 const BASE_URL = "http://localhost:5001";
 
@@ -23,6 +25,7 @@ export const useAuthStore = create(
     isLoggingIn: false,
     isCheckingAuth: false,
     isSendingOtp: false,
+    isWorking: false,
     onlineUserCount: 0,
     socket: null,
 
@@ -32,6 +35,8 @@ export const useAuthStore = create(
       try {
         const res = await axiosInstance.get("/auth/check");
         set({ authUser: res.data });
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
+        console.log("checkAuth authuser: ", get().authUser);    //for check
         get().connectSocket();
       } catch (error) {
         console.log("Error in checkAuth: ", error);
@@ -47,6 +52,7 @@ export const useAuthStore = create(
         const res = await axiosInstance.post("/auth/signup", data);
         set({ authUser: res.data });
         toast.success("Account Created Successfully");
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
         get().connectSocket();
       } catch (error) {
         set({ authUser: null });
@@ -62,7 +68,9 @@ export const useAuthStore = create(
       try {
         const res = await axiosInstance.post("/auth/login", data);
         set({ authUser: res.data });
+        console.log("Login auth user: ", get().authUser);    //for check
         toast.success("Logged in Successfully");
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
         get().connectSocket();
       } catch (error) {
         set({ authUser: null });
@@ -94,6 +102,34 @@ export const useAuthStore = create(
         toast.success("Logged Out Successfully");
       } catch (error) {
         toast.error(error.response.data.message);
+      }
+    },
+
+    updateProfile: async (data) => {
+      set({isWorking: true});
+      try{
+        const response = await axiosInstance.put("/auth/updateProfile", data);
+        set({authUser: response.data});
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
+        toast.success("Profile Updated Successfully");
+      }catch(error){
+        toast.error(error.response.data.message);
+      }finally{
+        set({isWorking: false});
+      }
+    },
+
+    refreshRatings: async (data) => {
+      set({isWorking: true});
+      try{
+        const response = await axiosInstance.post("/auth/refreshRatings", data);
+        set({authUser: response.data});
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
+        toast.success("Ratings Updated successfully.")
+      }catch(error){
+        toast.error(error.response.data.message);
+      }finally{
+        set({isWorking: false});
       }
     },
 

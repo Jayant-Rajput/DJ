@@ -3,7 +3,6 @@ import axios from "axios";
 export const forcesDataFetch = async (username) => {
   let userInfo = null;
   let contests = null;
-  console.log("INSIDE FORCES DATA FETCH");
 
   const response = await axios.get(
     `https://codeforces.com/api/user.info?handles=${username}&checkHistoricHandles=false`
@@ -56,45 +55,28 @@ export const forcesContestDataFetch = async () => {
   const contests = [];
 
   if (response.status === 200) {
-    contestData.forEach((data) => {
+    for (const data of contestData) {
       const title = data["name"];
       const url = `https://codeforces.com/contests/${data["id"]}`;
-      const start_time_timestamp = data["startTimeSeconds"];
-      const date = new Date(start_time_timestamp * 1000);
-      const start_date = date.toLocaleString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      });
-      const duration_timestamp = data["durationSeconds"];
-      const duration_ms = new Date(duration_timestamp * 1000);
-      const hours = duration_ms.getUTCHours().toString().padStart(2, "0");
-      const minutes = duration_ms.getUTCMinutes().toString().padStart(2, "0");
-      const duration = `${hours} hours ${minutes} minutes`;
-
-      const startDate = new Date(start_time_timestamp * 1000);
-      const endDate = new Date(startDate.getTime() + duration_timestamp * 1000);
-      const currentIST = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-      );
-      if (currentIST < endDate) {
-        contests.push({
+      const start_time_seconds = data["startTimeSeconds"];
+      const start_time_milliseconds = start_time_seconds * 1000;
+      const duration_seconds = data["durationSeconds"];
+      const duration_milliseconds = duration_seconds * 1000;
+      const phase = data["phase"];
+  
+      if (phase !== "BEFORE") break; // Stop iteration if phase is not "BEFORE" // for each loop me break nhi hota.
+  
+      contests.push({
           title,
           platform: "Codeforces",
           url,
-          start_time: start_date,
-          duration,
-          raw_start_time: date,
-          raw_duration: duration_timestamp, // in seconds
-        });
-      }
-    });
+          raw_start_time: start_time_milliseconds,
+          raw_duration: duration_milliseconds,
+      });
   }
+  
+  }
+
   return contests;
 };
  

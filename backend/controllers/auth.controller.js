@@ -3,12 +3,10 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";  
 import ApiError from "../constants.js/ApiError.js";
-import { scrapCodechefData } from "../webscrapping/scrapRating.js";  
-import { leetDataFetch } from "./leetapi.controller.js";
-import { forcesDataFetch } from "./forcesapi.controller.js";
 import nodemailer from "nodemailer";
 import dns from "dns";
 import axios from "axios";
+import { ratingsFetchKrDeBhai } from "../lib/utils.js";
 
 export const isDisposableEmail = async (email) => {
   const domain = email.split('@')[1];
@@ -29,8 +27,6 @@ export const checkMXRecords = async (email, callback) => {
 
 export const signup = async (req, res) => {
   const { fullname, email, password, branch, year, college, ccId, cfId, leetId } = req.body;
-
-  console.log("req.body received to backend : ", req.body);
 
   try {
 
@@ -64,33 +60,8 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    let chefRating = -1; let forcesRating = -1; let leetRating = -1; 
-    let chefStars = 'stars'; let chefTotalProblemSolved = -1; let chefContestCount = -1;
+    const updatedRatings = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
 
-    try{
-      const {currentRating, stars, contests, totalProblemsSolved} = await scrapCodechefData(ccId);
-      chefRating = currentRating;
-      chefStars = stars;
-      chefTotalProblemSolved = totalProblemsSolved;
-      chefContestCount = contests;
-    }catch(error){
-      console.log("Error in scraping codechef rating : ", error);
-    }
-
-    let updatedLeetData = null;
-    try{
-      updatedLeetData = await leetDataFetch(leetId);
-    }catch(error){
-      console.log("Error in fetching leet data : ", error);
-    }
-
-    let updatedForcesData = null
-    try{
-      updatedForcesData = await forcesDataFetch(cfId);
-      console.log("FORCES RATING: ", updatedForcesData.forcesRating);
-    }catch(error){
-      console.log("Error in fetching forces data : ", error);
-    }
 
     const newUser = new User({
       fullname,
@@ -102,33 +73,7 @@ export const signup = async (req, res) => {
       codechefId: ccId,
       codeforcesId: cfId,
       leetcodeId: leetId,
-      totalLeetQuestions: updatedLeetData.totalLeetQuestions,
-      easyLeetQuestions: updatedLeetData.easyLeetQuestions,
-      mediumLeetQuestions: updatedLeetData.mediumLeetQuestions,
-      hardLeetQuestions: updatedLeetData.hardLeetQuestions,
-      totalSolvedLeetQuestions: updatedLeetData.totalSolvedLeetQuestions,
-      easySolvedLeetQuestions: updatedLeetData.easySolvedLeetQuestions,
-      mediumSolvedLeetQuestions: updatedLeetData.mediumSolvedLeetQuestions,
-      hardSolvedLeetQuestions: updatedLeetData.hardSolvedLeetQuestions,
-      leetReputation: updatedLeetData.leetReputation,
-      leetRanking: updatedLeetData.leetRanking,
-      leetContestCount: updatedLeetData.leetContestCount,
-      leetRating: updatedLeetData.leetRating,
-      leetGlobalRanking: updatedLeetData.leetGlobalRanking,
-      leetTotalParticipants: updatedLeetData.leetTotalParticipants,
-      leetTopPercentage: updatedLeetData.leetTopPercentage,
-      leetBadges: updatedLeetData.leetBadges,
-      forcesRating: updatedForcesData.forcesRating,
-      forcesRank: updatedForcesData.forcesRank,
-      forcesMaxRating: updatedForcesData.forcesMaxRating,
-      forcesMaxRank: updatedForcesData.forcesMaxRank,
-      forcesContestCount: updatedForcesData.forcesContestCount,
-      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
-      forcesTotalProblemsolvedByRating: updatedForcesData.forcesTotalProblemsolvedByRating,
-      chefRating,
-      chefStars,
-      chefTotalProblemSolved,
-      chefContestCount,
+      ...updatedRatings,
       authProvider: "local",
     });
 
@@ -182,23 +127,60 @@ export const logout = (req, res) => {
   }
 };
 
-export const updateProfile = async (req, res) => {
-  try {
-    const { profilePic } = req.body;
-    const userId = req.user._id;
+export const refreshRating = async (req, res) => {
+  try{
+    const {objId, leetId, ccId, cfId} = req.body;
 
-    if (!profilePic) {
-      return res.status(400).json({ message: "Profile pic is required" });
-    }
+    const updatedData = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
 
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { profilePic: uploadResponse.secure_url },
-      { new: true }
+    await User.updateOne(
+      {_id: objId},
+      {$set : updatedData}
     );
 
-    res.status(200).json(updatedUser);
+    const updatedUser = await User.findById(objId).lean();
+
+    if(updatedUser){
+      res.status(201).json(updatedUser);
+    }
+    else{
+      res.status(500).json({message: "bhai , user not found"});
+    }
+
+  }catch(error){
+    console.log("Error in refreshRating controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export const updateProfile = async (req, res) => {
+  try {
+    const {objId, fullname, college, year, ccId, cfId, leetId} = req.body;
+
+    const ratingsUpdated = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
+
+    await User.updateOne(
+      {_id: objId},
+      {$set: {
+        fullname,
+        college,
+        year,
+        codechefId: ccId,
+        codeforcesId: cfId,
+        leetcodeId: leetId,
+        ...ratingsUpdated
+      }}
+    )
+
+    const updatedUser = await User.findById(objId).lean();
+
+    if(updatedUser){
+      res.status(201).json(updatedUser);
+    }
+    else{
+      res.status(500).json({message: "bhai , user not found"});
+    }
+
   } catch (error) {
     console.log("error in update profile:", error);
     res.status(500).json({ message: "Internal server error" });

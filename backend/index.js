@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import cron from 'node-cron';
 
 import { connectDB } from './lib/db.js';
 
@@ -11,6 +12,8 @@ import axios from 'axios'
 import blogRoutes from './routes/blog.route.js';
 import messageRoutes from './routes/message.route.js';
 import contestRoutes from "./routes/contest.route.js";
+
+import { fetchDataAndUpdateDB } from './lib/utils.js';
 
 import {app, server} from './lib/socket.js';
 
@@ -33,6 +36,16 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/contest", contestRoutes);
+
+cron.schedule('0 */2 * * *' , async () => {      //run in every 2 hour
+    try {
+        console.log('Inside cron job try block');
+        await fetchDataAndUpdateDB();
+        console.log('Update completed');
+    } catch (error) {
+        console.error('Error in cron job:', error);
+    }
+});
 
 server.listen(PORT, () => {
     console.log("server is running on PORT: ", PORT);
