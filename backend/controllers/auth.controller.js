@@ -233,33 +233,8 @@ export const oauthUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    let chefRating = -1; let forcesRating = -1; let leetRating = -1; 
-    let chefStars = 'stars'; let chefTotalProblemSolved = -1; let chefContestCount = -1;
-
-    try{
-      const {currentRating, stars, contests, totalProblemsSolved} = await scrapCodechefData(ccId);
-      chefRating = currentRating;
-      chefStars = stars;
-      chefTotalProblemSolved = totalProblemsSolved;
-      chefContestCount = contests;
-    }catch(error){
-      console.log("Error in scraping codechef rating : ", error);
-    }
-
-    let updatedLeetData = null;
-    try{
-      updatedLeetData = await leetDataFetch(leetId);
-    }catch(error){
-      console.log("Error in fetching leet data : ", error);
-    }
-
-    let updatedForcesData = null
-    try{
-      updatedForcesData = await forcesDataFetch(cfId);
-      console.log("FORCES RATING: ", updatedForcesData.forcesRating);
-    }catch(error){
-      console.log("Error in fetching forces data : ", error);
-    }
+    
+    const updatedRatings = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
 
     const newUser = new User({
       fullname,
@@ -271,33 +246,7 @@ export const oauthUser = async (req, res) => {
       codechefId: ccId,
       codeforcesId: cfId,
       leetcodeId: leetId,
-      totalLeetQuestions: updatedLeetData.totalLeetQuestions,
-      easyLeetQuestions: updatedLeetData.easyLeetQuestions,
-      mediumLeetQuestions: updatedLeetData.mediumLeetQuestions,
-      hardLeetQuestions: updatedLeetData.hardLeetQuestions,
-      totalSolvedLeetQuestions: updatedLeetData.totalSolvedLeetQuestions,
-      easySolvedLeetQuestions: updatedLeetData.easySolvedLeetQuestions,
-      mediumSolvedLeetQuestions: updatedLeetData.mediumSolvedLeetQuestions,
-      hardSolvedLeetQuestions: updatedLeetData.hardSolvedLeetQuestions,
-      leetReputation: updatedLeetData.leetReputation,
-      leetRanking: updatedLeetData.leetRanking,
-      leetContestCount: updatedLeetData.leetContestCount,
-      leetRating: updatedLeetData.leetRating,
-      leetGlobalRanking: updatedLeetData.leetGlobalRanking,
-      leetTotalParticipants: updatedLeetData.leetTotalParticipants,
-      leetTopPercentage: updatedLeetData.leetTopPercentage,
-      leetBadges: updatedLeetData.leetBadges,
-      forcesRating: updatedForcesData.forcesRating,
-      forcesRank: updatedForcesData.forcesRank,
-      forcesMaxRating: updatedForcesData.forcesMaxRating,
-      forcesMaxRank: updatedForcesData.forcesMaxRank,
-      forcesContestCount: updatedForcesData.forcesContestCount,
-      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
-      forcesTotalProblemsolvedByRating: updatedForcesData.forcesTotalProblemsolvedByRating,
-      chefRating,
-      chefStars,
-      chefTotalProblemSolved,
-      chefContestCount,
+      ...updatedRatings,
       authProvider
     });
 
