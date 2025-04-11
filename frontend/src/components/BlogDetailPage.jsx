@@ -15,7 +15,7 @@ const BlogDetails = () => {
   if(isFetchingBlog || !currentBlog){
     return <h1>Please wait for a while</h1>
   }
-
+  
   return (
     <div className="max-w-2xl mx-auto p-4">
       <img src={currentBlog.coverImage !== "null" ? currentBlog.coverImage : "/avatar.png"} alt="Cover" className="w-full h-64 object-cover rounded-md" />

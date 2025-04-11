@@ -36,6 +36,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/contest", contestRoutes);
+app.use(express.static("public"));
 
 cron.schedule('0 */2 * * *' , async () => {      //run in every 2 hour
     try {
