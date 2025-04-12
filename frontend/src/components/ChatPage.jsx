@@ -7,7 +7,7 @@ import MessageInput from './MessageInput.jsx';
 
 const ChatPage = () => {
   const {isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
-  const { authUser,checkAuth } = useAuthStore();
+  const { authUser,checkAuth, onlineUserCount } = useAuthStore();
   // console.log(authUser);
 
   const messageEndRef = useRef(null);
@@ -33,12 +33,13 @@ const ChatPage = () => {
 
   return (
     <div>
+      <div>{`online user count : ${onlineUserCount} `}</div>
      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
       {messages.filter((eachmsg) => eachmsg.senderId !== null)
         .map((eachmsg) => (
         <div
               key={eachmsg._id}
-              className={`chat ${eachmsg.senderId._id === authUser._id ? "chat-end" : "chat-start"}`}
+              className={`chat ${eachmsg.senderId._id === (authUser._id || (authUser._doc && authUser._doc._id)) ? "chat-end" : "chat-start"}`}
               ref={messageEndRef}
           >
             <div className=" chat-image avatar">

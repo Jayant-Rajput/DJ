@@ -101,7 +101,8 @@ export const useAuthStore = create(
         get().disconnectSocket();
         toast.success("Logged Out Successfully");
       } catch (error) {
-        toast.error(error.response.data.message);
+        const message = error?.response?.data?.message|| error ?.message || "something went wrong";
+        toast.error(message);
       }
     },
 
@@ -133,23 +134,41 @@ export const useAuthStore = create(
       }
     },
 
-    connectSocket: () => {
+    connectSocket: async () => {
       const { authUser } = get();
-      if (!authUser || get().socket?.connected) return;
-
-      const socket = io(BASE_URL);
+      
+      if (!authUser || checkConnection) return;
+    
+      // Get the user ID safely, checking both direct and _doc paths
+      const userId = authUser._id || (authUser._doc && authUser._doc._id);
+      
+      if (!userId) {
+        console.error("Unable to find user ID in authUser object:", authUser);
+        return;
+      }
+      
+      // Important: Set autoConnect to false to prevent automatic connection
+      const socket = io(BASE_URL, {
+        autoConnect: false,
+        query: {
+          id: userId, // Use the actual user ID
+        },
+      });
+      
+      // Now manually connect
       socket.connect();
-
       set({ socket: socket });
+      
+      console.log(get().socket.connected);
       console.log("SOCKET AFTER CONNECTION: ", get().socket);
-
+    
       socket.on("getOnlineUserCount", (cnt) => {
         set({ onlineUserCount: cnt });
       });
     },
 
     disconnectSocket: () => {
-      if (get().socket?.connected) get().socket().disconnect();
+      if (get().socket?.connected) get().socket.disconnect();
     },
 
     oAuthLogin: async (user, navigate) => {
