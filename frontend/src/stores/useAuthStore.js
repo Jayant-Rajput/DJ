@@ -137,7 +137,7 @@ export const useAuthStore = create(
     connectSocket: async () => {
       const { authUser } = get();
       
-      if (!authUser || checkConnection) return;
+      if (!authUser || get().socket?.connected) return;
     
       // Get the user ID safely, checking both direct and _doc paths
       const userId = authUser._id || (authUser._doc && authUser._doc._id);

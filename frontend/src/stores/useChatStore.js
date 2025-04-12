@@ -23,6 +23,7 @@ export const useChatStore = create( (set, get) => ({
     sendMessage: async (msgData) => {
         const {messages} = get();
         try{
+            console.log("hola", msgData);
             const response = await axiosInstance.post("/messages/send", msgData);
             console.log("Response: ", response);
             set({messages: [...messages, response.data] });

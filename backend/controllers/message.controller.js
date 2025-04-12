@@ -1,5 +1,6 @@
 import Message from "../models/message.model.js"
 import { io } from "../lib/socket.js";
+import cloudinary from  "../lib/cloudinary.js";
 
 
 export const getMessages = async(req, res) => {
@@ -14,17 +15,30 @@ export const getMessages = async(req, res) => {
 
 export const sendMessage = async(req,res) => {
     try{
-        const { text } = req.body;
+        const { text, image } = req.body;
         const senderId = req.user._id;
+        console.log(text);
+        let imageUrl;
+        if(image){
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageUrl = uploadResponse.secure_url;
+        }
 
         const newMessage = new Message({
             senderId,
             text,
+            image: imageUrl,
         });
 
         await newMessage.save();
 
-        const recentSavedMsg = await Message.findOne({senderId, text}).populate("senderId","fullname profilePic");
+        const recentSavedMsg = await Message.findOne({
+            senderId,
+            text,
+            image: imageUrl,
+          }).populate("senderId", "fullname profilePic");
+          
+        console.log(recentSavedMsg);
 
         io.emit("newMessage",recentSavedMsg);
 

@@ -17,6 +17,8 @@ import {
 const ProfilePage = () => {
   const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
 
+  console.log(authUser.college);
+
   const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -24,9 +26,9 @@ const ProfilePage = () => {
     fullname: authUser.fullname || "",
     college: authUser.college || "",
     year: authUser.year || "",  
-    ccId: authUser.codechefId || "",
-    cfId: authUser.codeforcesId || "",
-    leetId: authUser.leetcodeId || "",
+    ccId: authUser.codechefId || (authUser._doc && authUser._doc.codechefId) || "",
+    cfId: authUser.codeforcesId || (authUser._doc && authUser._doc.codeforcesId) ||"",
+    leetId: authUser.leetcodeId || (authUser._doc && authUser._doc.leetcodeId) ||"",
   });
 
   const handleFormDataChange = (e) => {

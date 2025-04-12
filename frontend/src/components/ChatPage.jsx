@@ -8,7 +8,7 @@ import MessageInput from './MessageInput.jsx';
 const ChatPage = () => {
   const {isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
   const { authUser,checkAuth, onlineUserCount } = useAuthStore();
-  // console.log(authUser);
+  // console.log(messages);
 
   const messageEndRef = useRef(null);
 
@@ -61,13 +61,13 @@ const ChatPage = () => {
               </time>
             </div>
             <div className="chat-bubble flex flex-col">
-              {/*{message.image && (
+              {eachmsg.image && (
                 <img
-                  src={message.image}
+                  src={eachmsg.image}
                   alt="Attachment"
                   className="sm:max-w-[200px] rounded-md mb-2"
                 />
-              )} */}
+              )}
               {eachmsg.text && <p>{eachmsg.text}</p>}
             </div>
           </div>
