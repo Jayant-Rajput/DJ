@@ -208,7 +208,8 @@ export const oauthLoginUser = async(req,res) => {
     
     generateToken(curr_user._id, res);
   
-    const { password : userPassword, ...userWithoutPassword } = curr_user;    
+    const { password : userPassword, ...userWithoutPassword } = curr_user.toObject();  
+    console.log("Hola amigo", curr_user);  
     res.status(200).send(userWithoutPassword);
 
   } catch (error) {
