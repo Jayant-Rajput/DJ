@@ -38,7 +38,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/contest", contestRoutes);
 app.use(express.static("public"));
 
-cron.schedule('0 */2 * * *' , async () => {      //run in every 2 hour
+cron.schedule('0*/2 * * * *' , async () => {      //run in every 2 min
     try {
         console.log('Inside cron job try block');
         await fetchDataAndUpdateDB();

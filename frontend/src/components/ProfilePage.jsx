@@ -136,7 +136,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black">
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black mt-20">
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">

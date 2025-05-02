@@ -7,3 +7,6 @@
         font-weight: bold;
     }
 } */
+canvas{
+    height: 100vh !important;
+}

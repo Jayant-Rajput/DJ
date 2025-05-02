@@ -18,6 +18,10 @@ import ChatPage from './components/ChatPage';
 import LogoutPage from './components/LogoutPage';
 import ContestPage from './components/ContestPage.jsx';
 import YtLinkAddPage from './components/YtLinkAddPage.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
+import Timepass from './components/Timepass.jsx';
+import ModelChk from './components/ModelChk.jsx';
+import Earth from './components/Earth.jsx';
 
 function App() {
 
@@ -49,6 +53,12 @@ function App() {
           <Route path="/chat" element={ authUser ? <ChatPage /> : <Navigate to="/login" /> } />
           <Route path="/contest-list" element ={<ContestPage/>} />
           <Route path="/addYtLink" element={ <YtLinkAddPage /> } />
+          <Route path="/timepass" element= { <Timepass />} />
+          <Route path="/modelchk" element= { <ModelChk />} />
+          <Route path="/earthchk" element= { <Earth />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+          
         </Routes>
 
         <Toaster />
