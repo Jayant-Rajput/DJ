@@ -41,6 +41,7 @@ export const useBlogStore = create ( (set,get) => ({
         try{
             console.log("Inside getBlog");
             const response = await axiosInstance.get(`/blog/${blogid}`);
+            console.log("Hola");
             set({currentBlog: response.data});
         }catch(error){
             toast.error(error.response.data.message);

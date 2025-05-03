@@ -11,3 +11,7 @@
   width: 0;
   animation: typing 2s steps(20, end) forwards;
 }
+
+canvas{
+    height: 100vh !important;
+}

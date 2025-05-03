@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, Suspense } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import {
   BarChart,
@@ -14,17 +14,48 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useChatStore } from "../stores/useChatStore";
+import { CheckCircle } from 'lucide-react';
+import { Canvas } from '@react-three/fiber'
+import {OrbitControls, Environment, PresentationControls, ContactShadows } from '@react-three/drei';
+import { Developer } from './Developer.jsx';
 
 const ProfilePage = () => {
 
-  const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
-  
+  const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
+  const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
+
   useEffect(() => {
     subscribeToMessage();
     return () => unsubscribeToMessage();
   }, [messages]);
 
-  const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
+
+
+  const [progress, setProgress] = useState(100);
+  const duration = 4500;
+
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const endTime = startTime + duration;
+    setProgress(100);
+
+    const progressInterval = setInterval(() => {
+      const now = Date.now();
+      const remaining = endTime - now;
+      const percent = (remaining / duration) * 100;
+      console.log(percent);
+      if (percent <= 0) {
+        clearInterval(progressInterval);
+        setProgress(0);
+      } else {
+        setProgress(percent);
+      }
+    }, 100);
+
+    return () => clearInterval(progressInterval);
+  }, [isWorking]);
+
 
   console.log(authUser.college);
 
@@ -34,10 +65,10 @@ const ProfilePage = () => {
     objId: authUser._id,
     fullname: authUser.fullname || "",
     college: authUser.college || "",
-    year: authUser.year || "",  
+    year: authUser.year || "",
     ccId: authUser.codechefId || "",
-    cfId: authUser.codeforcesId ||"",
-    leetId: authUser.leetcodeId||"",
+    cfId: authUser.codeforcesId || "",
+    leetId: authUser.leetcodeId || "",
   });
 
   const handleFormDataChange = (e) => {
@@ -140,12 +171,42 @@ const ProfilePage = () => {
   const chefColor = getRatingColor("codechef", authUser.chefRating);
   const leetColor = getRatingColor("leetcode", authUser.leetRating);
 
-  if (isWorking) {
-    return <h1>Thoda wait kr le bhai.</h1>;
-  }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black">
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black mt-20">
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+      >
+        <source src="/bgvideo2.mp4" type="video/mp4" />
+      </video>
+
+      {
+        isWorking &&
+        (
+          <div className="fixed bottom-4 left-4 bg-black text-white rounded shadow-lg px-4 py-3 flex flex-col">
+            <div className="flex items-center gap-2 mb-1">
+              <CheckCircle className="text-green-500" size={20} />
+              <span>Updating...</span>
+            </div>
+            <div className="bg-gray-800 h-1 w-full rounded-full">
+              <div
+                className="bg-green-500 h-1 rounded-full transition-all duration-100 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )
+      }
+
+
+
+
+
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
@@ -219,48 +280,58 @@ const ProfilePage = () => {
         </div>
       )}
       {/* Header with Profile Info */}
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-6">
-        <img
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8">
+      <img
           src={authUser.profilePic || "/avatar.png"}
           alt="Profile"
           className="w-32 h-32 rounded-full border shadow-md object-cover"
         />
+
+        {/* Profile Information */}
         <div className="flex-1">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold">{authUser.fullname}</h1>
+              <h1 className="text-3xl font-bold text-gray-800">{authUser.fullname}</h1>
               <p className="text-gray-600 mt-1">{authUser.email}</p>
             </div>
             <div className="mt-3 md:mt-0 flex flex-wrap gap-2">
               <button
-                className="bg-blue-500 text-white hover:bg-blue-950 px-1 rounded-full border-b-black"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md font-medium transition-colors"
                 onClick={() => setShowForm(true)}
               >
                 Update Profile
               </button>
               <button
-                className="bg-blue-500 text-white hover:bg-blue-950 px-1 rounded-full border-b-black"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-md font-medium transition-colors"
                 onClick={handleRefreshRatings}
               >
-                Refresh
+                Refresh Ratings
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-gray-500 text-sm">College</p>
-              <p className="font-medium">{authUser.college}</p>
+          {/* User details with icons */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
+              <div>
+                <p className="text-gray-500 text-sm font-medium">College</p>
+                <p className="font-semibold text-gray-800">{authUser.college || "Not specified"}</p>
+              </div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-gray-500 text-sm">Branch</p>
-              <p className="font-medium">
-                {authUser.branch === "1" ? "ECE" : "CSE"}
-              </p>
+            <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
+              <div>
+                <p className="text-gray-500 text-sm font-medium">Branch</p>
+                <p className="font-semibold text-gray-800">
+                  {authUser.branch === "1" ? "ECE" : "CSE"}
+                </p>
+              </div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-gray-500 text-sm">Year</p>
-              <p className="font-medium">{authUser.year}</p>
+            <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
+              
+              <div>
+                <p className="text-gray-500 text-sm font-medium">Year</p>
+                <p className="font-semibold text-gray-800">{authUser.year || "Not specified"}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -622,7 +693,7 @@ const ProfilePage = () => {
                 {Math.round(
                   (authUser.totalSolvedLeetQuestions /
                     authUser.totalLeetQuestions) *
-                    100
+                  100
                 )}
                 %
               </p>
@@ -658,16 +729,16 @@ const ProfilePage = () => {
                 {parseInt(authUser.chefStars) < 2
                   ? "Become 2* on CC"
                   : parseInt(authUser.chefStars) < 3
-                  ? "Become 3* on CC"
-                  : parseInt(authUser.chefStars) < 4
-                  ? "Become 4* on CC"
-                  : parseInt(authUser.chefStars) < 5
-                  ? "Become 5* on CC"
-                  : parseInt(authUser.chefStars) < 6
-                  ? "Become 6* on CC"
-                  : parseInt(authUser.chefStars) < 7
-                  ? "Become 7* on CC"
-                  : "You're already a legend!!!"}
+                    ? "Become 3* on CC"
+                    : parseInt(authUser.chefStars) < 4
+                      ? "Become 4* on CC"
+                      : parseInt(authUser.chefStars) < 5
+                        ? "Become 5* on CC"
+                        : parseInt(authUser.chefStars) < 6
+                          ? "Become 6* on CC"
+                          : parseInt(authUser.chefStars) < 7
+                            ? "Become 7* on CC"
+                            : "You're already a legend!!!"}
               </p>
               <div className="mt-2 text-sm text-amber-700">
                 <p>Your next achievement target</p>
@@ -683,16 +754,16 @@ const ProfilePage = () => {
                 {authUser.forcesRating < 1200
                   ? "Reach Pupil on CF"
                   : authUser.forcesRating < 1400
-                  ? "Reach Specialist on CF"
-                  : authUser.forcesRating < 1600
-                  ? "Reach Expert on CF"
-                  : authUser.forcesRating < 1900
-                  ? "Reach Candidate Master on CF"
-                  : authUser.chefStars < 5
-                  ? "Reach 5★ on CodeChef"
-                  : authUser.leetTopPercentage > 5
-                  ? "Top 5% on LeetCode"
-                  : "Grandmaster Status"}
+                    ? "Reach Specialist on CF"
+                    : authUser.forcesRating < 1600
+                      ? "Reach Expert on CF"
+                      : authUser.forcesRating < 1900
+                        ? "Reach Candidate Master on CF"
+                        : authUser.chefStars < 5
+                          ? "Reach 5★ on CodeChef"
+                          : authUser.leetTopPercentage > 5
+                            ? "Top 5% on LeetCode"
+                            : "Grandmaster Status"}
               </p>
               <div className="mt-2 text-sm text-teal-700">
                 <p>Your next achievement target</p>

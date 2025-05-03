@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useFirebase } from "../context Api/Firebase.jsx";
@@ -18,7 +18,7 @@ const Signin = () => {
     OTP: "",
   });
 
-  const { login, isLoggingIn, oAuthLogin, loginWithOTP, generateOTP,isSendingOtp } = useAuthStore();
+  const { login, isLoggingIn, oAuthLogin, loginWithOTP, generateOTP, isSendingOtp } = useAuthStore();
 
 
   const handleChange = (e) => {
@@ -26,20 +26,20 @@ const Signin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     await login(formData);
     navigate("/");
   }
 
-  const handleOTP = async(e) => {
+  const handleOTP = async (e) => {
     e.preventDefault();
     console.log(formData.OTP);
     await loginWithOTP(formData);
     navigate("/");
   }
 
-  const genOTP = async(e) => {
+  const genOTP = async (e) => {
     e.preventDefault();
     await generateOTP(formData);
     setOtp(true);
@@ -49,15 +49,15 @@ const Signin = () => {
     await forgotPassword();
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     onAuthStateChanged(firebase.firebaseAuth, (user) => {
-        if(user){
-            setUser(user);
-        }else{
-            setUser(null);
-        }
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     })
-  },[onAuthStateChanged])
+  }, [onAuthStateChanged])
 
   // const firebaseAuthentication = async (user) => {
   //   const response = await fetch("http://localhost:5001/api/auth/oauthlogin", {
@@ -90,15 +90,27 @@ const Signin = () => {
     }
   }, [user, navigate]);
 
-  if(isLoggingIn){
+  if (isLoggingIn) {
     return <h1>Loggin In...</h1>
   }
-  if(isSendingOtp){
+  if (isSendingOtp) {
     return <h1>Ruk ja bhai tereko ek mail bhejta hu</h1>
   }
 
   return !genOtpForm ? (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 text-black">
+    <div className="flex justify-center items-center min-h-screen text-black">
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+      >
+        <source src="/bgvideo2.mp4" type="video/mp4" />
+      </video>
+
+
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
           Sign In
@@ -120,7 +132,7 @@ const Signin = () => {
               required
             />
           </div>
-  
+
           {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -137,7 +149,7 @@ const Signin = () => {
               required
             />
           </div>
-  
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -156,7 +168,7 @@ const Signin = () => {
             Forgot Password?
           </button>
         </div>
-  
+
         {/* Social Login Buttons */}
         <div className="mt-4 space-y-3">
           <button
@@ -165,14 +177,14 @@ const Signin = () => {
           >
             <FaGoogle className="mr-2" /> Sign in with Google
           </button>
-  
+
           <button
             onClick={() => setgenOtpForm(true)}
             className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-100"
           >
             Sign in with OTP
           </button>
-  
+
           <button
             onClick={() => firebase.signInWithGithub()}
             className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-100"
@@ -188,7 +200,7 @@ const Signin = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
           Enter Details
         </h2>
-  
+
         <form onSubmit={genOTP} className="space-y-4">
           {/* Email Input */}
           <div>
@@ -206,7 +218,7 @@ const Signin = () => {
               required
             />
           </div>
-  
+
           {/* Submit OTP Request */}
           {!otp && <button
             type="submit"
@@ -215,7 +227,7 @@ const Signin = () => {
             Get OTP
           </button>}
         </form>
-  
+
         {/* OTP Verification Form */}
         {otp && (
           <form onSubmit={handleOTP} className="space-y-4 mt-4">
@@ -235,7 +247,7 @@ const Signin = () => {
                 required
               />
             </div>
-  
+
             {/* Verify OTP Button */}
             <button
               type="submit"
@@ -245,7 +257,7 @@ const Signin = () => {
             </button>
           </form>
         )}
-  
+
         {/* Go back to Sign In */}
         <button
           onClick={() => setgenOtpForm(false)}
@@ -256,8 +268,8 @@ const Signin = () => {
       </div>
     </div>
   );
-  
-  
+
+
 };
 
 export default Signin;

@@ -110,7 +110,7 @@ const MultiStepForm = () => {
   }
 
   return (
-    <div className="flex flex-col items-center p-6 border rounded-lg shadow-lg bg-white max-w-lg mx-auto mt-10 text-black">
+    <div className="flex flex-col items-center p-6 border rounded-lg shadow-lg bg-white max-w-lg mx-auto mt-50 text-black mb-30">
       <h2 className="text-xl font-bold mb-4 text-blue-600">{steps[step].label}</h2>
       {steps[step].content}
       <div className="mt-6 flex justify-between w-full">

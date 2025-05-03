@@ -9,7 +9,7 @@ import HomePage from './components/HomePage'
 import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import ProfilePage from './components/ProfilePage';
-import Contact from './components/Contact';
+import Contact from './components/Contact.jsx';
 import MultiStepForm from "./components/MultiStepForm.jsx";
 import CreateBlogPage from './components/CreateBlogPage';
 import AllBlogsPage from './components/AllBlogsPage';
@@ -18,7 +18,12 @@ import ChatPage from './components/ChatPage';
 import LogoutPage from './components/LogoutPage';
 import ContestPage from './components/ContestPage.jsx';
 import YtLinkAddPage from './components/YtLinkAddPage.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
+import Timepass from './components/Timepass.jsx';
+import ModelChk from './components/ModelChk.jsx';
+import Earth from './components/Earth.jsx';
 import Preloader from "./components/Preloader.jsx";
+import Footer from './components/Footer.jsx';
 
 function App() {
 
@@ -65,7 +70,7 @@ function App() {
           <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/logout" element={authUser ? <LogoutPage /> : <Navigate to="/" />} />
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
-          <Route path='/contact' element={ authUser ? <Contact /> : <Navigate to="/login" />} />
+          <Route path='/contact' element={<Contact />} />
           <Route path='/oauth-form' element={fullname ? <MultiStepForm /> : <Navigate to="/login" /> } />
           <Route path="/createBlog" element={ <CreateBlogPage /> } />
           <Route path="/blogs" element={ <AllBlogsPage /> } />
@@ -73,7 +78,15 @@ function App() {
           <Route path="/chat" element={ authUser ? <ChatPage /> : <Navigate to="/login" /> } />
           <Route path="/contest-list" element ={<ContestPage/>} />
           <Route path="/addYtLink" element={ <YtLinkAddPage /> } />
+          <Route path="/timepass" element= { <Timepass />} />
+          <Route path="/modelchk" element= { <ModelChk />} />
+          <Route path="/earthchk" element= { <Earth />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+          
         </Routes>
+
+        <Footer />
 
         <Toaster />
       </div>

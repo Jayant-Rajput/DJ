@@ -9,12 +9,14 @@ const ChatPage = () => {
   const { isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage, unreadMessages } = useChatStore();
   const { authUser, checkAuth, onlineUserCount } = useAuthStore();
   const messageEndRef = useRef(null);
+
   useEffect(() => {
     const fetchMessages = async () => {
       await getMessages();
-    }
+    };
     fetchMessages();
   }, []);
+
   useEffect(() => {
     subscribeToMessage();
     if (messageEndRef.current && messages) {
@@ -43,8 +45,19 @@ const ChatPage = () => {
   const messagesByDate = groupMessagesByDate(validMessages);
   const dates = Object.keys(messagesByDate);
   return (
-    <div>
-      <div className="bg-blue-100 p-3 rounded-lg shadow-sm mb-4 flex items-center justify-center text-blue-800 font-medium">
+    <div className="relative w-full">
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+      >
+        <source src="/bgvideo2.mp4" type="video/mp4" />
+      </video>
+
+      <div className="bg-blue-100 p-3 rounded-lg shadow-sm mb-4 flex items-center justify-center text-blue-800 font-medium mt-20">
         <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
         <span>{`Online users: ${onlineUserCount}`}</span>
       </div>
