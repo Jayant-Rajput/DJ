@@ -1,6 +1,7 @@
 import Message from "../models/message.model.js"
 import { io } from "../lib/socket.js";
 import cloudinary from  "../lib/cloudinary.js";
+import User from "../models/user.model.js";
 
 
 export const getMessages = async(req, res) => {
@@ -13,9 +14,29 @@ export const getMessages = async(req, res) => {
     }
 }
 
+const extractTags = (text) => {
+    const regex = /@(\w+)/g;
+    let match;
+    const tags = [];
+    while ((match = regex.exec(text)) !== null) {
+      tags.push(match[1]);
+    }
+    return tags;
+};
+
 export const sendMessage = async(req,res) => {
     try{
         const { text, image } = req.body;
+
+        const taggedUsernames = extractTags(text);
+        let taggedUserIds = [];
+
+        if(taggedUsernames.length){
+            const users = await User.find({fullname: { $in: taggedUsernames }});
+            taggedUserIds = users.map(u => u._id);
+        }
+
+
         const senderId = req.user._id;
         console.log(text);
         let imageUrl;
@@ -38,14 +59,31 @@ export const sendMessage = async(req,res) => {
             image: imageUrl,
           }).populate("senderId", "fullname profilePic");
           
-        console.log(recentSavedMsg);
+        console.log(taggedUserIds);
 
-        io.emit("newMessage",recentSavedMsg);
+        const outgoingMessages = {
+            ...recentSavedMsg.toObject(),
+            taggedUserIds
+        }
+
+        console.log(outgoingMessages);
+
+        io.emit("newMessage",outgoingMessages);
 
         res.status(201).json(recentSavedMsg);   
 
     }catch(error){
         console.log("ERROR in sendMessage controller: ", error);
         res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
+export const getUsers = async(req, res) => {
+    try {
+        const users = await User.find({}, "id, fullname");
+        res.json(users);
+    } catch (error) {
+        console.log("Error fetching users", error);
+        res.status(500).json({message: "Error in fetching all users"});
     }
 }

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import {
   BarChart,
@@ -13,8 +13,17 @@ import {
   Cell,
   ResponsiveContainer,
 } from "recharts";
+import { useChatStore } from "../stores/useChatStore";
 
 const ProfilePage = () => {
+
+  const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
+  
+  useEffect(() => {
+    subscribeToMessage();
+    return () => unsubscribeToMessage();
+  }, [messages]);
+
   const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
 
   console.log(authUser.college);
@@ -26,9 +35,9 @@ const ProfilePage = () => {
     fullname: authUser.fullname || "",
     college: authUser.college || "",
     year: authUser.year || "",  
-    ccId: authUser.codechefId || (authUser._doc && authUser._doc.codechefId) || "",
-    cfId: authUser.codeforcesId || (authUser._doc && authUser._doc.codeforcesId) ||"",
-    leetId: authUser.leetcodeId || (authUser._doc && authUser._doc.leetcodeId) ||"",
+    ccId: authUser.codechefId || "",
+    cfId: authUser.codeforcesId ||"",
+    leetId: authUser.leetcodeId||"",
   });
 
   const handleFormDataChange = (e) => {

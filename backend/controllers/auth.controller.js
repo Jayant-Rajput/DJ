@@ -208,7 +208,8 @@ export const oauthLoginUser = async(req,res) => {
     
     generateToken(curr_user._id, res);
   
-    const { password : userPassword, ...userWithoutPassword } = curr_user.toObject();  
+    const { password : userPassword, ...userWithoutPassword } = curr_user.toObject();  // It is required as
+    // curr_user is a mongoose document and it have several other properties which are not generally desired.
     console.log("Hola amigo", curr_user);  
     res.status(200).send(userWithoutPassword);
 

@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import BlogCard from "./BlogCard.jsx";
 import { useBlogStore } from "../stores/useBlogStore";
+import { useChatStore } from "../stores/useChatStore.js";
+import GallerySkeleton from "../skeleton-screen/GallerySkeleton.jsx";
 
 const AllBlogsPage = () => {
+  const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
+  
+  useEffect(() => {
+    subscribeToMessage();
+    return () => unsubscribeToMessage();
+  }, [messages]);
   const { isFetchingBlogs, AllBlogs, getAllBlogs} = useBlogStore();
 
   useEffect(() => {
@@ -10,7 +18,7 @@ const AllBlogsPage = () => {
   }, []);
 
   if(isFetchingBlogs){
-    return <h1>Fetching the Blogs, Please Wait for a moment...</h1>;
+    return <GallerySkeleton />;
   }
 
   else if(AllBlogs.length === 0){

@@ -1,9 +1,19 @@
 import { useState, useRef, useEffect} from "react";
 import { useBlogStore } from "../stores/useBlogStore";
 import { Editor } from "@tinymce/tinymce-react";
+import { useChatStore } from "../stores/useChatStore";
 
 
 const CreateBlogPage = () => {
+
+
+  const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
+  
+  useEffect(() => {
+    subscribeToMessage();
+    return () => unsubscribeToMessage();
+  }, [messages]);
+
   const {isCreatingBlog, addBlog} = useBlogStore();
   
   const [title, setTitle] = useState("");

@@ -18,21 +18,45 @@ import ChatPage from './components/ChatPage';
 import LogoutPage from './components/LogoutPage';
 import ContestPage from './components/ContestPage.jsx';
 import YtLinkAddPage from './components/YtLinkAddPage.jsx';
+import Preloader from "./components/Preloader.jsx";
 
 function App() {
 
   const { authUser, isCheckingAuth, checkAuth, fullname } = useAuthStore();
+  const [showPreloader, setShowPreloader] = useState(false);
 
   useEffect(() => {
     checkAuth();
   },[]);
 
-  if(isCheckingAuth && !authUser){
-    return <h1>wait for a while...</h1>
-  }
+  // if(isCheckingAuth && !authUser){
+  //   return <h1>wait for a while...</h1>
+  // }
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisited');
+    if(!hasVisited){
+
+      setShowPreloader(true);
+      localStorage.setItem('hasVisited', 'true');
+
+      const timer = setTimeout(() => {
+        setShowPreloader(false);
+      }, 13500); // adjust duration as needed
+  
+      return () => clearTimeout(timer);
+    }
+    // Simulate loading time or wait for resources
+  }, []);
+
+
 
   return (
-      <div>
+
+      <>
+        {showPreloader ? 
+          <Preloader/> :
+          <div>
         <Navbar />    {/* Navbar will be displayed on all pages */}
 
         <Routes>
@@ -53,6 +77,9 @@ function App() {
 
         <Toaster />
       </div>
+        
+        }
+      </>
   );
 };
 

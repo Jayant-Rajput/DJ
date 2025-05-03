@@ -4,30 +4,32 @@ import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore.js";
 
 
-export const useChatStore = create( (set, get) => ({
+export const useChatStore = create((set, get) => ({
     messages: [],
     isMessagesLoading: false,
+    users: [],
+    unreadMessages: 0,
 
     getMessages: async () => {
-        set({isMessagesLoading: true});
-        try{
+        set({ isMessagesLoading: true });
+        try {
             const response = await axiosInstance.get("/messages");
-            set({messages: response.data});
-        }catch(error){
+            set({ messages: response.data });
+        } catch (error) {
             toast.error(error.response.data.messages);
-        }finally{
-            set({isMessagesLoading: false});
+        } finally {
+            set({ isMessagesLoading: false });
         }
     },
 
     sendMessage: async (msgData) => {
-        const {messages} = get();
-        try{
+        const { messages } = get();
+        try {
             console.log("hola", msgData);
             const response = await axiosInstance.post("/messages/send", msgData);
             console.log("Response: ", response);
-            set({messages: [...messages, response.data] });
-        }catch(error){
+            set({ messages: [...messages, response.data] });
+        } catch (error) {
             toast.error(error.response.data.messages);
         }
     },
@@ -36,10 +38,25 @@ export const useChatStore = create( (set, get) => ({
         const socket = useAuthStore.getState().socket;
         const authUser = useAuthStore.getState().authUser;
 
-        socket.on("newMessage",(newMessage) => {
-            const isMessageSentFromOther = newMessage.senderId._id !== authUser._id;
-            if(!isMessageSentFromOther) return;
+        if (!socket) {
+            console.warn("Socket is not initialized.");
+            return;
+        }
 
+        socket.on("newMessage", (newMessage) => {
+            console.log(newMessage);
+            const isMessageSentFromOther = newMessage.senderId._id !== authUser._id;
+            const isUserTagged = newMessage.taggedUserIds?.includes(authUser._id);
+
+            if (isMessageSentFromOther && isUserTagged) {
+                set((state) => ({
+                    unreadMessages: state.unreadMessages + 1
+                }));
+                toast.success("You have an unread messages");
+            }
+
+            if(!isMessageSentFromOther) return;
+        
             set({
                 messages: [...get().messages, newMessage]
             });
@@ -48,6 +65,23 @@ export const useChatStore = create( (set, get) => ({
 
     unsubscribeToMessage: () => {
         const socket = useAuthStore.getState().socket;
+        if (!socket) {
+            console.warn("Socket is not initialized.");
+            return;
+        }
         socket.off("newMessage");
     },
+
+    getAllUsers: async () => {
+        try {
+            const response = await axiosInstance.get("/messages/get-users");
+            set({ users: response });
+        } catch (error) {
+            toast.error(error.response.data.messages);
+        }
+    },
+
+    clearUnreadMessages: () => {
+        set({ unreadMessages: 0 });
+    }
 }))

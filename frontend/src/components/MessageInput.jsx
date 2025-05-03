@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../stores/useChatStore.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
-import { Image, Send, X } from "lucide-react";
+import { Image, Send, X, User } from "lucide-react";
 import toast from "react-hot-toast";
 
 const MessageInput = () => {
@@ -10,7 +10,18 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [text, setText] = useState("");
-  const { sendMessage } = useChatStore();
+  const { sendMessage, users, getAllUsers } = useChatStore();
+  const [suggestions, setSuggestions] = useState([]);
+  const [cursorPos, setCursorPos] = useState(0);
+
+  // console.log(users);
+
+  useEffect(() => {
+      const fetchUsers = async () => {
+        await getAllUsers();
+      }
+      fetchUsers();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -49,6 +60,39 @@ const MessageInput = () => {
     }
   }
 
+  const handleInputChange = (e) => {
+    const msg = e.target.value;
+    setText(msg);
+    const cursor = e.target.selectionStart;
+    setCursorPos(cursor);
+
+    const regex = /(?:^|\s)@(\w*)$/;
+    const substring = text.slice(0, cursor);
+    const match = substring.match(regex);
+    if(match){
+      console.log("Hola");
+      const query = match[1].toLowerCase();
+      const filtered = users.data.filter((user)=>
+        user.fullname.toLowerCase().startsWith(query)
+      );
+      setSuggestions(filtered);
+    } else{
+      setSuggestions([]);
+    }
+  }
+
+  const selectSuggestion = (user) => {
+    const regex = /(?:^|\s)@(\w*)$/;
+    const beforeCursor = text.slice(0, cursorPos);
+    const afterCursor = text.slice(cursorPos);
+    const newBeforeCursor = beforeCursor.replace(regex, `@${user.fullname}`);
+    const newMessage = newBeforeCursor+afterCursor;
+    setText(newMessage);
+    setSuggestions([]);
+  }
+
+
+
   return (
     <div className="p-4 w-full">
 
@@ -73,15 +117,43 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex gap-2 relative">
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
             placeholder="Type a message..."
             value={text}
             disabled={authUser === null ? true : false}
-            onChange={(e) => setText(e.target.value)}
+            onChange={handleInputChange}
           />
+          {
+            suggestions.length > 0 && (
+              <ul className="absolute bottom-full left-0 mb-2 w-72 max-h-60 overflow-y-auto bg-base-200 rounded-lg shadow-lg border border-zinc-700 z-10">
+                {
+                  suggestions.map(user => (
+                    <li 
+                      key={user._id} 
+                      onClick={() => selectSuggestion(user)}
+                      className="px-4 py-2 hover:bg-base-300 cursor-pointer flex items-center gap-2 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
+                        {user.avatar ? (
+                          <img 
+                            src={user.avatar} 
+                            alt={user.fullname} 
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        ) : (
+                          <User size={16} className="text-zinc-300" />
+                        )}
+                      </div>
+                      <span className="font-medium">{user.fullname}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            )
+          }
 
           <input
             type="file"

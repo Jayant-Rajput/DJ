@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import ContestCards from './ContestCards';
 import { useContestStore } from '../stores/useContestStore';
+import { useChatStore } from '../stores/useChatStore';
 
 const ContestPage = () => {
+
+    const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
+  
+    useEffect(() => {
+        subscribeToMessage();
+        return () => unsubscribeToMessage();
+    }, [messages]);
+
     const { allContests, fetchContests, isfetchingContests, bookmarkContest, isUpdating, triggerBookmark } = useContestStore();
 
     useEffect(() => {

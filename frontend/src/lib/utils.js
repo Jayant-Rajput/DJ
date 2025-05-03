@@ -5,3 +5,9 @@ export function formatMessageTime(date) {
       hour12: false,
     });
   }
+
+  export const formatMessageDate = (timestamp) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }
+    return new Date(timestamp).toLocaleDateString(undefined, options)
+  }
+  
