@@ -16,7 +16,7 @@ const CreateBlogPage = () => {
   }, [messages]);
   
   const [progress, setProgress] = useState(100);
-  const duration = 2100;
+  const duration = 2600;
   
   
   useEffect(() => {

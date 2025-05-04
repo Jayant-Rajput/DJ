@@ -16,7 +16,7 @@ const Navbar = () => {
   };
   
   const handleNotificationClick = () => {
-    clearUnreadMessages(); // Assuming this function is available in useChatStore
+    clearUnreadMessages();
     navigate('/chat'); // Navigate to chat page when notification is clicked
   };
   

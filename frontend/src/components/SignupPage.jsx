@@ -122,7 +122,7 @@ const SignupPage = () => {
         {/* Left side - Form */}
         <div className="w-1/2 p-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            Join <span className="text-blue-600">CodeConnect</span>
+            Welcome to <span className="text-blue-600">HACC</span>
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-5">

@@ -45,7 +45,7 @@ const ChatPage = () => {
   const messagesByDate = groupMessagesByDate(validMessages);
   const dates = Object.keys(messagesByDate);
   return (
-    <div className="relative w-full">
+    <div className="relative w-full mb-20">
 
       <video
         autoPlay
