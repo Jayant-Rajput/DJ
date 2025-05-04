@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuth, login, logout, signup, updateProfile, updateImage, removeImage, oauthUser, oauthLoginUser, generateOTP, loginWithOTP, changePassword, refreshRating } from "../controllers/auth.controller.js";
+import { checkAuth, login, logout, signup, updateCodingIds, updateImage, removeImage, oauthUser, oauthLoginUser, generateOTP, loginWithOTP, changePassword, refreshRating, updateProfile, getTotalUsers } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { upload } from '../middlewares/multer.middleware.js';
 
@@ -15,6 +15,7 @@ router.post("/gen-OTP", generateOTP);
 router.post("/login-OTP", loginWithOTP);
 router.post("/change-password", changePassword);
 router.post("/refreshRatings", refreshRating );
+router.put("/updateCodingIds", updateCodingIds);
 router.put("/updateProfile", updateProfile);
 router.put("/updateImage", protectRoute, 
     upload.fields([
@@ -25,5 +26,7 @@ router.put("/updateImage", protectRoute,
     ]),
     updateImage);
 router.put("/removeImage", removeImage);
+router.get("/getTotalUsers", getTotalUsers);
+
 
 export default router;

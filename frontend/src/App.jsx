@@ -26,14 +26,17 @@ import Preloader from "./components/Preloader.jsx";
 import Footer from './components/Footer.jsx';
 import TeamPage from './components/TeamPage.jsx';
 import Ratings from './components/Ratings.jsx';
+import SettingPage from './components/SettingPage.jsx';
+import Abc from './components/Abc.jsx';
 
 function App() {
 
-  const { authUser, isCheckingAuth, checkAuth, fullname } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth, getTotalUsers, fullname } = useAuthStore();
   const [showPreloader, setShowPreloader] = useState(false);
 
   useEffect(() => {
     checkAuth();
+    getTotalUsers();
   },[]);
 
   // if(isCheckingAuth && !authUser){
@@ -92,15 +95,16 @@ function App() {
         <Navbar />    {/* Navbar will be displayed on all pages */}
 
         <Routes>
-          <Route path="/" element={ authUser ? <HomePage /> : <Navigate to="/login" />} />
+          <Route path="/" element={ <HomePage />} />
           <Route path="/signup" element={!authUser ? <SignupPage /> : < Navigate to="/" />} />
           <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/logout" element={authUser ? <LogoutPage /> : <Navigate to="/" />} />
           <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+          <Route path="/setting" element={authUser ? <SettingPage /> : <Navigate to="/login" />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/oauth-form' element={fullname ? <MultiStepForm /> : <Navigate to="/login" /> } />
           <Route path="/createBlog" element={ <CreateBlogPage /> } />
-          <Route path="/blogs" element={ <AllBlogsPage /> } />
+          <Route path="/blogs" element={ authUser ? <AllBlogsPage /> : <Navigate to="/login" />} />
           <Route path="/blogs/:blogid" element={ <BlogDetails /> } />
           <Route path="/chat" element={ authUser ? <ChatPage /> : <Navigate to="/login" /> } />
           <Route path="/contest-list" element ={<ContestPage/>} />
@@ -109,7 +113,8 @@ function App() {
           <Route path="/modelchk" element= { <ModelChk />} />
           <Route path="/earthchk" element= { <Earth />} />
           <Route path='/team' element={<TeamPage />} />
-          <Route path='/rankings' element={ <Ratings />}/>
+          <Route path='/rankings' element={ <Ratings />}/>          <Route path="/abc" element = { <Abc />} />
+
           <Route path="*" element={<NotFoundPage />} />
           
         </Routes>

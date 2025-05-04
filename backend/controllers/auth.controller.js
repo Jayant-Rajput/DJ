@@ -153,18 +153,15 @@ export const refreshRating = async (req, res) => {
   }
 }
 
-export const updateProfile = async (req, res) => {
+export const updateCodingIds = async (req, res) => {
   try {
-    const {objId, fullname, college, year, ccId, cfId, leetId} = req.body;
+    const {objId, ccId, cfId, leetId} = req.body;
 
     const ratingsUpdated = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
 
     await User.updateOne(
       {_id: objId},
       {$set: {
-        fullname,
-        college,
-        year,
         codechefId: ccId,
         codeforcesId: cfId,
         leetcodeId: leetId,
@@ -182,10 +179,39 @@ export const updateProfile = async (req, res) => {
     }
 
   } catch (error) {
-    console.log("error in update profile:", error);
+    console.log("error in updateCodingIds:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try{
+    const {objId, fullname, email, college, branch, year} = req.body;
+    
+    await User.updateOne(
+      {_id: objId},
+      {$set: {
+        fullname,
+        email,
+        college,
+        branch,
+        year,
+      }}
+    );
+
+    const updatedUser = await User.findById(objId).lean();
+
+    if(updatedUser){
+      res.status(201).json(updatedUser);
+    }
+    else{
+      res.status(500).json({message: "bhai , user not found"});
+    }
+  } catch (error) {
+    console.log("error in updateProfile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 export const updateImage = async (req, res) => {
   try{
@@ -256,6 +282,15 @@ export const checkAuth = (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+export const getTotalUsers = async (req, res) => {
+  try{
+    const totalUsers = await User.countDocuments();
+    res.status(200).json(totalUsers);
+  } catch(error){
+    console.log("Error in getTotalUsers controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 export const oauthLoginUser = async(req,res) => {
   try {
