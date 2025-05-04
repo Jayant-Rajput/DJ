@@ -52,14 +52,20 @@ const Navbar = () => {
                 className={`hover:text-blue-400 transition-colors ${isActive('/contest-list') ? 'text-blue-400' : 'text-white'}`}>
             Contests
           </Link>
-          <Link to="/blogs" 
+          {authUser && (<Link to="/blogs" 
                 className={`hover:text-blue-400 transition-colors ${isActive('/blogs') ? 'text-blue-400' : 'text-white'}`}>
             Blogs
-          </Link>
+          </Link>)}
           {authUser && (
             <Link to="/createBlog" 
                   className={`hover:text-blue-400 transition-colors ${isActive('/createBlog') ? 'text-blue-400' : 'text-white'}`}>
               Create
+            </Link>
+          )}
+          {authUser && (
+            <Link to="/rankings" 
+                  className={`hover:text-blue-400 transition-colors ${isActive('/createBlog') ? 'text-blue-400' : 'text-white'}`}>
+              Rankings
             </Link>
           )}
           <Link to="/chat" 

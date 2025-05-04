@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     codechefId: { type:String, required: true },
     codeforcesId: { type:String, required: true },
     leetcodeId: { type:String, required: true },
-    profilePic: { type: String, default: null },
+    profilePic: { type: String},
 
     totalLeetQuestions: { type: Number },
     easyLeetQuestions: { type: Number },

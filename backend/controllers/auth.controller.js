@@ -1,7 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import cloudinary from "../lib/cloudinary.js";  
+import cloudinary, { uploadOnCloudinary } from "../lib/cloudinary.js";  
 import ApiError from "../constants.js/ApiError.js";
 import nodemailer from "nodemailer";
 import dns from "dns";
@@ -186,6 +186,66 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const updateImage = async (req, res) => {
+  try{
+    const {objId} = req.body;
+    // console.log(req.body);
+    let profilePicLocalPath;
+    // console.log(objId);
+    if(req.files && Array.isArray(req.files.image) && req.files.image.length >0){
+      // console.log("HHSHFH");
+      profilePicLocalPath = req.files.image[0].path;
+    }
+    console.log("Hola", profilePicLocalPath);
+    console.log("JIJI");
+    const profilePic = await uploadOnCloudinary(profilePicLocalPath);
+
+    await User.updateOne(
+      {_id: objId},
+      {$set: {
+        profilePic: profilePic.url
+      }}
+    )
+
+    const updatedUser = await User.findById(objId).lean();
+
+    if(!updatedUser){
+      return res.status(500).json({message: "User can't find"});
+    }
+    res.status(201).json(updatedUser);
+  } catch(error){
+    console.log("error in update image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export const removeImage = async( req, res) => {
+  try{
+    console.log(req.body);
+    const {objId} = req.body;
+    console.log(objId);
+
+    await User.updateOne(
+      {_id: objId},
+      {$unset: {
+        profilePic: ""
+      }}
+    )
+    
+    const updatedUser = await User.findById(objId).lean();
+
+    if(!updatedUser){
+      return res.status(500).json({message: "User can't find"});
+    }
+    res.status(201).json(updatedUser);
+
+  } catch (error) {
+    console.log("error in removing image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 
 export const checkAuth = (req, res) => {
   try {

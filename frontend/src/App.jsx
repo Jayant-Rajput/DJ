@@ -24,6 +24,8 @@ import ModelChk from './components/ModelChk.jsx';
 import Earth from './components/Earth.jsx';
 import Preloader from "./components/Preloader.jsx";
 import Footer from './components/Footer.jsx';
+import TeamPage from './components/TeamPage.jsx';
+import Ratings from './components/Ratings.jsx';
 
 function App() {
 
@@ -38,12 +40,37 @@ function App() {
   //   return <h1>wait for a while...</h1>
   // }
 
+
+  const setWithExpiry = (key, value, ttl) => {
+    const now = new Date();
+    const item = {
+      value: value,
+      expiry: now.getTime()+ttl,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  }
+
+  const getWithExpiry = (key) => {
+    const itemStr = localStorage.getItem(key);
+    if(!itemStr) return false;
+
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    if(now.getTime()>item.expiry){
+      localStorage.removeItem(key);
+      return false;
+    }
+    return item.value;
+  }
+
+
   useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisited');
+    const hasVisited = getWithExpiry('hasVisited');
     if(!hasVisited){
 
       setShowPreloader(true);
-      localStorage.setItem('hasVisited', 'true');
+      const ttl = 1*60*60*1000;
+      setWithExpiry('hasVisited', true, ttl);
 
       const timer = setTimeout(() => {
         setShowPreloader(false);
@@ -81,7 +108,8 @@ function App() {
           <Route path="/timepass" element= { <Timepass />} />
           <Route path="/modelchk" element= { <ModelChk />} />
           <Route path="/earthchk" element= { <Earth />} />
-
+          <Route path='/team' element={<TeamPage />} />
+          <Route path='/rankings' element={ <Ratings />}/>
           <Route path="*" element={<NotFoundPage />} />
           
         </Routes>

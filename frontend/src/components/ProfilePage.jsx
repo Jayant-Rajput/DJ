@@ -1,4 +1,4 @@
-import { React, useState, useEffect, Suspense } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import {
   BarChart,
@@ -15,14 +15,13 @@ import {
 } from "recharts";
 import { useChatStore } from "../stores/useChatStore";
 import { CheckCircle } from 'lucide-react';
-import { Canvas } from '@react-three/fiber'
-import {OrbitControls, Environment, PresentationControls, ContactShadows } from '@react-three/drei';
-import { Developer } from './Developer.jsx';
 
 const ProfilePage = () => {
 
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
-  const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
+  const { authUser, refreshRatings, updateProfile, updateImage, removeImage, isWorking } = useAuthStore();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
 
   useEffect(() => {
     subscribeToMessage();
@@ -30,10 +29,22 @@ const ProfilePage = () => {
   }, [messages]);
 
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+
 
   const [progress, setProgress] = useState(100);
   const duration = 4500;
 
+  console.log(menuOpen);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -59,6 +70,7 @@ const ProfilePage = () => {
 
   console.log(authUser.college);
 
+  const [image, setImage] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -74,6 +86,20 @@ const ProfilePage = () => {
   const handleFormDataChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleFileChange = async (e) => {
+    setImage(e.target.files[0]);
+    console.log("SFDSIGB", image);
+    const formData = new FormData();
+    formData.append("objId", authUser._id);
+    formData.append("image", image);
+    await updateImage(formData);
+  }
+
+  const handleRemoveImage = async () => {
+    await removeImage({ objId: authUser._id });
+  }
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -280,12 +306,44 @@ const ProfilePage = () => {
         </div>
       )}
       {/* Header with Profile Info */}
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8">
-      <img
+      <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8">
+        <img
           src={authUser.profilePic || "/avatar.png"}
           alt="Profile"
           className="w-32 h-32 rounded-full border shadow-md object-cover"
+          onClick={()=>setMenuOpen(!menuOpen)}
         />
+
+        {menuOpen && (
+          <div
+            className="absolute top-full w-48 bg-gray-800 rounded-md shadow-lg z-[9999]"
+          >
+            <ul className="py-2">
+              <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-white">
+                <input 
+                  type="file"
+                  accept="image/*"
+                  ref={menuRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => menuRef.current?.click()}
+                  className="text-white py-2 rounded"
+                >
+                📁 Upload photo
+                </button>
+                </li>
+              <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-red-400">
+                <button onClick={handleRemoveImage} >🗑 Remove photo</button>
+                </li>
+            </ul>
+          </div>
+        )}
+
+        {/* here by making the menu div to be absolute and img div to be relative, it now anchors directly 
+        to the img div otherwise in case of parent div containing z-index or overflow to be hidden lead to visibility issues */}
 
         {/* Profile Information */}
         <div className="flex-1">
@@ -322,7 +380,7 @@ const ProfilePage = () => {
               <div>
                 <p className="text-gray-500 text-sm font-medium">Branch</p>
                 <p className="font-semibold text-gray-800">
-                  {authUser.branch === "1" ? "ECE" : "CSE"}
+                  {authUser.branch}
                 </p>
               </div>
             </div>

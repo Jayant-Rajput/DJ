@@ -11,6 +11,7 @@ export const useContestStore = create((set, get) => ({
   trigger: false,
   bookmarkedContests : [],
   triggerBookmark: false,
+  RatingsData : [],
 
 
   fetchContests: async () => {
@@ -93,5 +94,18 @@ export const useContestStore = create((set, get) => ({
       set({isUpdating: false});
       set({triggerBookmark: !get().triggerBookmark});
     }
+  },
+
+  fetchRatingsData : async () => {
+    set({isfetchingContests: true});
+    try{
+      const response = await axiosInstance.get("/ratings/fetchData");
+      set({ RatingsData : response.data });
+      toast.success("Users Ratings fetched successfully");
+    } catch(error){
+      // toast.error(error.response.data.message);
+      console.log("ERROR in removeBookmark: ", error);
+    }
   }
+
 }));

@@ -21,7 +21,7 @@ const Footer = () => {
             <h3 className="text-2xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-              <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Team</Link></li>
+              <li><Link to="/team" className="text-gray-400 hover:text-white transition-colors">Team</Link></li>
               <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link to="/blogs" className="text-gray-400 hover:text-white transition-colors">Blogs</Link></li>
             </ul>
@@ -37,7 +37,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center">
                 <Mail size={20} className="text-gray-400 mr-3" />
-                <a href="mailto:info@company.com" className="text-gray-400 hover:text-white transition-colors">ps25082005@gmail.com</a>
+                <a href="https://mail.google.com/mail/?view=cm&to=ps25082005@gmail.com" className="text-gray-400 hover:text-white transition-colors">ps25082005@gmail.com</a>
               </div>
             </div>
           </div>
@@ -48,6 +48,9 @@ const Footer = () => {
       <div className="bg-gray-950 py-4">
         <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">© {currentYear} HACC. All rights reserved.</p>
+          <div className="mt-2 md:mt-0">
+            <p className="text-gray-400 text-sm">Made with <span class="beating-heart text-red-500 text-1xl">❤️</span> in NIT Raipur</p>
+          </div>
         </div>
       </div>
     </footer>

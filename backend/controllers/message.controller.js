@@ -58,6 +58,8 @@ export const sendMessage = async(req,res) => {
             text,
             image: imageUrl,
           }).populate("senderId", "fullname profilePic");
+
+          // populate function is used only when the field (here senderId) is an ObjectId referring to another collection.
           
         console.log(taggedUserIds);
 

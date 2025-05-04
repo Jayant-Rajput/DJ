@@ -120,6 +120,32 @@ export const useAuthStore = create(
       }
     },
 
+    updateImage: async (data) => {
+      set({isWorking: true});
+      try{
+        console.log("Hola", data);
+        const response = await axiosInstance.put("/auth/updateImage", data);
+        set({authUser: response.data});
+      } catch(error) {
+        toast.error(error.response.data.message);
+      } finally{
+        set({isWorking: false});
+      }
+    },
+
+    removeImage: async (data) => {
+      set({isWorking: true});
+      try{
+        console.log("Hola", data);
+        const response = await axiosInstance.put("/auth/removeImage", data);
+        set({authUser: response.data});
+      } catch(error) {
+        toast.error(error.response.data.message);
+      } finally{
+        set({isWorking: false});
+      }
+    },
+
     refreshRatings: async (data) => {
       set({isWorking: true});
       try{

@@ -200,16 +200,16 @@ const SignupPage = () => {
                     required
                   >
                     <option value="" disabled>Select Branch</option>
-                    <option value="1">ECE</option>
-                    <option value="2">IT</option>
-                    <option value="3">CSE</option>
-                    <option value="4">EE</option>
-                    <option value="5">MECH</option>
-                    <option value="6">CIVIL</option>
-                    <option value="7">META</option>
-                    <option value="8">MINING</option>
-                    <option value="9">BIOTECH</option>
-                    <option value="10">BME</option>
+                    <option value="ECE">ECE</option>
+                    <option value="IT">IT</option>
+                    <option value="CSE">CSE</option>
+                    <option value="EE">EE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="META">META</option>
+                    <option value="MINING">MINING</option>
+                    <option value="BIOTECH">BIOTECH</option>
+                    <option value="BME">BME</option>
                   </select>
                 </div>
 

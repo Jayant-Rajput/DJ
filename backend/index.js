@@ -12,6 +12,7 @@ import axios from 'axios'
 import blogRoutes from './routes/blog.route.js';
 import messageRoutes from './routes/message.route.js';
 import contestRoutes from "./routes/contest.route.js";
+import RatingRoutes from "./routes/ratings.route.js";
 
 import { fetchDataAndUpdateDB } from './lib/utils.js';
 
@@ -36,6 +37,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/contest", contestRoutes);
+app.use("/api/ratings", RatingRoutes);
 app.use(express.static("public"));
 
 cron.schedule('0*/2 * * * *' , async () => {      //run in every 2 min
