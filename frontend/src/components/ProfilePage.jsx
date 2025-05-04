@@ -78,9 +78,10 @@ const ProfilePage = () => {
 
   const handleFileChange = async (e) => {
     setImage(e.target.files[0]);
+    console.log(image);
     const formData = new FormData();
     formData.append("objId", authUser._id);
-    formData.append("image", image);
+    formData.append("image", e.target.files[0]);
     await updateImage(formData);
   }
 
