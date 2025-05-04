@@ -18,11 +18,12 @@ import { CheckCircle } from 'lucide-react';
 import { Canvas } from '@react-three/fiber'
 import {OrbitControls, Environment, PresentationControls, ContactShadows } from '@react-three/drei';
 import { Developer } from './Developer.jsx';
+import branchMap from "../constants/BranchList.js";
 
 const ProfilePage = () => {
 
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
-  const { authUser, refreshRatings, updateProfile, isWorking } = useAuthStore();
+  const { authUser, refreshRatings, updateCodingIds, isWorking } = useAuthStore();
 
   useEffect(() => {
     subscribeToMessage();
@@ -63,9 +64,6 @@ const ProfilePage = () => {
 
   const [formData, setFormData] = useState({
     objId: authUser._id,
-    fullname: authUser.fullname || "",
-    college: authUser.college || "",
-    year: authUser.year || "",
     ccId: authUser.codechefId || "",
     cfId: authUser.codeforcesId || "",
     leetId: authUser.leetcodeId || "",
@@ -212,30 +210,8 @@ const ProfilePage = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
             <h2 className="text-xl font-bold mb-4">Your Form</h2>
             <div>
-              <input
-                type="text"
-                name="fullname"
-                value={formData.fullname}
-                onChange={handleFormDataChange}
-                placeholder="Full Name"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="college"
-                value={formData.college}
-                onChange={handleFormDataChange}
-                placeholder="College"
-                className="w-full mb-4 p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="year"
-                value={formData.year}
-                onChange={handleFormDataChange}
-                placeholder="Year"
-                className="w-full mb-4 p-2 border rounded"
-              />
+
+              <label>CodeChef ID</label>
               <input
                 type="text"
                 name="ccId"
@@ -244,6 +220,8 @@ const ProfilePage = () => {
                 placeholder="ccId"
                 className="w-full mb-4 p-2 border rounded"
               />
+
+              <label>CodeForces ID</label>
               <input
                 type="text"
                 name="cfId"
@@ -252,6 +230,8 @@ const ProfilePage = () => {
                 placeholder="cfId"
                 className="w-full mb-4 p-2 border rounded"
               />
+
+              <label>Leetcode ID</label>
               <input
                 type="text"
                 name="leetId"
@@ -322,7 +302,7 @@ const ProfilePage = () => {
               <div>
                 <p className="text-gray-500 text-sm font-medium">Branch</p>
                 <p className="font-semibold text-gray-800">
-                  {authUser.branch === "1" ? "ECE" : "CSE"}
+                  {branchMap[String (authUser.branch)]}
                 </p>
               </div>
             </div>

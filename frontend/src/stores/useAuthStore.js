@@ -21,6 +21,7 @@ export const useAuthStore = create(
     leetId: null,
 
     authUser: null,
+    totalUsers: 0,
     isSigninUp: false,
     isLoggingIn: false,
     isCheckingAuth: false,
@@ -43,6 +44,20 @@ export const useAuthStore = create(
         set({ authUser: null });
       } finally {
         set({ isCheckingAuth: false });
+      }
+    },
+
+    getTotalUsers: async () => {
+      set({isWorking: true});
+      try{
+        const response = await axiosInstance.get("/auth/getTotalUsers");
+        set({ totalUsers: response.data });
+        
+      } catch(error){
+        console.log("Error in getTotalUsers: ", error);
+        set({ totalUsers: 0})
+      } finally{
+        set({isWorking: false});
       }
     },
 
@@ -106,10 +121,24 @@ export const useAuthStore = create(
       }
     },
 
+    updateCodingIds: async (data) => {
+      set({isWorking: true});
+      try{
+        const response = await axiosInstance.put("/auth/updateCodingIds", data);
+        set({authUser: response.data});
+        useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
+        toast.success("CodingIds Updated Successfully");
+      }catch(error){
+        toast.error(error.response.data.message);
+      }finally{
+        set({isWorking: false});
+      }
+    },
+
     updateProfile: async (data) => {
       set({isWorking: true});
       try{
-        const response = await axiosInstance.put("/auth/updateProfile", data);
+        const response = await axiosInstance.put("/auth/updateProfile", data);  
         set({authUser: response.data});
         useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
         toast.success("Profile Updated Successfully");

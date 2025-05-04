@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuth, login, logout, signup, updateProfile, oauthUser, oauthLoginUser, generateOTP, loginWithOTP, changePassword, refreshRating } from "../controllers/auth.controller.js";
+import { checkAuth, login, logout, signup, updateCodingIds, oauthUser, oauthLoginUser, generateOTP, loginWithOTP, changePassword, refreshRating, updateProfile, getTotalUsers } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -14,7 +14,9 @@ router.post("/gen-OTP", generateOTP);
 router.post("/login-OTP", loginWithOTP);
 router.post("/change-password", changePassword);
 router.post("/refreshRatings", refreshRating );
+router.put("/updateCodingIds", updateCodingIds);
 router.put("/updateProfile", updateProfile);
+router.get("/getTotalUsers", getTotalUsers);
 
 
 export default router;
