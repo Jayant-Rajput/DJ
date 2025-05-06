@@ -19,7 +19,7 @@ import { CheckCircle, Camera } from 'lucide-react';
 const ProfilePage = () => {
 
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
-  const { authUser, refreshRatings, updateCodingIds, updateImage, removeImage, isWorking } = useAuthStore();
+  const { authUser, refreshRatings, updateCodingIds, updateProfile, updateImage, removeImage, isWorking } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
 
@@ -30,7 +30,7 @@ const ProfilePage = () => {
 
 
   const [progress, setProgress] = useState(100);
-  const duration = 4500;
+  const duration = 4800;
 
   console.log(menuOpen);
 
