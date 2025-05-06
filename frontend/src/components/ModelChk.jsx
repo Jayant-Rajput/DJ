@@ -5,7 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import { GLTFLoader } from "three-stdlib";
 
 function Model() {
-  const gltf = useLoader(GLTFLoader, "../public/laptop/laptop.gltf");
+  const gltf = useLoader(GLTFLoader, "/laptop/laptop.gltf");
   const modelRef = useRef();
 
   useFrame(() => {
