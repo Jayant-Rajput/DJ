@@ -101,6 +101,7 @@ export const useContestStore = create((set, get) => ({
     try{
       const response = await axiosInstance.get("/ratings/fetchData");
       set({ RatingsData : response.data });
+      console.log("ratings data: ", response.data);
       toast.success("Users Ratings fetched successfully");
     } catch(error){
       // toast.error(error.response.data.message);
