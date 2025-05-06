@@ -9,6 +9,8 @@ const CreateBlogPage = () => {
 
   const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
   const {isCreatingBlog, addBlog} = useBlogStore();
+
+  const editorRef = useRef(null);
   
   useEffect(() => {
     subscribeToMessage();
@@ -75,6 +77,13 @@ const CreateBlogPage = () => {
 
     console.log("FormData ready for submission.");
     await addBlog(formData);
+
+    setTitle("");
+    setContent("");
+    setImage(null);
+    if (editorRef.current) {
+      editorRef.current.setContent(""); // Clear TinyMCE editor content
+    }
   };
 
   return (
@@ -131,6 +140,7 @@ const CreateBlogPage = () => {
             <Editor
               apiKey="myjj8iymxg6y5rj4b996n0vuak7utowkf1snqnk5huqr5i11"
               textareaName="content"
+              onInit={(evt, editor) => (editorRef.current = editor)}
               init={{
                 placeholder: "Write your content here",
               }}
