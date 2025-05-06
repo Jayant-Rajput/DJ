@@ -31,10 +31,10 @@ export const useAuthStore = create(
     socket: null,
 
     // Your actions...
-    checkAuth: async () => {
+    checkAuth: async (token) => {
       set({ isCheckingAuth: true });
       try {
-        const res = await axiosInstance.get("/auth/check");
+        const res = await axiosInstance.post("/auth/check", { token });
         set({ authUser: res.data });
         useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })
         console.log("checkAuth authuser: ", get().authUser);    //for check
@@ -60,6 +60,7 @@ export const useAuthStore = create(
         set({isWorking: false});
       }
     },
+
 
     signup: async (data) => {
       set({ isSigninUp: true });
@@ -214,8 +215,8 @@ export const useAuthStore = create(
       socket.connect();
       set({ socket: socket });
       
-      console.log(get().socket.connected);
-      console.log("SOCKET AFTER CONNECTION: ", get().socket);
+      // console.log(get().socket.connected);
+      // console.log("SOCKET AFTER CONNECTION: ", get().socket);
     
       socket.on("getOnlineUserCount", (cnt) => {
         set({ onlineUserCount: cnt });

@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
-router.get("/check", protectRoute, checkAuth);
+router.post("/check", protectRoute, checkAuth);
 router.post("/oauthlogin", oauthLoginUser);
 router.post("/oauthuser", oauthUser);
 router.post("/gen-OTP", generateOTP);

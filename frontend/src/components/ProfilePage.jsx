@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useChatStore } from "../stores/useChatStore";
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Camera } from 'lucide-react';
 import { Canvas } from '@react-three/fiber'
 import {OrbitControls, Environment, PresentationControls, ContactShadows } from '@react-three/drei';
 import { Developer } from './Developer.jsx';
@@ -278,12 +278,13 @@ const ProfilePage = () => {
       )}
       {/* Header with Profile Info */}
       <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8">
-        <img
+       <div className="relative">
+       <img
           src={authUser.profilePic || "/avatar.png"}
           alt="Profile"
           className="w-32 h-32 rounded-full border shadow-md object-cover"
-          onClick={()=>setMenuOpen(!menuOpen)}
         />
+        <Camera onClick={()=>setMenuOpen(!menuOpen)} className="absolute bottom-1 right-1 cursor-pointer w-7 h-7 text-base-200 bg-white rounded-full p-1 shadow"/>
 
         {menuOpen && (
           <div
@@ -312,7 +313,8 @@ const ProfilePage = () => {
             </ul>
           </div>
         )}
-
+       </div>
+        
         {/* here by making the menu div to be absolute and img div to be relative, it now anchors directly 
         to the img div otherwise in case of parent div containing z-index or overflow to be hidden lead to visibility issues */}
 
@@ -328,7 +330,7 @@ const ProfilePage = () => {
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md font-medium transition-colors"
                 onClick={() => setShowForm(true)}
               >
-                Update Profile
+                Update IDs
               </button>
               <button
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-md font-medium transition-colors"

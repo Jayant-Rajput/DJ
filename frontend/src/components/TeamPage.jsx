@@ -5,24 +5,24 @@ const teamMembers = [
   {
     name: "Jayant Rajput",
     role: "Full Stack Developer",
-    image: "img.jpg",
+    image: "jayant_photo.png",
     description:
       "Jayant Rajput is a passionate Full Stack Developer with a knack for building scalable web applications. He enjoys working with React, Node.js, and modern web technologies, and is driven by problem-solving and impactful innovation",
     socials: {
-      linkedin: "https://linkedin.com/in/dipteshraj",
-      github: "https://github.com/dipteshraj",
-      instagram: "https://www.instagram.com/diptesh.raj/",
+      linkedin: "https://www.linkedin.com/in/jayant-rajput-b940b4250/",
+      github: "https://github.com/Jayant-Rajput",
+      instagram: "https://www.instagram.com/jayantrajput1282",
     },
   },
   {
     name: "Diptesh Raj",
     role: "Full Stack Developer",
-    image: "img.jpg",
+    image: "Diptesh_photo.png",
     description:
       "Diptesh Raj is a passionate Full Stack Developer with a knack for building scalable web applications. He enjoys working with React, Node.js, and modern web technologies, and is driven by problem-solving and impactful innovation",
     socials: {
         linkedin: "https://linkedin.com/in/dipteshraj",
-        github: "https://github.com/dipteshraj",
+        github: "https://github.com/dipteshrastogi",
         instagram: "https://www.instagram.com/diptesh.raj/",
     },
   },

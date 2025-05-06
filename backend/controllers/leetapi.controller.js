@@ -18,11 +18,11 @@ export const leetDataFetch = async (username) => {
         ranking
       }
       submitStats {
-        totalSubmissionNum {
-          difficulty
-          count
-          submissions
-        }
+        acSubmissionNum {
+                difficulty
+                count
+                submissions
+            }
       }
     }
     userContestRanking(username: $username) {
@@ -56,10 +56,10 @@ export const leetDataFetch = async (username) => {
   };
 
   const solvedQuestions = {
-    All: data.matchedUser.submitStats.totalSubmissionNum.find((q) => q.difficulty === "All")?.count || 0,
-    Easy: data.matchedUser.submitStats.totalSubmissionNum.find((q) => q.difficulty === "Easy")?.count || 0,
-    Medium: data.matchedUser.submitStats.totalSubmissionNum.find((q) => q.difficulty === "Medium")?.count || 0,
-    Hard: data.matchedUser.submitStats.totalSubmissionNum.find((q) => q.difficulty === "Hard")?.count || 0,
+    All: data.matchedUser.submitStats.acSubmissionNum.find((q) => q.difficulty === "All")?.count || 0,
+    Easy: data.matchedUser.submitStats.acSubmissionNum.find((q) => q.difficulty === "Easy")?.count || 0,
+    Medium: data.matchedUser.submitStats.acSubmissionNum.find((q) => q.difficulty === "Medium")?.count || 0,
+    Hard: data.matchedUser.submitStats.acSubmissionNum.find((q) => q.difficulty === "Hard")?.count || 0,
   };
 
   const profile = {

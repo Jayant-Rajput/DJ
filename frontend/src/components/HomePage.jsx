@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useInView } from "react-intersection-observer"
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ModelChk from "./ModelChk";
@@ -7,6 +8,7 @@ import { useChatStore } from "../stores/useChatStore";
 import { useBlogStore } from "../stores/useBlogStore";
 import CardSkeleton from "../skeleton-screen/CardSkeleton.jsx";
 import { useAuthStore } from "../stores/useAuthStore.js";
+import AnimatedCount from "./AnimatedCount.jsx";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -96,7 +98,115 @@ const HomePage = () => {
 
       {/* Section 2 - Latest Blogs - Enhanced */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 md:px-16 py-20 relative text-white">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-blue-900/40 z-[-1]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-blue-500/20 z-[-1]"></div>
+        <motion.h3
+          className="text-5xl font-bold mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          Now we are family of
+          <AnimatedCount totalUsers={totalUsers} />
+        </motion.h3>
+        <motion.p
+          className="text-4xl text-gray-300"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          developers and growing every day!
+        </motion.p>
+      </section>
+
+      {/* Section 3 - About Us */}
+      <section className="min-h-screen flex flex-col items-center px-6 md:px-20 text-center relative text-white">
+  <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 to-blue-900/20 z-[-1]"></div>
+
+  {/* Using useInView hook for scroll-triggered animations */}
+  {(() => {
+    // Import at the top of your file: import { useInView } from 'react-intersection-observer';
+    const [ref, inView] = useInView({
+      triggerOnce: true,
+      threshold: 0.2
+    });
+    
+    return (
+      <div ref={ref} className="w-full">
+        <motion.h2
+          className="text-5xl mt-10 font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text"
+          initial={{ opacity: 0, y: -20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+        >
+          HACC - Hacc Ain't a Coding Club
+        </motion.h2>
+        
+        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
+          {/* Left side: Paragraph */}
+          <motion.div
+            className="md:w-1/2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <div className="bg-black/30 p-8 rounded-xl h-full">
+              <p className="text-left text-2xl leading-relaxed">
+                Welcome to our coding community! We are passionate about sharing
+                knowledge and building innovative solutions. Whether you're just
+                starting out or a seasoned developer, our platform provides
+                insightful blogs, engaging contests, and a space to collaborate and
+                grow.
+              </p>
+            </div>
+          </motion.div>
+          
+          {/* Right side: Points */}
+          <motion.div
+            className="md:w-1/2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <div className="bg-black/30 p-8 rounded-xl h-full">
+              <motion.h3 
+                className="text-3xl font-semibold mb-4 text-left text-blue-300"
+                initial={{ opacity: 0 }}
+                animate={inView ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ delay: 0.4, duration: 0.3 }}
+              >
+                Whats Here For You:
+              </motion.h3>
+              <ul className="text-left space-y-3">
+                {[
+                  "Learn from the experiences of peers and seniors through blogs",
+                  "Chat and discuss with like-minded developers",
+                  "Analyse your performance through detailed analytics",
+                  "Get timely contest notifications",
+                  "Share your knowledge and experiences with others"
+                ].map((item, index) => (
+                  <motion.li 
+                    key={index}
+                    className="flex text-xl items-start"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                    transition={{ delay: 0.5 + (index * 0.2), duration: 0.3 }}
+                  >
+                    <span className="inline-block mr-2 text-purple-400">{index + 1}.</span> 
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  })()}
+</section>
+
+{/* Section 2 - Latest Blogs - Enhanced */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 md:px-16 py-20 relative text-white">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-black-900/10 z-[-1]"></div>
         <motion.h2
           className="text-5xl font-bold mb-12 text-center"
           initial={{ opacity: 0, y: -20 }}
@@ -166,69 +276,15 @@ const HomePage = () => {
         </motion.button>
       </section>
 
-      {/* Section 3 - About Us */}
-      <section className="h-screen flex flex-col justify-center items-center px-6 md:px-20 text-center relative text-white">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/40 to-black/10 z-[-1]"></div>
-
-        {/* Upper half - About Us content */}
-        <div className="h-1/3 flex flex-col justify-center items-center">
-          <motion.h2
-            className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            About Us
-          </motion.h2>
-          <motion.p
-            className="max-w-3xl text-lg leading-relaxed bg-black/30 p-8 rounded-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Welcome to our coding community! We are passionate about sharing
-            knowledge and building innovative solutions. Whether youre just
-            starting out or a seasoned developer, our platform provides
-            insightful blogs, engaging contests, and a space to collaborate and
-            grow.
-          </motion.p>
-        </div>
-
-        {/* Lower half - User count */}
-        <div className="h-2/3 flex flex-col mt-10 items-center">
-          <motion.h3
-            className="text-3xl font-bold mb-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            We are family of
-            <span className="ml-2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              {userCount || "..."}
-            </span>
-          </motion.h3>
-          <motion.p
-            className="text-xl text-gray-300"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            developers and growing every day!
-          </motion.p>
-        </div>
-      </section>
-
       {/* section 4 Earth model and fancy line */}
-      <section className="h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-70">
+      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-70">
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-bg-black/70 z-[-1]"></div>
-        <div className="md:w-1/2 mt-10 md:mt-0">
-          <div>
-            <h1 className="text-5xl md:text-6xl font-bold"></h1>
-          </div>
-          <div className="mt-10"></div>
+        <div className="md:w-1/2 mt-0">
+
+          <div className="mt-50"></div>
           <Earth />
         </div>
-        <div className="md:w-1/2 text-center md:text-left space-y-6">
+        <div className="md:w-1/2 text-center mt-50 md:text-left space-y-6">
           <motion.h1
             className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
             initial={{ opacity: 0, y: -20 }}
@@ -237,16 +293,24 @@ const HomePage = () => {
           >
             We are here.
           </motion.h1>
-          {!authUser &&
+          {!authUser && (
             <motion.p
-            className="text-3xl text-blue-200"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          >
-            <span onClick={() => navigate("/signup")} className="text-blue-900 font-bold cursor-pointer underline">Signup</span> now to join our community and to track your progress across top coding platforms. Discuss problems with peers and get access of precious Blogs
-          </motion.p>
-          }
+              className="text-3xl text-blue-200"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              <span
+                onClick={() => navigate("/signup")}
+                className="text-blue-900 font-bold cursor-pointer underline"
+              >
+                Signup
+              </span>{" "}
+              now to join our community and to track your progress across top
+              coding platforms. Discuss problems with peers and get access of
+              precious Blogs
+            </motion.p>
+          )}
         </div>
       </section>
     </div>

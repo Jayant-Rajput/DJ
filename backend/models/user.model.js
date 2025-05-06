@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     codeforcesId: { type:String, required: true },
     leetcodeId: { type:String, required: true },
     profilePic: { type: String},
+    notiToken: {type: String},
 
     totalLeetQuestions: { type: Number },
     easyLeetQuestions: { type: Number },
