@@ -33,7 +33,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center">
                 <MapPin size={20} className="text-gray-400 mr-3" />
-                <span className="text-gray-400">NIT Raipur, Chhattisgarh, India</span>
+                <span className="text-gray-400">Hostel-H, NIT Raipur, Chhattisgarh, India</span>
               </div>
               <div className="flex items-center">
                 <Mail size={20} className="text-gray-400 mr-3" />
