@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import { useContestStore } from "./useContestStore.js";
 
 
-const BASE_URL = "http://localhost:5001";
+const BASE_URL = "https://hacc-2kvi.onrender.com";
 
 export const useAuthStore = create(
   (set, get) => ({
