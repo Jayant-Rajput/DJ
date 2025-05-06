@@ -28,15 +28,40 @@ import TeamPage from './components/TeamPage.jsx';
 import Ratings from './components/Ratings.jsx';
 import SettingPage from './components/SettingPage.jsx';
 import Abc from './components/Abc.jsx';
+import { genOrGetToken } from './lib/utils.js';
+import { onMessage } from 'firebase/messaging';
+import { messaging } from './context Api/Firebase.jsx';
 
 function App() {
 
   const { authUser, isCheckingAuth, checkAuth, getTotalUsers, fullname } = useAuthStore();
   const [showPreloader, setShowPreloader] = useState(false);
+  const notiToken = localStorage.getItem("notiToken");
+
 
   useEffect(() => {
-    checkAuth();
+    genOrGetToken();
+    checkAuth(notiToken);
     getTotalUsers();
+
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("📬 Foreground message received:", payload);
+
+      if (payload.notification) {
+        const { title, body } = payload.notification;
+    
+        new Notification(title, {
+          body,
+          icon: "/avatar.png",
+        });
+      } else {
+        console.warn("No notification object in payload");
+      }
+    });
+    // Optional cleanup
+    return () => {
+      unsubscribe(); // ensures no memory leaks
+    };
   },[]);
 
   // if(isCheckingAuth && !authUser){

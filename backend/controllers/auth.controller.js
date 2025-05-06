@@ -224,7 +224,6 @@ export const updateImage = async (req, res) => {
       profilePicLocalPath = req.files.image[0].path;
     }
     console.log("Hola", profilePicLocalPath);
-    console.log("JIJI");
     const profilePic = await uploadOnCloudinary(profilePicLocalPath);
 
     await User.updateOne(
@@ -273,10 +272,16 @@ export const removeImage = async( req, res) => {
 }
 
 
-export const checkAuth = (req, res) => {
+export const checkAuth = async (req, res) => {
   try {
-    // console.log("chechAuth function in backend: ", req.user);
-    res.status(200).json(req.user);
+    const { token } = req.body;
+    console.log("req.body: ", req.body);
+    console.log("notitoken recieved at backend: ", token);
+    const userId = req.user._id;
+    
+    const updatedUser = await User.findByIdAndUpdate(userId, {notiToken: token}, {new: true})  //{new: true} return updated document.
+    console.log("UpdatedUser: ", updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });

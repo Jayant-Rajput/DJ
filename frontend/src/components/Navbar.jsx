@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useChatStore } from '../stores/useChatStore';
+import { notiPermissionOnce } from '../lib/utils';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -72,6 +73,10 @@ const Navbar = () => {
                 className={`hover:text-blue-400 transition-colors ${isActive('/chat') ? 'text-blue-400' : 'text-white'}`}>
             Community
           </Link>
+
+          <button className="cursor-pointer hover:text-blue-400" onClick={notiPermissionOnce}>
+          Notification
+          </button>
 
 
           {authUser && <div className="relative cursor-pointer" onClick={handleNotificationClick}>

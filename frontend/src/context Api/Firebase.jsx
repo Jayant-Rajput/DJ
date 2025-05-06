@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
+import { getMessaging, onMessage } from "firebase/messaging";
 import { 
     getAuth,
     GoogleAuthProvider,
@@ -21,6 +22,9 @@ const firebaseConfig = {
   
 
 const firebaseApp = initializeApp(firebaseConfig); // Now, an instance of firebase app is created
+export const messaging = getMessaging(firebaseApp);
+
+
 const firebaseAuth = getAuth(firebaseApp);
 
 const googleProvider = new GoogleAuthProvider();

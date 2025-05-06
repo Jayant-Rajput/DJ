@@ -33,7 +33,7 @@ export const addBlog = async (req, res) => {
 export const getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find().populate("createdBy", "fullname");  //populate 
-        console.log(blogs);
+        // console.log(blogs);
         res.status(200).json(blogs);
     } catch (error) {
         console.log("Error in getAllBlogs controller: ", error);
