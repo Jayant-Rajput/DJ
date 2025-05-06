@@ -15,10 +15,6 @@ import {
 } from "recharts";
 import { useChatStore } from "../stores/useChatStore";
 import { CheckCircle, Camera } from 'lucide-react';
-import { Canvas } from '@react-three/fiber'
-import {OrbitControls, Environment, PresentationControls, ContactShadows } from '@react-three/drei';
-import { Developer } from './Developer.jsx';
-import branchMap from "../constants/BranchList.js";
 
 const ProfilePage = () => {
 
@@ -353,7 +349,7 @@ const ProfilePage = () => {
               <div>
                 <p className="text-gray-500 text-sm font-medium">Branch</p>
                 <p className="font-semibold text-gray-800">
-                  {branchMap[String (authUser.branch)]}
+                  {authUser.branch}
                 </p>
               </div>
             </div>

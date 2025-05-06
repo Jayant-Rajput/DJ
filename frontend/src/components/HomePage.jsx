@@ -277,7 +277,7 @@ const HomePage = () => {
       </section>
 
       {/* section 4 Earth model and fancy line */}
-      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-45 z-[-1]">
+      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-45">
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-bg-black/70 z-[-1]"></div>
         <div className="md:w-1/2 mt-0">
 

@@ -21,7 +21,7 @@ const teamMembers = [
     description:
       "Diptesh Raj is a passionate Full Stack Developer with a knack for building scalable web applications. He enjoys working with React, Node.js, and modern web technologies, and is driven by problem-solving and impactful innovation",
     socials: {
-        linkedin: "https://linkedin.com/in/dipteshraj",
+        linkedin: "https://www.linkedin.com/in/diptesh-raj-06bb7824a",
         github: "https://github.com/dipteshrastogi",
         instagram: "https://www.instagram.com/diptesh.raj/",
     },
