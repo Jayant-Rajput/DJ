@@ -228,6 +228,7 @@ const HomePage = () => {
           {isFetchingBlogs ? (
             <CardSkeleton />
           ) : (
+            blogs.length==0 ? <CardSkeleton /> :
             blogs.map((blog, index) => (
               <motion.div
                 key={blog.id}
@@ -264,7 +265,6 @@ const HomePage = () => {
           )}
         </div>
         <motion.button
-          onClick={() => navigate("/blogs")}
           className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -272,12 +272,12 @@ const HomePage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
         >
-          Explore All Blogs
+          <Link to={'/blogs'}>Explore All Blogs</Link>
         </motion.button>
       </section>
 
       {/* section 4 Earth model and fancy line */}
-      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-70">
+      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white -mt-45">
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-bg-black/70 z-[-1]"></div>
         <div className="md:w-1/2 mt-0">
 
