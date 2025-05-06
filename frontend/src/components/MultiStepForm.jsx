@@ -105,8 +105,15 @@ const MultiStepForm = () => {
     },
   ];
 
-  if(isSigninUp){
-    return<h1>Wait for a while...</h1>
+  if (isSigninUp) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-700">Creating your account...</h1>
+        </div>
+      </div>
+    );
   }
 
   return (

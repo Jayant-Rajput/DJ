@@ -91,8 +91,16 @@ const Signin = () => {
   }, [user, navigate]);
 
   if (isLoggingIn) {
-    return <h1>Loggin In...</h1>
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-700">Logging into your account...</h1>
+        </div>
+      </div>
+    );
   }
+
   if (isSendingOtp) {
     return <h1>Ruk ja bhai tereko ek mail bhejta hu</h1>
   }
