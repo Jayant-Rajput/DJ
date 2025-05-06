@@ -353,7 +353,7 @@ const ProfilePage = () => {
               <div>
                 <p className="text-gray-500 text-sm font-medium">Branch</p>
                 <p className="font-semibold text-gray-800">
-                  {branchMap[String (authUser.branch)]}
+                  {authUser.branch}
                 </p>
               </div>
             </div>

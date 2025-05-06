@@ -6,13 +6,21 @@ const Ratings = () => {
   const [viewMode, setViewMode] = useState("college"); // "college" or "year"
   const [platform, setPlatform] = useState("codeforces"); // "codeforces", "codechef", or "leetcode"
   const [selectedYear, setSelectedYear] = useState(null); // null, 1, 2, 3, or 4
-  
+
   // Get data from store
   const { fetchRatingsData, RatingsData } = useContestStore();
 
   useEffect(() => {
     fetchRatingsData();
   }, [fetchRatingsData]);
+
+  const [previewSrc, setPreviewSrc] = useState(null);
+  const handleImageClick = (src) => {
+    setPreviewSrc(src);
+  };
+  const handleClosePreview = () => {
+    setPreviewSrc(null);
+  };
 
   // Handle button clicks for view mode
   const handleViewMode = (mode) => {
@@ -41,20 +49,21 @@ const Ratings = () => {
       viewMode,
       platform,
       selectedYear,
-      dataLength: RatingsData ? RatingsData.length : 0
+      dataLength: RatingsData ? RatingsData.length : 0,
     });
-    
+
     if (RatingsData && RatingsData.length > 0) {
       // Log the year values present in the data
-      const years = RatingsData.map(user => user.year);
+      const years = RatingsData.map((user) => user.year);
       const uniqueYears = [...new Set(years)];
       console.log("Years in data:", uniqueYears);
-      
+
       // Check if we have data for the selected year
       if (selectedYear) {
-        const matchingUsers = RatingsData.filter(user => 
-          // Match by both number and string representation
-          user.year === selectedYear || user.year === String(selectedYear)
+        const matchingUsers = RatingsData.filter(
+          (user) =>
+            // Match by both number and string representation
+            user.year === selectedYear || user.year === String(selectedYear)
         );
         console.log(`Users with year ${selectedYear}:`, matchingUsers.length);
       }
@@ -71,13 +80,16 @@ const Ratings = () => {
 
     // Filter by year if in year-wise mode and a year is selected
     if (viewMode === "year" && selectedYear !== null) {
-      filteredData = filteredData.filter(user => {
+      filteredData = filteredData.filter((user) => {
         // Compare as both number and string to handle possible type mismatches
         const userYear = user.year;
-        return userYear === selectedYear || userYear === String(selectedYear) || 
-               String(userYear) === String(selectedYear);
+        return (
+          userYear === selectedYear ||
+          userYear === String(selectedYear) ||
+          String(userYear) === String(selectedYear)
+        );
       });
-      
+
       // Debug log
       console.log(`After year filter (${selectedYear}):`, filteredData.length);
     }
@@ -114,17 +126,17 @@ const Ratings = () => {
       case "codeforces":
         return {
           handle: user.codeforcesId || "N/A",
-          rating: user.forcesRating || "N/A"
+          rating: user.forcesRating || "N/A",
         };
       case "codechef":
         return {
           handle: user.codechefId || "N/A",
-          rating: user.chefRating || "N/A"
+          rating: user.chefRating || "N/A",
         };
       case "leetcode":
         return {
           handle: user.leetcodeId || "N/A",
-          rating: user.leetRating || "N/A"
+          rating: user.leetRating || "N/A",
         };
       default:
         return { handle: "N/A", rating: "N/A" };
@@ -134,8 +146,9 @@ const Ratings = () => {
   // Get platform-specific styling for the rating
   const getRatingColorClass = (rating) => {
     // Convert rating to number if it's not already
-    const numRating = typeof rating === 'number' ? rating : parseInt(rating) || 0;
-    
+    const numRating =
+      typeof rating === "number" ? rating : parseInt(rating) || 0;
+
     if (platform === "codeforces") {
       if (numRating >= 2400) return "text-red-600";
       if (numRating >= 2100) return "text-orange-500";
@@ -165,8 +178,10 @@ const Ratings = () => {
   return (
     <div className="p-4 max-w-4xl mx-auto text-gray-800 mt-20">
       {/* Heading */}
-      <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text animate-fadeIn opacity-0 animation-delay-300">Competitive Programming Ratings</h1>
-      
+      <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text animate-fadeIn opacity-0 animation-delay-300">
+        Competitive Programming Ratings
+      </h1>
+
       {/* Filter Controls */}
       <div className="mb-8">
         {/* View Mode Buttons */}
@@ -192,7 +207,7 @@ const Ratings = () => {
             Year Wise
           </button>
         </div>
-        
+
         {/* Platform Buttons */}
         <div className="flex justify-center mb-4 space-x-4">
           <button
@@ -226,7 +241,7 @@ const Ratings = () => {
             LeetCode
           </button>
         </div>
-        
+
         {/* Year Buttons (only shown when Year Wise is selected) */}
         {viewMode === "year" && (
           <div className="flex justify-center space-x-4">
@@ -240,40 +255,98 @@ const Ratings = () => {
                     : "bg-gray-200 hover:bg-gray-300 text-gray-800"
                 }`}
               >
-                {year}{year === 1 ? "st" : year === 2 ? "nd" : year === 3 ? "rd" : "th"} Year
+                {year}
+                {year === 1
+                  ? "st"
+                  : year === 2
+                  ? "nd"
+                  : year === 3
+                  ? "rd"
+                  : "th"}{" "}
+                Year
               </button>
             ))}
           </div>
         )}
       </div>
-      
+
+      {previewSrc && (
+        <div
+          onClick={handleClosePreview}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <img
+            src={previewSrc}
+            alt="preview"
+            style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: "10px" }}
+          />
+        </div>
+      )}
+
       {/* Display the filtered data */}
       <div className="bg-transparent border border-gray-300 shadow-md rounded-lg overflow-hidden">
         {/* Table Header */}
         <div className="grid grid-cols-12 bg-gray-700 text-white py-3 px-4 font-semibold border-b">
           <div className="col-span-1">#</div>
+          <div className="col-span-1">Profile</div>
           <div className="col-span-3">Full Name</div>
           <div className="col-span-3">Handle</div>
           <div className="col-span-2">College</div>
           <div className="col-span-1">Year</div>
-          <div className="col-span-2 text-right">Rating</div>
+          <div className="col-span-1 text-right">Rating</div>
         </div>
-        
+
         {/* Table Content */}
         {filteredData.length > 0 ? (
           filteredData.map((user, index) => {
             const platformData = getUserPlatformData(user);
             return (
-              <div 
-                key={index} 
-                className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150"
+              <div
+                key={index}
+                className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center"
               >
                 <div className="col-span-1 text-white">{index + 1}</div>
-                <div className="col-span-3 text-white">{user.fullname || "N/A"}</div>
-                <div className="col-span-3 text-white">{platformData.handle}</div>
-                <div className="col-span-2 text-white">{user.college || "N/A"}</div>
-                <div className="col-span-1 text-white">{user.year || "N/A"}</div>
-                <div className={`col-span-2 text-right font-medium ${getRatingColorClass(platformData.rating)}`}>
+
+                {/* Profile Picture */}
+                <div className="col-span-1">
+                  <img
+                    src={user.profilePic || "/avatar.png"}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                    onClick={() =>
+                      handleImageClick(user.profilePic || "/avatar.png")
+                    }
+                  />
+                </div>
+
+                <div className="col-span-3 text-white">
+                  {user.fullname || "N/A"}
+                </div>
+                <div className="col-span-3 text-white">
+                  {platformData.handle}
+                </div>
+                <div className="col-span-2 text-white">
+                  {user.college || "N/A"}
+                </div>
+                <div className="col-span-1 text-white">
+                  {user.year || "N/A"}
+                </div>
+                <div
+                  className={`col-span-1 text-right font-medium ${getRatingColorClass(
+                    platformData.rating
+                  )}`}
+                >
                   {platformData.rating}
                 </div>
               </div>
@@ -281,7 +354,9 @@ const Ratings = () => {
           })
         ) : (
           <div className="py-6 text-center text-gray-400">
-            {RatingsData && RatingsData.length > 0 ? "No data matches your filters" : "Loading ratings data..."}
+            {RatingsData && RatingsData.length > 0
+              ? "No data matches your filters"
+              : "Loading ratings data..."}
           </div>
         )}
       </div>

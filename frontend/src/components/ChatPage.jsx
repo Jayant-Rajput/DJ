@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useChatStore } from '../stores/useChatStore.js'
 import { useAuthStore } from '../stores/useAuthStore.js'
 import { formatMessageTime, formatMessageDate } from '../lib/utils.js'
@@ -9,6 +9,14 @@ const ChatPage = () => {
   const { isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage, unreadMessages } = useChatStore();
   const { authUser, checkAuth, onlineUserCount } = useAuthStore();
   const messageEndRef = useRef(null);
+
+  const [previewSrc, setPreviewSrc] = useState(null);
+  const handleImageClick = (src) => {
+    setPreviewSrc(src);
+  };
+  const handleClosePreview = () => {
+    setPreviewSrc(null);
+  };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -61,6 +69,30 @@ const ChatPage = () => {
         <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
         <span>{`Online users: ${onlineUserCount}`}</span>
       </div>
+
+      {previewSrc && (
+        <div
+          onClick={handleClosePreview}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <img
+            src={previewSrc}
+            alt="preview"
+            style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: "10px" }}
+          />
+        </div>
+      )}
       <div className='flex-1 overflow-y-auto p-4 space-y-4'>
         {dates.map((date) => (
           <div key={date}>
@@ -77,11 +109,12 @@ const ChatPage = () => {
                 ref={messageEndRef}
               >
                 <div className="chat-image avatar">
-                  <div className="size-10 rounded-full border">
-                    <img
-                      src="/avatar.png"
-                      alt="profile pic"
-                    />
+                  <div className="size-10 rounded-full border cursor-pointer">
+                  <img
+                  src={eachmsg.senderId.profilePic || "/avatar.png"}
+                  alt="profile pic"
+                  onClick={() => handleImageClick(eachmsg.senderId.profilePic || "/avatar.png")}
+                />
                   </div>
                 </div>
                 <div className="chat-header mb-1">
