@@ -7,6 +7,7 @@ import nodemailer from "nodemailer";
 import dns from "dns";
 import axios from "axios";
 import { ratingsFetchKrDeBhai } from "../lib/utils.js";
+import OtpModel from "../models/otp.model.js";
 
 export const isDisposableEmail = async (email) => {
   const domain = email.split('@')[1];
@@ -363,9 +364,11 @@ export const oauthUser = async (req, res) => {
 }
 
 export const generateOTP = async (req, res) => {
-  console.log("HOla");
-    const { email } = req.body;
+  // console.log("HOla");
+    const { email} = req.body;
+    console.log(email);
     if (!email) return res.status(400).json({ error: 'Please provide registered email address' });
+    // console.log(isSignup);
 
     const matchedMail = User.findOne({email});
     if(!matchedMail) return res.status(400).json({ error: 'Please provide registered email address' });
@@ -390,11 +393,20 @@ export const generateOTP = async (req, res) => {
     try {
         let info = await transporter.sendMail(mailOptions);
         console.log('Email sent: ' + info.messageId);
-        await User.findOneAndUpdate(
-          { email: email }, 
-          { $set: { otp: randomSixDigitNumber } }, 
-          { $set: {authProvider: "otp"}},
-        );
+        // if(isSignup){
+        //   console.log("Hii");
+        //   await OtpModel.findOneAndUpdate(
+        //     { email: email },
+        //     { otp: randomSixDigitNumber, expiresAt: Date.now() + 10 * 60 * 1000 },
+        //     { upsert: true }
+        //   )
+        // }else{
+          await User.findOneAndUpdate(
+            { email: email }, 
+            { $set: { otp: randomSixDigitNumber } }, 
+            { $set: {authProvider: "otp"}},
+          );
+        // }
         res.json({ message: 'Your message has been sent successfully.' });
     }catch (error) {
         console.error('Error sending email:', error);
@@ -428,6 +440,35 @@ export const loginWithOTP = async (req, res) => {
   }
 
 }
+
+// export const signUpWithOTP = async (req, res) => {
+//   console.log(req.body);
+//   try {
+//     const { email, OTP } = req.body;
+//     console.log(OTP);
+//     console.log(email);
+//     if (!email || !OTP) {
+//       return res.status(400).json({ error: 'Please provide a valid email address and OTP'});
+//     }
+//     const curr_user = await OtpModel.findOne({email}).lean();
+//     console.log("HOLA AMIGO", curr_user);
+  
+//     if(Date.now()>curr_user.expiresAt){
+//       return res.status(400).json({message: "OTP Expired"});
+//     }
+  
+//     if(!curr_user || String(curr_user.otp) !== String(OTP)){
+//       return res.status(400).json({message: "Invalid Credentials"});
+//     }
+
+//     res.status(200).json({message: "OTP verified successfully"});
+
+//   } catch (error) {
+//     console.log("Error in Signup controller", error.message);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// }
+
 
 export const changePassword = async (req, res) => {
   try {

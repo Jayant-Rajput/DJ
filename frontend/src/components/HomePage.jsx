@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ModelChk from "./ModelChk";
@@ -13,6 +13,7 @@ const HomePage = () => {
   const { totalUsers, authUser } = useAuthStore();
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
   const { isFetchingBlogs, AllBlogs, getAllBlogs, getBlog } = useBlogStore();
+  const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
     getAllBlogs();
@@ -22,6 +23,22 @@ const HomePage = () => {
     subscribeToMessage();
     return () => unsubscribeToMessage();
   }, [messages]);
+
+  useEffect(() => {
+    let start = 0;
+    const stepTime = 200;
+  
+    const step = () => {
+      const progress = start + Math.ceil((totalUsers - start) / 10);
+      setUserCount(progress);
+      start = progress;
+      if (start < totalUsers) {
+        setTimeout(step, stepTime);
+      }
+    };
+  
+    if (totalUsers > 0) step();
+  }, [totalUsers]);
 
   const blogs = AllBlogs.slice(0, 3);
 
@@ -187,7 +204,7 @@ const HomePage = () => {
           >
             We are family of
             <span className="ml-2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              {totalUsers || "..."}
+              {userCount || "..."}
             </span>
           </motion.h3>
           <motion.p

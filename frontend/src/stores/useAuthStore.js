@@ -297,6 +297,20 @@ export const useAuthStore = create(
       }
     },
 
+    signUpWithOTP: async (data) => {
+      set({ isSigninUp: true });
+      try{
+        const res = await axiosInstance.post("/auth/signUp-OTP", data);
+        set({ authUser: res.data });
+        toast.success("OTP verified Successfully");
+      }catch(error) {
+        toast.error(error.response.data.message || "OTP verification Failed");
+        console.log("Error in login: ", error);
+      }finally{
+        set({isSigninUp: false});
+      }
+    },
+
     generateOTP: async (data) => {
       set({ isSendingOtp: true });
       try {

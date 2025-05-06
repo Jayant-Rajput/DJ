@@ -14,27 +14,29 @@ export const getMessages = async(req, res) => {
     }
 }
 
-const extractTags = (text) => {
-    const regex = /@(\w+)/g;
-    let match;
-    const tags = [];
-    while ((match = regex.exec(text)) !== null) {
-      tags.push(match[1]);
-    }
-    return tags;
-};
+// const extractTags = (text) => {
+//     const regex = /@(\w+)/g;
+//     let match;
+//     const tags = [];
+//     while ((match = regex.exec(text)) !== null) {
+//         console.log("HOlas", match[1]);
+//       tags.push(match[1]);
+//     }
+//     return tags;
+// };
 
 export const sendMessage = async(req,res) => {
     try{
-        const { text, image } = req.body;
+        const { text, image, ids: taggedUserIds } = req.body;
+        // console.log(ids);
 
-        const taggedUsernames = extractTags(text);
-        let taggedUserIds = [];
+        // const taggedUsernames = extractTags(text);
+        // let taggedUserIds = [];
 
-        if(taggedUsernames.length){
-            const users = await User.find({fullname: { $in: taggedUsernames }});
-            taggedUserIds = users.map(u => u._id);
-        }
+        // if(taggedUsernames.length){
+        //     const users = await User.find({fullname: { $in: taggedUsernames }});
+        //     taggedUserIds = users.map(u => u._id);
+        // }
 
 
         const senderId = req.user._id;
@@ -59,9 +61,11 @@ export const sendMessage = async(req,res) => {
             image: imageUrl,
           }).populate("senderId", "fullname profilePic");
 
+        console.log("hehe", recentSavedMsg);
+
           // populate function is used only when the field (here senderId) is an ObjectId referring to another collection.
           
-        console.log(taggedUserIds);
+        // console.log(taggedUserIds);
 
         const outgoingMessages = {
             ...recentSavedMsg.toObject(),

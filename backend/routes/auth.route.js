@@ -13,6 +13,7 @@ router.post("/oauthlogin", oauthLoginUser);
 router.post("/oauthuser", oauthUser);
 router.post("/gen-OTP", generateOTP);
 router.post("/login-OTP", loginWithOTP);
+// router.post("/signUp-OTP", signUpWithOTP);
 router.post("/change-password", changePassword);
 router.post("/refreshRatings", refreshRating );
 router.put("/updateCodingIds", updateCodingIds);

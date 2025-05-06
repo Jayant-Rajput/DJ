@@ -12,6 +12,7 @@ const MessageInput = () => {
   const [text, setText] = useState("");
   const { sendMessage, users, getAllUsers } = useChatStore();
   const [suggestions, setSuggestions] = useState([]);
+  const [ids, setIds] = useState([]);
   const [cursorPos, setCursorPos] = useState(0);
 
   // console.log(users);
@@ -51,6 +52,7 @@ const MessageInput = () => {
       await sendMessage({ 
         text : text.trim(),
         image: imagePreview,
+        ids: ids,
       });
       setText("");
       setImagePreview(null);
@@ -66,14 +68,14 @@ const MessageInput = () => {
     const cursor = e.target.selectionStart;
     setCursorPos(cursor);
 
-    const regex = /(?:^|\s)@(\w*)$/;
+    const regex = /(?:^|\s)(@(?:[^\s]+(?:\s+[^\s]+)*)?)/;
     const substring = text.slice(0, cursor);
     const match = substring.match(regex);
     if(match){
       console.log("Hola");
-      const query = match[1].toLowerCase();
+      const query = match[1].slice(1);
       const filtered = users.data.filter((user)=>
-        user.fullname.toLowerCase().startsWith(query)
+        user.fullname.startsWith(query)
       );
       setSuggestions(filtered);
     } else{
@@ -82,13 +84,14 @@ const MessageInput = () => {
   }
 
   const selectSuggestion = (user) => {
-    const regex = /(?:^|\s)@(\w*)$/;
+    const regex = /(?:^|\s)(@(?:[^\s]+(?:\s+[^\s]+)*)?)/;
     const beforeCursor = text.slice(0, cursorPos);
-    const afterCursor = text.slice(cursorPos);
+    // const afterCursor = text.slice(cursorPos);
     const newBeforeCursor = beforeCursor.replace(regex, `@${user.fullname}`);
-    const newMessage = newBeforeCursor+afterCursor;
+    const newMessage = newBeforeCursor;
     setText(newMessage);
     setSuggestions([]);
+    setIds((prevIds) => [...prevIds, user._id]);
   }
 
 
