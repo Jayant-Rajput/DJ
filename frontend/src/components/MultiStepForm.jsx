@@ -23,7 +23,7 @@ const MultiStepForm = () => {
     await formValues(formData);
     console.log("ab khel shuru hoga");
     await oAuthSignup(navigate);
-    toast.success("Form submitted successfully!")
+    toast.success("Form submitted successfully!");
   };
 
   const steps = [
@@ -31,21 +31,36 @@ const MultiStepForm = () => {
       label: "Step 1: Personal Details",
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
+          <select
+            id="branch"
             name="branch"
-            placeholder="Enter your Branch"
             value={formData.branch}
             onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             required
-            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          >
+            <option value="" disabled>
+              Select Branch
+            </option>
+            <option value="ECE">ECE</option>
+            <option value="IT">IT</option>
+            <option value="CSE">CSE</option>
+            <option value="EE">EE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+            <option value="META">META</option>
+            <option value="MINING">MINING</option>
+            <option value="BIOTECH">BIOTECH</option>
+            <option value="BME">BME</option>
+          </select>
           <input
             type="text"
             name="college"
             placeholder="Enter your College Name"
             value={formData.college}
-            onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, college: e.target.value })
+            }
             required
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -92,7 +107,9 @@ const MultiStepForm = () => {
             name="leetId"
             placeholder="Enter your LeetCode ID"
             value={formData.leetId}
-            onChange={(e) => setFormData({ ...formData, leetId: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, leetId: e.target.value })
+            }
             required
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -105,13 +122,15 @@ const MultiStepForm = () => {
     },
   ];
 
-  if(isSigninUp){
-    return<h1>Wait for a while...</h1>
+  if (isSigninUp) {
+    return <h1>Wait for a while...</h1>;
   }
 
   return (
     <div className="flex flex-col items-center p-6 border rounded-lg shadow-lg bg-white max-w-lg mx-auto mt-50 text-black mb-30">
-      <h2 className="text-xl font-bold mb-4 text-blue-600">{steps[step].label}</h2>
+      <h2 className="text-xl font-bold mb-4 text-blue-600">
+        {steps[step].label}
+      </h2>
       {steps[step].content}
       <div className="mt-6 flex justify-between w-full">
         <button
