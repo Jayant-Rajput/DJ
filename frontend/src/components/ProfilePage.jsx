@@ -22,11 +22,22 @@ const ProfilePage = () => {
   const { authUser, refreshRatings, updateCodingIds, updateProfile, updateImage, removeImage, isWorking } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
+  const divref = useRef();
 
   useEffect(() => {
     subscribeToMessage();
     return () => unsubscribeToMessage();
   }, [messages]);
+
+   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (divref.current && !divref.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
 
   const [progress, setProgress] = useState(100);
@@ -284,6 +295,7 @@ const ProfilePage = () => {
 
         {menuOpen && (
           <div
+            ref={divref}
             className="absolute top-full w-48 bg-gray-800 rounded-md shadow-lg z-[9999]"
           >
             <ul className="py-2">

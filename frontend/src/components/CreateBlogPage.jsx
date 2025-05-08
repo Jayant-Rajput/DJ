@@ -119,7 +119,7 @@ const CreateBlogPage = () => {
 
 
 
-      <div className="max-w-4xl mx-auto mt-20 p-6 bg-white opacity-50 shadow-lg rounded-lg">
+      <div className="max-w-4xl mx-auto mt-20 p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-3xl text-blue-500 font-bold mb-4">
           Add a New Blog
         </h2>

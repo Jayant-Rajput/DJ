@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { messaging } from "../context Api/Firebase.jsx";
 import { getToken } from "firebase/messaging";
 import { useAuthStore } from "../stores/useAuthStore.js";
@@ -59,3 +61,13 @@ export const notiPermissionOnce = () => {
   }
 };
 
+
+export const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}

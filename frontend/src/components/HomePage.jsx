@@ -292,6 +292,7 @@ const HomePage = () => {
             transition={{ duration: 0.8 }}
           >
             We are here.
+            click the <span className="text-red-500">📍</span>
           </motion.h1>
           {!authUser && (
             <motion.p
