@@ -7,25 +7,24 @@ const teamMembers = [
     role: "Full Stack Developer",
     image: "jayant_photo.png",
     description:
-      "Jayant Rajput is a passionate Full Stack Developer with a knack for building scalable web applications. He enjoys working with React, Node.js, and modern web technologies, and is driven by problem-solving and impactful innovation",
+      "Hi, I'm Jayant Rajput, A 4th - year Electronics and Communication Engineering student at NIT Raipur — although after studying DSP(Digital Signal Processing), I had an existential crisis and realized: 'Mera toh iss branch mein kuch nahi hone wala'. 😅So, I switched gears! Now I’m a full stack web developer and a problem- solving enthusiast, building cool stuff on the web and cracking code like it owes me money.",
     socials: {
-      linkedin: "https://www.linkedin.com/in/jayant-rajput-b940b4250/",
-      github: "https://github.com/Jayant-Rajput",
-      instagram: "https://www.instagram.com/jayantrajput1282",
-    },
+    linkedin: "https://www.linkedin.com/in/jayant-rajput-b940b4250/",
+    github: "https://github.com/Jayant-Rajput",
+    instagram: "https://www.instagram.com/jayantrajput1282",
   },
-  {
-    name: "Diptesh Raj",
+  },
+{
+  name: "Diptesh Raj",
     role: "Full Stack Developer",
-    image: "Diptesh_photo.png",
-    description:
-      "Diptesh Raj is a passionate Full Stack Developer with a knack for building scalable web applications. He enjoys working with React, Node.js, and modern web technologies, and is driven by problem-solving and impactful innovation",
+      image: "Diptesh_photo.png",
+        description: "Hey, I’m Diptesh Raj, final year ECE undergrad at NIT Raipur. I love building things that solve real problems and enjoy the creative process that comes with it. Whether it’s brainstorming with a team or diving into something new, I’m always up for a challenge. Outside of tech, I’m just a curious soul who loves exploring ideas and learning along the way.",
     socials: {
-        linkedin: "https://www.linkedin.com/in/diptesh-raj-06bb7824a",
-        github: "https://github.com/dipteshrastogi",
+    linkedin: "https://www.linkedin.com/in/diptesh-raj-06bb7824a",
+      github: "https://github.com/dipteshrastogi",
         instagram: "https://www.instagram.com/diptesh.raj/",
     },
-  },
+},
 ];
 
 export default function TeamPage() {
