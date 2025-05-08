@@ -176,189 +176,206 @@ const Ratings = () => {
   const filteredData = getFilteredData();
 
   return (
-    <div className="p-4 max-w-4xl mx-auto text-gray-800 mt-20">
-      {/* Heading */}
-      <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text animate-fadeIn opacity-0 animation-delay-300">
-        Competitive Programming Ratings
-      </h1>
+    <div className="relative w-full">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+      >
+        <source src="/bgvideo2.mp4" type="video/mp4" />
+      </video>
 
-      {/* Filter Controls */}
-      <div className="mb-8">
-        {/* View Mode Buttons */}
-        <div className="flex justify-center mb-4 space-x-4">
-          <button
-            onClick={() => handleViewMode("college")}
-            className={`px-4 py-2 rounded-md ${
-              viewMode === "college"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            College Wise
-          </button>
-          <button
-            onClick={() => handleViewMode("year")}
-            className={`px-4 py-2 rounded-md ${
-              viewMode === "year"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            Year Wise
-          </button>
-        </div>
+      <div className="p-4 max-w-4xl mx-auto text-gray-800 mt-20">
+        {/* Heading */}
+        <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text animate-fadeIn opacity-0 animation-delay-300">
+          Competitive Programming Ratings
+        </h1>
 
-        {/* Platform Buttons */}
-        <div className="flex justify-center mb-4 space-x-4">
-          <button
-            onClick={() => handlePlatform("codeforces")}
-            className={`px-4 py-2 rounded-md ${
-              platform === "codeforces"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            Codeforces
-          </button>
-          <button
-            onClick={() => handlePlatform("codechef")}
-            className={`px-4 py-2 rounded-md ${
-              platform === "codechef"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            CodeChef
-          </button>
-          <button
-            onClick={() => handlePlatform("leetcode")}
-            className={`px-4 py-2 rounded-md ${
-              platform === "leetcode"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            LeetCode
-          </button>
-        </div>
-
-        {/* Year Buttons (only shown when Year Wise is selected) */}
-        {viewMode === "year" && (
-          <div className="flex justify-center space-x-4">
-            {[1, 2, 3, 4].map((year) => (
-              <button
-                key={year}
-                onClick={() => handleYearSelect(year)}
-                className={`px-4 py-2 rounded-md ${
-                  selectedYear === year
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                }`}
-              >
-                {year}
-                {year === 1
-                  ? "st"
-                  : year === 2
-                  ? "nd"
-                  : year === 3
-                  ? "rd"
-                  : "th"}{" "}
-                Year
-              </button>
-            ))}
+        {/* Filter Controls */}
+        <div className="mb-8">
+          {/* View Mode Buttons */}
+          <div className="flex justify-center mb-4 space-x-4">
+            <button
+              onClick={() => handleViewMode("college")}
+              className={`px-4 py-2 rounded-md ${
+                viewMode === "college"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              }`}
+            >
+              College Wise
+            </button>
+            <button
+              onClick={() => handleViewMode("year")}
+              className={`px-4 py-2 rounded-md ${
+                viewMode === "year"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              }`}
+            >
+              Year Wise
+            </button>
           </div>
-        )}
-      </div>
 
-      {previewSrc && (
-        <div
-          onClick={handleClosePreview}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.8)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <img
-            src={previewSrc}
-            alt="preview"
-            style={{ maxHeight: "90%", maxWidth: "90%", borderRadius: "10px" }}
-          />
-        </div>
-      )}
+          {/* Platform Buttons */}
+          <div className="flex justify-center mb-4 space-x-4">
+            <button
+              onClick={() => handlePlatform("codeforces")}
+              className={`px-4 py-2 rounded-md ${
+                platform === "codeforces"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              }`}
+            >
+              Codeforces
+            </button>
+            <button
+              onClick={() => handlePlatform("codechef")}
+              className={`px-4 py-2 rounded-md ${
+                platform === "codechef"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              }`}
+            >
+              CodeChef
+            </button>
+            <button
+              onClick={() => handlePlatform("leetcode")}
+              className={`px-4 py-2 rounded-md ${
+                platform === "leetcode"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              }`}
+            >
+              LeetCode
+            </button>
+          </div>
 
-      {/* Display the filtered data */}
-      <div className="bg-transparent border border-gray-300 shadow-md rounded-lg overflow-hidden">
-        {/* Table Header */}
-        <div className="grid grid-cols-12 bg-gray-700 text-white py-3 px-4 font-semibold border-b">
-          <div className="col-span-1">#</div>
-          <div className="col-span-1">Profile</div>
-          <div className="col-span-3">Full Name</div>
-          <div className="col-span-3">Handle</div>
-          <div className="col-span-2">College</div>
-          <div className="col-span-1">Year</div>
-          <div className="col-span-1 text-right">Rating</div>
-        </div>
-
-        {/* Table Content */}
-        {filteredData.length > 0 ? (
-          filteredData.map((user, index) => {
-            const platformData = getUserPlatformData(user);
-            return (
-              <div
-                key={index}
-                className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center"
-              >
-                <div className="col-span-1 text-white">{index + 1}</div>
-
-                {/* Profile Picture */}
-                <div className="col-span-1">
-                  <img
-                    src={user.profilePic || "/avatar.png"}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
-                    onClick={() =>
-                      handleImageClick(user.profilePic || "/avatar.png")
-                    }
-                  />
-                </div>
-
-                <div className="col-span-3 text-white">
-                  {user.fullname || "N/A"}
-                </div>
-                <div className="col-span-3 text-white">
-                  {platformData.handle}
-                </div>
-                <div className="col-span-2 text-white">
-                  {user.college || "N/A"}
-                </div>
-                <div className="col-span-1 text-white">
-                  {user.year || "N/A"}
-                </div>
-                <div
-                  className={`col-span-1 text-right font-medium ${getRatingColorClass(
-                    platformData.rating
-                  )}`}
+          {/* Year Buttons (only shown when Year Wise is selected) */}
+          {viewMode === "year" && (
+            <div className="flex justify-center space-x-4">
+              {[1, 2, 3, 4].map((year) => (
+                <button
+                  key={year}
+                  onClick={() => handleYearSelect(year)}
+                  className={`px-4 py-2 rounded-md ${
+                    selectedYear === year
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  }`}
                 >
-                  {platformData.rating}
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="py-6 text-center text-gray-400">
-            {RatingsData && RatingsData.length > 0
-              ? "No data matches your filters"
-              : "Loading ratings data..."}
+                  {year}
+                  {year === 1
+                    ? "st"
+                    : year === 2
+                    ? "nd"
+                    : year === 3
+                    ? "rd"
+                    : "th"}{" "}
+                  Year
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {previewSrc && (
+          <div
+            onClick={handleClosePreview}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              backgroundColor: "rgba(0,0,0,0.8)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1000,
+            }}
+          >
+            <img
+              src={previewSrc}
+              alt="preview"
+              style={{
+                maxHeight: "90%",
+                maxWidth: "90%",
+                borderRadius: "10px",
+              }}
+            />
           </div>
         )}
+
+        {/* Display the filtered data */}
+        <div className="bg-transparent border border-gray-300 shadow-md rounded-lg overflow-hidden">
+          {/* Table Header */}
+          <div className="grid grid-cols-12 bg-gray-700 text-white py-3 px-4 font-semibold border-b">
+            <div className="col-span-1">#</div>
+            <div className="col-span-1">Profile</div>
+            <div className="col-span-3">Full Name</div>
+            <div className="col-span-3">Handle</div>
+            <div className="col-span-2">College</div>
+            <div className="col-span-1">Year</div>
+            <div className="col-span-1 text-right">Rating</div>
+          </div>
+
+          {/* Table Content */}
+          {filteredData.length > 0 ? (
+            filteredData.map((user, index) => {
+              const platformData = getUserPlatformData(user);
+              return (
+                <div
+                  key={index}
+                  className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center"
+                >
+                  <div className="col-span-1 text-white">{index + 1}</div>
+
+                  {/* Profile Picture */}
+                  <div className="col-span-1">
+                    <img
+                      src={user.profilePic || "/avatar.png"}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                      onClick={() =>
+                        handleImageClick(user.profilePic || "/avatar.png")
+                      }
+                    />
+                  </div>
+
+                  <div className="col-span-3 text-white">
+                    {user.fullname || "N/A"}
+                  </div>
+                  <div className="col-span-3 text-white">
+                    {platformData.handle}
+                  </div>
+                  <div className="col-span-2 text-white">
+                    {user.college || "N/A"}
+                  </div>
+                  <div className="col-span-1 text-white">
+                    {user.year || "N/A"}
+                  </div>
+                  <div
+                    className={`col-span-1 text-right font-medium ${getRatingColorClass(
+                      platformData.rating
+                    )}`}
+                  >
+                    {platformData.rating}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="py-6 text-center text-gray-400">
+              {RatingsData && RatingsData.length > 0
+                ? "No data matches your filters"
+                : "Loading ratings data..."}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
