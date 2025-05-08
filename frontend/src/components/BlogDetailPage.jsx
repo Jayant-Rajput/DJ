@@ -25,24 +25,37 @@ const BlogDetails = () => {
   }
 
   return (
-    <div className="max-w-fit w-full p-4 mt-20 text-left ml-20">
-      <img
-        src={
-          currentBlog.coverImage !== "null"
-            ? currentBlog.coverImage
-            : "/avatar.png"
-        }
-        alt="Cover"
-        className="max-w-2xl w-full h-84 object-cover rounded-md"
-      />
+    <div className="relative w-full">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+      >
+        <source src="/bgvideo2.mp4" type="video/mp4" />
+      </video>
 
-      <h1 className="text-2xl font-bold mt-12">{currentBlog.title}</h1>
-      <p className="text-gray-500 mt-1">
-        By {currentBlog.createdBy?.fullname || "Unknown"}
-      </p>
+      <div className="max-w-fit w-full p-4 mt-20 text-left ml-20">
+        <img
+          src={
+            currentBlog.coverImage !== "null"
+              ? currentBlog.coverImage
+              : "/avatar.png"
+          }
+          alt="Cover"
+          className="max-w-2xl w-full h-84 object-cover rounded-md"
+        />
 
-      <div className="prose prose-lg prose-slate max-w-none mt-5">
-        {parse(currentBlog.content)}
+        <h1 className="text-3xl font-bold mt-12">{currentBlog.title}</h1>
+        <p className="text-gray-500 mt-1">
+          By {currentBlog.createdBy?.fullname || "Unknown"}
+        </p>
+
+        <div className="prose prose-lg prose-slate text-xl max-w-none mt-5">
+          {parse(currentBlog.content)}
+        </div>
       </div>
     </div>
   );

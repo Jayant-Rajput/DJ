@@ -1,12 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useChatStore } from '../stores/useChatStore.js'
-import { useAuthStore } from '../stores/useAuthStore.js'
-import { formatMessageTime, formatMessageDate } from '../lib/utils.js'
-import MessageInput from './MessageInput.jsx';
-import ChatSkeleton from '../skeleton-screen/ChatSkeleton.jsx';
+import React, { useEffect, useRef, useState } from "react";
+import { useChatStore } from "../stores/useChatStore.js";
+import { useAuthStore } from "../stores/useAuthStore.js";
+import { formatMessageTime, formatMessageDate } from "../lib/utils.js";
+import MessageInput from "./MessageInput.jsx";
+import ChatSkeleton from "../skeleton-screen/ChatSkeleton.jsx";
 
 const ChatPage = () => {
-  const { isMessagesLoading, messages, getMessages, subscribeToMessage, unsubscribeToMessage, unreadMessages } = useChatStore();
+  const {
+    isMessagesLoading,
+    messages,
+    getMessages,
+    subscribeToMessage,
+    unsubscribeToMessage,
+    unreadMessages,
+  } = useChatStore();
   const { authUser, checkAuth, onlineUserCount } = useAuthStore();
   const messageEndRef = useRef(null);
 
@@ -23,6 +30,14 @@ const ChatPage = () => {
       await getMessages();
     };
     fetchMessages();
+
+    const timer = setTimeout(() => {
+      console.log("5 seconds passed!");
+      alert("Messages older than 4 days will be automatically deleted.")
+    }, 3000);
+
+    // Cleanup (optional, but good practice)
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -32,29 +47,29 @@ const ChatPage = () => {
     }
     return () => unsubscribeToMessage();
   }, [messages]);
-  
+
   if (isMessagesLoading) {
     return <ChatSkeleton />;
   }
   const groupMessagesByDate = (messages) => {
     return messages.reduce((groups, message) => {
-      const date = formatMessageDate(message.createdAt)
+      const date = formatMessageDate(message.createdAt);
       if (!groups[date]) {
         groups[date] = [];
       }
       groups[date].push(message);
       return groups;
     }, {});
-  }
+  };
 
   console.log(unreadMessages);
 
   const validMessages = messages.filter((eachmsg) => eachmsg.senderId !== null);
   const messagesByDate = groupMessagesByDate(validMessages);
   const dates = Object.keys(messagesByDate);
+
   return (
     <div className="relative w-full mb-20">
-
       <video
         autoPlay
         loop
@@ -93,7 +108,7 @@ const ChatPage = () => {
           />
         </div>
       )}
-      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {dates.map((date) => (
           <div key={date}>
             <div className="text-center my-4 relative">
@@ -105,16 +120,24 @@ const ChatPage = () => {
             {messagesByDate[date].map((eachmsg) => (
               <div
                 key={eachmsg._id}
-                className={`chat ${eachmsg.senderId._id === (authUser._id) ? "chat-end" : "chat-start"}`}
+                className={`chat ${
+                  eachmsg.senderId._id === authUser._id
+                    ? "chat-end"
+                    : "chat-start"
+                }`}
                 ref={messageEndRef}
               >
                 <div className="chat-image avatar">
                   <div className="size-10 rounded-full border cursor-pointer">
-                  <img
-                  src={eachmsg.senderId.profilePic || "/avatar.png"}
-                  alt="profile pic"
-                  onClick={() => handleImageClick(eachmsg.senderId.profilePic || "/avatar.png")}
-                />
+                    <img
+                      src={eachmsg.senderId.profilePic || "/avatar.png"}
+                      alt="profile pic"
+                      onClick={() =>
+                        handleImageClick(
+                          eachmsg.senderId.profilePic || "/avatar.png"
+                        )
+                      }
+                    />
                   </div>
                 </div>
                 <div className="chat-header mb-1">
@@ -140,6 +163,6 @@ const ChatPage = () => {
       </div>
       <MessageInput />
     </div>
-  )
-}
-export default ChatPage
+  );
+};
+export default ChatPage;

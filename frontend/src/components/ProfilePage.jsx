@@ -393,15 +393,16 @@ const ProfilePage = () => {
                 className="text-sm px-2 py-1 rounded-full"
                 style={{ backgroundColor: leetColor, color: "white" }}
               >
-                {authUser.leetRating.toFixed(0)}
+              {authUser.leetRating != null ? authUser.leetRating.toFixed(0) : "N/A"}
+
               </span>
             </div>
             <div className="mt-3 space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Global Rank:</span>
                 <span className="font-medium">
-                  {authUser.leetGlobalRanking.toLocaleString()} /{" "}
-                  {authUser.leetTotalParticipants.toLocaleString()}
+                  {authUser.leetGlobalRanking?.toLocaleString() ?? "N/A"} /{" "}
+                  {authUser.leetTotalParticipants?.toLocaleString() ?? "N/A"}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
