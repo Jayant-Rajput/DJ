@@ -125,6 +125,7 @@ export const useAuthStore = create(
     updateCodingIds: async (data) => {
       set({isWorking: true});
       try{
+        console.log("Inside AuthStore: updateCodingIds")
         const response = await axiosInstance.put("/auth/updateCodingIds", data);
         set({authUser: response.data});
         useContestStore.setState({bookmarkContest: [...get().authUser.bookmarkedContests] })

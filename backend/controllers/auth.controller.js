@@ -158,6 +158,8 @@ export const updateCodingIds = async (req, res) => {
   try {
     const {objId, ccId, cfId, leetId} = req.body;
 
+    console.log(ccId, cfId, leetId);
+
     const ratingsUpdated = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
 
     await User.updateOne(

@@ -19,7 +19,7 @@ import { CheckCircle, Camera } from 'lucide-react';
 const ProfilePage = () => {
 
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
-  const { authUser, refreshRatings, updateCodingIds, updateProfile, updateImage, removeImage, isWorking } = useAuthStore();
+  const { authUser, refreshRatings, updateCodingIds, updateImage, removeImage, isWorking } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
   const divref = useRef();
@@ -43,8 +43,6 @@ const ProfilePage = () => {
   const [progress, setProgress] = useState(100);
   const duration = 4800;
 
-  console.log(menuOpen);
-
   useEffect(() => {
     const startTime = Date.now();
     const endTime = startTime + duration;
@@ -54,7 +52,6 @@ const ProfilePage = () => {
       const now = Date.now();
       const remaining = endTime - now;
       const percent = (remaining / duration) * 100;
-      console.log(percent);
       if (percent <= 0) {
         clearInterval(progressInterval);
         setProgress(0);
@@ -66,8 +63,6 @@ const ProfilePage = () => {
     return () => clearInterval(progressInterval);
   }, [isWorking]);
 
-
-  console.log(authUser.college);
 
   const [image, setImage] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -99,7 +94,7 @@ const ProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateProfile(formData);
+    updateCodingIds(formData);
   }
   const handleRefreshRatings = (e) => {
     e.preventDefault();
