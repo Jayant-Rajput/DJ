@@ -9,6 +9,7 @@ import { useBlogStore } from "../stores/useBlogStore";
 import CardSkeleton from "../skeleton-screen/CardSkeleton.jsx";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import AnimatedCount from "./AnimatedCount.jsx";
+import TypewriterHeading from "./TypewriterHeading.jsx";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -61,29 +62,25 @@ const HomePage = () => {
       <section className="h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-16 relative text-white">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50 z-[-1]"></div>
         <div className="md:w-1/2 text-center md:text-left space-y-6">
-          <motion.h1
-            className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Coding is Poetry
-          </motion.h1>
+          <TypewriterHeading />
           <motion.div
             className="space-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <p className="text-xl md:text-2xl italic bg-black/30 p-4 rounded-lg border-l-4 border-blue-400">
-              "First, solve the problem. Then, write the code." – John Johnson
-            </p>
+          <p className="text-xl md:text-2xl italic bg-black/30 p-4 rounded-lg border-l-4 border-purple-400">
+          "Coding like poetry should be short and concise."
+        </p>
+          <p className="text-xl md:text-2xl italic bg-black/30 p-4 rounded-lg border-l-4 border-purple-400">
+          "It’s not a bug; it’s an undocumented feature."
+        </p>
             <p className="text-xl md:text-2xl italic bg-black/30 p-4 rounded-lg border-l-4 border-purple-400">
               "Programs must be written for people to read, and only
-              incidentally for machines to execute." – Harold Abelson
+              incidentally for machines to execute."
             </p>
             <p className="text-xl md:text-2xl italic bg-black/30 p-4 rounded-lg border-l-4 border-purple-400">
-              "Confusion is part of programming." – Felienne Hermans
+              "Confusion is part of programming."
             </p>
           </motion.div>
         </div>
@@ -100,7 +97,7 @@ const HomePage = () => {
       <section className="min-h-screen flex flex-col items-center justify-center px-4 md:px-16 py-20 relative text-white">
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-blue-500/20 z-[-1]"></div>
         <motion.h3
-          className="text-5xl font-bold mb-4"
+          className="text-7xl font-bold mb-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -109,7 +106,7 @@ const HomePage = () => {
           <AnimatedCount totalUsers={totalUsers} />
         </motion.h3>
         <motion.p
-          className="text-4xl text-gray-300"
+          className="text-5xl text-gray-300"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
@@ -292,7 +289,14 @@ const HomePage = () => {
             transition={{ duration: 0.8 }}
           >
             We are here.
-            click the <span className="text-red-500">📍</span>
+          </motion.h1>
+          <motion.h1
+            className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+          click the <span className="text-red-500">📍</span> to find us
           </motion.h1>
           {!authUser && (
             <motion.p

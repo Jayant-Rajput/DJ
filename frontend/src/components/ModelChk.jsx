@@ -10,11 +10,11 @@ function Model() {
 
   useFrame(() => {
     if (modelRef.current) {
-      modelRef.current.rotation.y += 0.004; // Rotates around Y-axis
+      modelRef.current.rotation.y += 0.007; // Rotates around Y-axis
     }
   });
 
-  return <primitive ref={modelRef} object={gltf.scene} scale={0.7} />;
+  return <primitive ref={modelRef} object={gltf.scene} scale={0.8} />;
 }
 
 function ModelChk() {

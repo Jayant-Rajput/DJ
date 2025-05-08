@@ -32,7 +32,7 @@ const BlogDetails = () => {
         loop
         muted
         playsInline
-        className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+        className="fixed top-0 left-0 w-full h-full object-cover z-[-1] blur-xl"
       >
         <source src="/bgvideo2.mp4" type="video/mp4" />
       </video>
@@ -49,7 +49,7 @@ const BlogDetails = () => {
         />
 
         <h1 className="text-3xl font-bold mt-12">{currentBlog.title}</h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-gray-500 font-bold mt-1">
           By {currentBlog.createdBy?.fullname || "Unknown"}
         </p>
 
