@@ -32,7 +32,7 @@ app.use(express.json({ limit: "10mb" })); //profile picture upload from frontend
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://haccnitrr.netlify.app",
     credentials: true,
   })
 );
