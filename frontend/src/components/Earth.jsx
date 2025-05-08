@@ -54,8 +54,8 @@ function Earth() {
       <Suspense fallback={null}>
         <Model>
           <LocationPin
-            lat={21.25}
-            lon={81.60}
+            lat={21.251352070102293}
+            lon={81.60418151868645}
             url="https://maps.app.goo.gl/wa2cvWaU5fUMzX8T6"
           />
         </Model>

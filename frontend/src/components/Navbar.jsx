@@ -10,6 +10,24 @@ const Navbar = () => {
   const { authUser, logout } = useAuthStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { unreadMessages, clearUnreadMessages } = useChatStore();
+  const [showNavbar, setShowNavBar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const controlNavbar = () => {
+    if(window.scrollY<=0){
+      setShowNavBar(true);
+    } else if(window.scrollY > lastScrollY){
+      setShowNavBar(false);
+    } else{
+      setShowNavBar(true);
+    }
+    setLastScrollY(window.scrollY);
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener('scroll', controlNavbar);
+  },[lastScrollY]);
   
   const handleLogOut = () => {
     logout(navigate);
@@ -37,7 +55,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-10 bg-black bg-opacity-70 py-4 px-6 `}>
+    <nav className={`fixed top-0 left-0 right-0 z-10 bg-black bg-opacity-70 py-4 px-6 ${showNavbar ? 'translate-y-0' : '-translate-y-100'} `}>
       <div className="container mx-auto px-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">
           <Link to="/" className="flex items-center">

@@ -12,13 +12,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {/* Company Info */}
           <div className="flex flex-col">
-            <h3 className="text-2xl font-bold mb-4">HACC</h3>
+            <h3 className="text-2xl font-bold mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">HACC</span>
+            </h3>
             <p className="text-gray-400 mb-6">CP platform for college Students</p>
           </div>
           
           {/* Quick Links */}
           <div className="flex flex-col">
-            <h3 className="text-2xl font-bold mb-4">Quick Links</h3>
+            <h3 className="text-2xl font-bold mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Quick Links</span>
+            </h3>
             <ul className="space-y-3">
               <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/team" className="text-gray-400 hover:text-white transition-colors">Team</Link></li>
@@ -29,7 +33,9 @@ const Footer = () => {
           
           {/* Contact Info */}
           <div className="flex flex-col">
-            <h3 className="text-2xl font-bold mb-4">Contact Us</h3>
+            <h3 className="text-2xl font-bold mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Contact Us</span>
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center">
                 <MapPin size={20} className="text-gray-400 mr-3" />
