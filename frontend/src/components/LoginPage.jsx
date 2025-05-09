@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useFirebase } from "../context Api/Firebase.jsx";
 import { onAuthStateChanged } from "firebase/auth";
@@ -176,9 +176,9 @@ const Signin = () => {
 
             <div className="pt-6 text-center">
               <p className="text-blue-100">Don't have an account?</p>
-              <a href="/signup" className="block mt-2 font-medium text-white hover:underline">
+              <Link to="/signup" className="block mt-2 font-medium text-white hover:underline">
                 Create an account
-              </a>
+              </Link>
             </div>
           </div>
         </div>
