@@ -5,15 +5,21 @@ import { useChatStore } from '../stores/useChatStore';
 import ContestSkeleton from "../skeleton-screen/ContestSkeleton.jsx";
 
 const ContestPage = () => {
+  const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
 
-    const {messages, subscribeToMessage, unsubscribeToMessage} = useChatStore();
-  
-    useEffect(() => {
-        subscribeToMessage();
-        return () => unsubscribeToMessage();
-    }, [messages]);
+  useEffect(() => {
+    subscribeToMessage();
+    return () => unsubscribeToMessage();
+  }, [messages]);
 
-    const { allContests, fetchContests, isfetchingContests, bookmarkContest, isUpdating, triggerBookmark } = useContestStore();
+  const {
+    allContests,
+    fetchContests,
+    isfetchingContests,
+    bookmarkContest,
+    isUpdating,
+    triggerBookmark,
+  } = useContestStore();
 
   useEffect(() => {
     fetchContests();
@@ -85,16 +91,16 @@ const ContestPage = () => {
       >
         <source src="/bgvideo2.mp4" type="video/mp4" />
       </video>
-      <div className="p-6 mt-15">
-        <h1 className="text-3xl font-semibold mb-4">Contest List</h1>
+      <div className="px-4 py-6 sm:px-6 mt-10 sm:mt-15">
+        <h1 className="text-2xl sm:text-3xl font-semibold mb-4 text-white">Contest List</h1>
 
         {/* Filter Buttons */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-2 sm:gap-4 mb-6">
           {filters.map((item, index) => (
             <button
               key={index}
               onClick={() => handleFilterChange(item)}
-              className={`px-4 py-2 rounded-full ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-full ${
                 filterstate.includes(item)
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-800"
@@ -106,7 +112,7 @@ const ContestPage = () => {
         </div>
 
         {/* Contest Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {filteredContests.map((contest, index) => (
             <ContestCards
               key={index}

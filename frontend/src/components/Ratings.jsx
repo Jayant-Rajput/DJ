@@ -311,7 +311,7 @@ const Ratings = () => {
         )}
 
         {/* Display the filtered data */}
-        // Replace the "Table Header" and "Table Content" section in your return() with this:
+        
 <div className="overflow-x-auto rounded-lg border border-gray-300 shadow-md">
   <div className="min-w-[600px]">
     {/* Table Header */}
