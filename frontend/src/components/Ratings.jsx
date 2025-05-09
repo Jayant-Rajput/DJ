@@ -311,71 +311,72 @@ const Ratings = () => {
         )}
 
         {/* Display the filtered data */}
-        <div className="bg-transparent border border-gray-300 shadow-md rounded-lg overflow-hidden">
-          {/* Table Header */}
-          <div className="grid grid-cols-12 bg-gray-700 text-white py-3 px-4 font-semibold border-b">
-            <div className="col-span-1">#</div>
-            <div className="col-span-1">Profile</div>
-            <div className="col-span-3">Full Name</div>
-            <div className="col-span-3">Handle</div>
-            <div className="col-span-2">College</div>
-            <div className="col-span-1">Year</div>
-            <div className="col-span-1 text-right">Rating</div>
-          </div>
+        // Replace the "Table Header" and "Table Content" section in your return() with this:
+<div className="overflow-x-auto rounded-lg border border-gray-300 shadow-md">
+  <div className="min-w-[600px]">
+    {/* Table Header */}
+    <div className="grid grid-cols-12 bg-gray-700 text-white py-3 px-4 font-semibold border-b text-sm sm:text-base">
+      <div className="col-span-1">#</div>
+      <div className="col-span-1">Profile</div>
+      <div className="col-span-3">Full Name</div>
+      <div className="col-span-3">Handle</div>
+      <div className="col-span-2">College</div>
+      <div className="col-span-1">Year</div>
+      <div className="col-span-1 text-right">Rating</div>
+    </div>
 
-          {/* Table Content */}
-          {filteredData.length > 0 ? (
-            filteredData.map((user, index) => {
-              const platformData = getUserPlatformData(user);
-              return (
-                <div
-                  key={index}
-                  className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center"
-                >
-                  <div className="col-span-1 text-white">{index + 1}</div>
-
-                  {/* Profile Picture */}
-                  <div className="col-span-1">
-                    <img
-                      src={user.profilePic || "/avatar.png"}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover cursor-pointer"
-                      onClick={() =>
-                        handleImageClick(user.profilePic || "/avatar.png")
-                      }
-                    />
-                  </div>
-
-                  <div className="col-span-3 text-white">
-                    {user.fullname || "N/A"}
-                  </div>
-                  <div className="col-span-3 text-white">
-                    {platformData.handle}
-                  </div>
-                  <div className="col-span-2 text-white">
-                    {user.college || "N/A"}
-                  </div>
-                  <div className="col-span-1 text-white">
-                    {user.year || "N/A"}
-                  </div>
-                  <div
-                    className={`col-span-1 text-right font-medium ${getRatingColorClass(
-                      platformData.rating
-                    )}`}
-                  >
-                    {platformData.rating}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="py-6 text-center text-gray-400">
-              {RatingsData && RatingsData.length > 0
-                ? "No data matches your filters"
-                : "Loading ratings data..."}
+    {/* Table Content */}
+    {filteredData.length > 0 ? (
+      filteredData.map((user, index) => {
+        const platformData = getUserPlatformData(user);
+        return (
+          <div
+            key={index}
+            className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center text-sm sm:text-base"
+          >
+            <div className="col-span-1 text-white">{index + 1}</div>
+            <div className="col-span-1">
+              <img
+                src={user.profilePic || "/avatar.png"}
+                alt="Profile"
+                className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                onClick={() =>
+                  handleImageClick(user.profilePic || "/avatar.png")
+                }
+              />
             </div>
-          )}
-        </div>
+            <div className="col-span-3 text-white truncate">
+              {user.fullname || "N/A"}
+            </div>
+            <div className="col-span-3 text-white truncate">
+              {platformData.handle}
+            </div>
+            <div className="col-span-2 text-white truncate">
+              {user.college || "N/A"}
+            </div>
+            <div className="col-span-1 text-white">
+              {user.year || "N/A"}
+            </div>
+            <div
+              className={`col-span-1 text-right font-medium ${getRatingColorClass(
+                platformData.rating
+              )}`}
+            >
+              {platformData.rating}
+            </div>
+          </div>
+        );
+      })
+    ) : (
+      <div className="py-6 text-center text-gray-400">
+        {RatingsData && RatingsData.length > 0
+          ? "No data matches your filters"
+          : "Loading ratings data..."}
+      </div>
+    )}
+  </div>
+</div>
+
       </div>
     </div>
   );
