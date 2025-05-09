@@ -138,9 +138,10 @@ function App() {
           <Route path="/modelchk" element= { <ModelChk />} />
           <Route path="/earthchk" element= { <Earth />} />
           <Route path='/team' element={<TeamPage />} />
-          <Route path='/rankings' element={ <Ratings />}/>          <Route path="/abc" element = { <Abc />} />
+          <Route path='/rankings' element={ <Ratings />}/>          
 
           <Route path="*" element={<NotFoundPage />} />
+          
           
         </Routes>
 
