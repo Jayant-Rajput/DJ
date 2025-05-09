@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
   
   return (
-    <footer className="bg-gray-900 text-white mt-20">
+    <footer className={`bg-gray-900 text-white ${location.pathname==='/signup'} ? 'mt-10':'mt-20' `}>
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
