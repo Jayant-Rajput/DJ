@@ -8,12 +8,12 @@ const Preloader = () => {
     if (step < 3) {
       const timer = setTimeout(() => {
         setStep((prev) => prev + 1);
-      }, 2000);
+      }, 2500);
       return () => clearTimeout(timer);
     } else if (currentTestCase < 6) {
       const testCaseTimer = setTimeout(() => {
         setCurrentTestCase((prev) => prev + 1);
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(testCaseTimer);
     }
   }, [step, currentTestCase]);
