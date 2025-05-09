@@ -188,7 +188,6 @@ const ProfilePage = () => {
   const chefColor = getRatingColor("codechef", authUser.chefRating);
   const leetColor = getRatingColor("leetcode", authUser.leetRating);
 
-
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black mt-20 mb-20">
 
