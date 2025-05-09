@@ -116,11 +116,9 @@ const SignupPage = () => {
         <source src="/bgvideo2.mp4" type="video/mp4" />
       </video>
 
-
-
-      <div className="flex w-full max-w-4xl bg-white rounded-xl shadow-xl overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-xl shadow-xl overflow-hidden">
         {/* Left side - Form */}
-        <div className="w-1/2 p-8">
+        <div className="w-full md:w-1/2 p-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
             Welcome to <span className="text-blue-600">HACC</span>
           </h2>
@@ -319,7 +317,7 @@ const SignupPage = () => {
         </div>
 
         {/* Right side - OAuth */}
-        <div className="w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 text-white flex flex-col justify-center items-center p-8">
+        <div className="w-full md:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 text-white flex flex-col justify-center items-center p-8">
           <div className="w-full max-w-md">
             <h3 className="text-2xl font-bold mb-6 text-center">Quick Signup</h3>
             <p className="text-blue-100 mb-8 text-center">

@@ -230,65 +230,65 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Modified to take less screen space */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black bg-opacity-95 absolute left-0 right-0 top-full border-t border-gray-800 py-4 shadow-lg">
-          <div className="flex flex-col space-y-4 px-6">
+        <div className="md:hidden absolute right-0 top-full w-64 max-w-xs bg-black bg-opacity-95 border-t border-l border-gray-800 rounded-bl-lg py-4 shadow-lg">
+          <div className="flex flex-col space-y-3 px-4">
             <Link to="/" 
-                  className={`py-2 hover:text-blue-400 transition-colors ${isActive('/') ? 'text-blue-400' : 'text-white'}`}>
+                  className={`py-1 hover:text-blue-400 transition-colors ${isActive('/') ? 'text-blue-400' : 'text-white'}`}>
               Home
             </Link>
             <Link to="/contest-list" 
-                  className={`py-2 hover:text-blue-400 transition-colors ${isActive('/contest-list') ? 'text-blue-400' : 'text-white'}`}>
+                  className={`py-1 hover:text-blue-400 transition-colors ${isActive('/contest-list') ? 'text-blue-400' : 'text-white'}`}>
               Contests
             </Link>
             {authUser && (<Link to="/blogs" 
-                  className={`py-2 hover:text-blue-400 transition-colors ${isActive('/blogs') ? 'text-blue-400' : 'text-white'}`}>
+                  className={`py-1 hover:text-blue-400 transition-colors ${isActive('/blogs') ? 'text-blue-400' : 'text-white'}`}>
               Blogs
             </Link>)}
             {authUser && (
               <Link to="/createBlog" 
-                    className={`py-2 hover:text-blue-400 transition-colors ${isActive('/createBlog') ? 'text-blue-400' : 'text-white'}`}>
+                    className={`py-1 hover:text-blue-400 transition-colors ${isActive('/createBlog') ? 'text-blue-400' : 'text-white'}`}>
                 CreateBlog
               </Link>
             )}
             {authUser && (
               <Link to="/rankings" 
-                    className={`py-2 hover:text-blue-400 transition-colors ${isActive('/rankings') ? 'text-blue-400' : 'text-white'}`}>
+                    className={`py-1 hover:text-blue-400 transition-colors ${isActive('/rankings') ? 'text-blue-400' : 'text-white'}`}>
                 Rankings
               </Link>
             )}
             <Link to="/chat" 
-                  className={`py-2 hover:text-blue-400 transition-colors ${isActive('/chat') ? 'text-blue-400' : 'text-white'}`}>
+                  className={`py-1 hover:text-blue-400 transition-colors ${isActive('/chat') ? 'text-blue-400' : 'text-white'}`}>
               Community
             </Link>
-            <button className="py-2 text-left cursor-pointer hover:text-blue-400 transition-colors" onClick={notiPermissionOnce}>
+            <button className="py-1 text-left cursor-pointer hover:text-blue-400 transition-colors" onClick={notiPermissionOnce}>
               Notification
             </button>
             
             {authUser && (
-              <div className="flex items-center space-x-2 py-2">
+              <div className="flex items-center space-x-2 py-1">
                 <div className="relative cursor-pointer" onClick={handleNotificationClick}>
                   {/* Bell Icon */}
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                   
                   {/* Notification Badge */}
                   {unreadMessages > 0 && (
-                    <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
                       {unreadMessages > 99 ? '99+' : unreadMessages}
                     </div>
                   )}
                 </div>
-                <span className="text-white">Notifications</span>
+                <span className="text-white text-sm">Notifications</span>
               </div>
             )}
             
             {authUser ? (
               <>
-                <div className="flex items-center space-x-3 py-2">
-                  <div className="w-8 h-8 rounded-full border-2 border-blue-400 overflow-hidden flex items-center justify-center">
+                <div className="flex items-center space-x-2 py-1 border-t border-gray-800 mt-1 pt-2">
+                  <div className="w-6 h-6 rounded-full border border-blue-400 overflow-hidden flex items-center justify-center">
                     {authUser.photoURL ? (
                       <img
                         src={authUser.photoURL}
@@ -296,12 +296,12 @@ const Navbar = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-sm font-bold">
+                      <div className="w-full h-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xs font-bold">
                         {authUser.displayName ? authUser.displayName[0].toUpperCase() : 'U'}
                       </div>
                     )}
                   </div>
-                  <div className="text-sm">
+                  <div className="text-xs">
                     <p className="font-medium text-white truncate">
                       {authUser.displayName || 'User'}
                     </p>
@@ -312,9 +312,9 @@ const Navbar = () => {
                 </div>
                 <Link
                   to="/profile"
-                  className="py-2 hover:text-blue-400 transition-colors flex items-center"
+                  className="py-1 hover:text-blue-400 transition-colors flex items-center text-sm"
                 >
-                  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="w-3 h-3 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
@@ -322,9 +322,9 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/setting"
-                  className="py-2 hover:text-blue-400 transition-colors flex items-center"
+                  className="py-1 hover:text-blue-400 transition-colors flex items-center text-sm"
                 >
-                  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="w-3 h-3 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                   </svg>
@@ -332,9 +332,9 @@ const Navbar = () => {
                 </Link>
                 <button
                   onClick={handleLogOut}
-                  className="py-2 text-left text-white hover:text-red-400 transition-colors flex items-center"
+                  className="py-1 text-left text-white hover:text-red-400 transition-colors flex items-center text-sm"
                 >
-                  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="w-3 h-3 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                     <polyline points="16 17 21 12 16 7"></polyline>
                     <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -343,11 +343,11 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <div className="flex flex-col space-y-2 py-2">
-                <Link to="/login" className="px-4 py-2 rounded-lg text-white hover:bg-gray-800 transition-colors text-center">
+              <div className="flex flex-col space-y-2 py-1 border-t border-gray-800 mt-1 pt-2">
+                <Link to="/login" className="px-3 py-1 rounded text-white hover:bg-gray-800 transition-colors text-center text-sm">
                   Login
                 </Link>
-                <Link to="/signup" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-center">
+                <Link to="/signup" className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded transition-colors text-center text-sm">
                   Sign Up
                 </Link>
               </div>

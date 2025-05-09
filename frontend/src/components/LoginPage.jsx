@@ -200,6 +200,13 @@ const Signin = () => {
             <FaGithub className="mr-2" /> Sign in with GitHub
           </button>
         </div>
+
+        <div className="mt-12 text-center">
+              <p className="text-black"> Don't have an account ?</p>
+              <a href="/signup" className="block mt-2 font-medium text-blue-500 underline decoration-blue-500">
+                Sign up
+              </a>
+            </div>
       </div>
     </div>
   ) : (
