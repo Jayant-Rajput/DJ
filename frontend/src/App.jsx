@@ -97,7 +97,7 @@ function App() {
     if(!hasVisited){
 
       setShowPreloader(true);
-      const ttl = 1*60*60*1000;
+      const ttl = 1*24*60*60*1000;
       setWithExpiry('hasVisited', true, ttl);
 
       const timer = setTimeout(() => {
