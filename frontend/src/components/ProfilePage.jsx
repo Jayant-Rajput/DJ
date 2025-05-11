@@ -36,7 +36,18 @@ const ProfilePage = () => {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    
+
+    const timer = setTimeout(() => {
+      console.log("5 seconds passed!");
+      alert("Please click on Refresh Ratings to Update your Ratings if not up to date.")
+    }, 3000);
+
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      clearTimeout(timer);
+    };
   }, []);
 
 

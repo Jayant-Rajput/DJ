@@ -3,10 +3,11 @@ import { useContestStore } from "../stores/useContestStore.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
 
 const ContestCards = ({ contest, isBookmarked }) => {
-  const { addBookmark, removeBookmark } = useContestStore();
+  const { addBookmark, removeBookmark, sendNoti } = useContestStore();
   const { authUser } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState({});
   const [isHovered, setIsHovered] = useState(false);
+
 
   // Calculate the time left for upcoming contests
   useEffect(() => {
@@ -29,6 +30,11 @@ const ContestCards = ({ contest, isBookmarked }) => {
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         setTimeLeft({ days, hours, minutes, seconds });
+
+        if(days === 0 && hours === 0 && (minutes === 59 || minutes === 30) && seconds === 0){
+          console.log("Inside if condition");
+          sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
+        }
       }, 1000);
 
       return () => clearInterval(timer);

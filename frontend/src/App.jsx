@@ -41,6 +41,7 @@ function App() {
 
   useEffect(() => {
     genOrGetToken();
+    console.log("USEEFFECT Notitoken: ", notiToken);
     checkAuth(notiToken);
     getTotalUsers();
 

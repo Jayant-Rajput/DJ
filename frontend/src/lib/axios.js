@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://hacc-2kvi.onrender.com/api",   //"https://hacc-2kvi.onrender.com/api"
+  baseURL: "http://localhost:5001/api",   //"http://localhost:5001/api"
   withCredentials: true,
 });

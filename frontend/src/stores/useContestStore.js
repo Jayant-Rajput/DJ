@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 export const useContestStore = create((set, get) => ({
   isfetchingContests: false,
   isUpdating: false,
+  isSending: false,
   allContests: [],
   bookmarkContest: [],
   pastContestsWithNoLink: [],
@@ -25,6 +26,18 @@ export const useContestStore = create((set, get) => ({
       console.log("Error in fetchingContests", error);
     } finally {
       set({ isfetchingContests: false });
+    }
+  },
+
+  sendNoti : async (data) => {
+    set({isSending: true});
+    try{
+      const response = await axiosInstance.post("/contest/notify", data);
+      console.log(response.data);
+    }catch(error){
+      console.log("Error in sendNoti", error);
+    }finally{
+      set({isSending: false});
     }
   },
 

@@ -32,7 +32,7 @@ app.use(express.json({ limit: "10mb" })); //profile picture upload from frontend
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://haccnitrr.netlify.app",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -55,6 +55,8 @@ cron.schedule("0 */6 * * *", async () => {
     console.error("Error in cron job:", error);
   }
 });
+
+
 cron.schedule("0 0 * * *", async () => {          //run everyday at 00:00
   try {
     const cutoffDate = new Date();
@@ -70,7 +72,7 @@ cron.schedule("*/30 * * * *", async () => {
   console.log("Running cron job to check upcoming contests...");
 
   const now = Date.now();
-  const thirtyMinsLater = now + 30 * 60 * 1000;
+  const thirtyMinsLater = now + 90 * 60 * 1000;        // 90 minutes later
 
   try {
     const upcomingContests = await Contest.find({
@@ -92,7 +94,7 @@ cron.schedule("*/30 * * * *", async () => {
         token,
         notification: {
           title: "Contest Starting Soon!",
-          body: `${contest.title} is starting at ${new Date(contest.rawStartTime).toLocalDateString()}`,
+          body: `${contest.title} is starting at ${new Date(contest.rawStartTime).toLocaleDateString()}`,
           image: "/contest.jpg",
         },
       }));

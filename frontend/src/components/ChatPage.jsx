@@ -13,6 +13,7 @@ const ChatPage = () => {
     subscribeToMessage,
     unsubscribeToMessage,
     unreadMessages,
+    isSending,
   } = useChatStore();
   const { authUser, checkAuth, onlineUserCount } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -50,6 +51,17 @@ const ChatPage = () => {
 
   if (isMessagesLoading) {
     return <ChatSkeleton />;
+  }
+  if (isSending){
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900">
+        <div className="bg-white/10 backdrop-blur-lg p-12 rounded-2xl shadow-2xl flex flex-col items-center border border-white/20">
+          <div className="w-20 h-20 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-6"></div>
+          <h1 className="text-2xl font-bold text-white">Sending Message...</h1>
+          <p className="text-blue-200 mt-2">This will just take a moment</p>
+        </div>
+      </div>
+    );
   }
   const groupMessagesByDate = (messages) => {
     return messages.reduce((groups, message) => {
