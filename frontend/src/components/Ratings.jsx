@@ -15,6 +15,17 @@ const Ratings = () => {
   }, [fetchRatingsData]);
 
   const [previewSrc, setPreviewSrc] = useState(null);
+
+  const handleCodingProfile = (user) => {
+    if(platform==="codeforces"){
+      window.open(`https://codeforces.com/profile/${user.codeforcesId}`,"_blank");
+    } else if(platform==="codechef"){
+     window.open(`https://www.codechef.com/users/${user.codechefId}`,"_blank");
+     }else{
+      window.open(`https://leetcode.com/u/${user.leetcodeId}/`,"_blank");
+     }
+  }
+
   const handleImageClick = (src) => {
     setPreviewSrc(src);
   };
@@ -334,7 +345,7 @@ const Ratings = () => {
             key={index}
             className="grid grid-cols-12 py-3 px-4 border-b border-gray-600 hover:bg-gray-700 hover:bg-opacity-20 transition-colors duration-150 items-center text-sm sm:text-base"
           >
-            <div className="col-span-1 text-white">{index + 1}</div>
+            <div onClick={()=>handleCodingProfile(user)} className="col-span-1 text-white">{index + 1}</div>
             <div className="col-span-1">
               <img
                 src={user.profilePic || "/avatar.png"}
@@ -345,26 +356,26 @@ const Ratings = () => {
                 }
               />
             </div>
-            <div className="col-span-3 text-white truncate">
+            <div onClick={()=>handleCodingProfile(user)} className="col-span-3 text-white truncate">
               {user.fullname || "N/A"}
             </div>
-            <div className="col-span-3 text-white truncate">
+            <div onClick={()=>handleCodingProfile(user)} className="col-span-3 text-white truncate">
               {platformData.handle}
             </div>
-            <div className="col-span-2 text-white truncate">
+            <div onClick={()=>handleCodingProfile(user)} className="col-span-2 text-white truncate">
               {user.college || "N/A"}
             </div>
-            <div className="col-span-1 text-white">
+            <div onClick={()=>handleCodingProfile(user)} className="col-span-1 text-white">
               {user.year || "N/A"}
             </div>
-            <div
+            <div onClick={()=>handleCodingProfile(user)}
               className={`col-span-1 text-right font-medium ${getRatingColorClass(
                 platformData.rating
               )}`}
             >
               {platformData.rating}
             </div>
-          </div>
+          </div>  
         );
       })
     ) : (
