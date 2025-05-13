@@ -16,6 +16,9 @@ import {
 import { useChatStore } from "../stores/useChatStore";
 import { CheckCircle, Camera } from 'lucide-react';
 
+import toast from "react-hot-toast";
+
+
 const ProfilePage = () => {
 
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
@@ -89,6 +92,31 @@ const ProfilePage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    if(!formData.ccId.trim()) return toast.error("ccId is required");
+    if(!formData.cfId.trim()) return toast.error("cfId is required");
+    if(!formData.leetId.trim()) return toast.error("leetId is required");
+
+    return true; 
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const success = validateForm();
+    if (!success) return;
+
+    const trimmedData = {
+      ...formData,
+      ccId: formData.ccId.trim(),
+      cfId: formData.cfId.trim(),
+      leetId: formData.leetId.trim(),
+    };
+    console.log(trimmedData);
+
+    updateCodingIds(trimmedData);
+  }
+
   const handleFileChange = async (e) => {
     setImage(e.target.files[0]);
     console.log(image);
@@ -102,11 +130,6 @@ const ProfilePage = () => {
     await removeImage({ objId: authUser._id });
   }
 
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    updateCodingIds(formData);
-  }
   const handleRefreshRatings = (e) => {
     e.preventDefault();
     const data = {

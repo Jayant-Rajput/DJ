@@ -20,7 +20,13 @@ const MultiStepForm = () => {
 
   const handleSubmit = async () => {
     console.log("Hola");
-    await formValues(formData);
+    const trimmedData = {
+      ...formData,
+      ccId: formData.ccId.trim(),
+      cfId: formData.cfId.trim(),
+      leetId: formData.leetId.trim(),
+    };
+    await formValues(trimmedData);
     console.log("ab khel shuru hoga");
     await oAuthSignup(navigate);
     toast.success("Form submitted successfully!");

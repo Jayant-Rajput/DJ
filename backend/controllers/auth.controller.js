@@ -323,8 +323,8 @@ export const oauthLoginUser = async(req,res) => {
 }
 
 export const oauthUser = async (req, res) => {
-  console.log("AMigo");
-  console.log(req.body);
+  console.log("AMigo it's oauthUser");
+  console.log("Data coming from frontend to oauthUser: ", req.body);
   try {
     const {fullname, email, authProvider, branch, college, year, ccId, cfId, leetId} = req.body
     if([fullname, email, authProvider, branch, college, year, ccId, cfId, leetId].some((field) => field?.trim()===""))
