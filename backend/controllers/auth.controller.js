@@ -283,7 +283,6 @@ export const checkAuth = async (req, res) => {
     const userId = req.user._id;
     
     const updatedUser = await User.findByIdAndUpdate(userId, {notiToken: token}, {new: true})  //{new: true} return updated document.
-    console.log("UpdatedUser: ", updatedUser);
     res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);

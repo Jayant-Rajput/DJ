@@ -65,7 +65,7 @@ export const forcesContestDataFetch = async () => {
       const phase = data["phase"];
   
       if (phase !== "BEFORE") break; // Stop iteration if phase is not "BEFORE" // for each loop me break nhi hota.
-  
+
       contests.push({
           title,
           platform: "Codeforces",
@@ -73,8 +73,7 @@ export const forcesContestDataFetch = async () => {
           raw_start_time: start_time_milliseconds,
           raw_duration: duration_milliseconds,
       });
-  }
-  
+    }
   }
 
   return contests;

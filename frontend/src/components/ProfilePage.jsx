@@ -14,15 +14,20 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useChatStore } from "../stores/useChatStore";
-import { CheckCircle, Camera } from 'lucide-react';
+import { CheckCircle, Camera } from "lucide-react";
 
 import toast from "react-hot-toast";
 
-
 const ProfilePage = () => {
-
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
-  const { authUser, refreshRatings, updateCodingIds, updateImage, removeImage, isWorking } = useAuthStore();
+  const {
+    authUser,
+    refreshRatings,
+    updateCodingIds,
+    updateImage,
+    removeImage,
+    isWorking,
+  } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
   const divref = useRef();
@@ -32,27 +37,35 @@ const ProfilePage = () => {
     return () => unsubscribeToMessage();
   }, [messages]);
 
-   useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (divref.current && !divref.current.contains(event.target)) {
         setMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    
+    document.addEventListener("mousedown", handleClickOutside);
 
     const timer = setTimeout(() => {
       console.log("5 seconds passed!");
-      alert("Please click on Refresh Ratings to Update your Ratings if not up to date.")
+
+      toast(
+        "Please click on Refresh Ratings to Update your Ratings if not up to date.",
+        {
+          icon: "👏",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }
+      );
     }, 3000);
 
-
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside);
       clearTimeout(timer);
     };
   }, []);
-
 
   const [progress, setProgress] = useState(100);
   const duration = 4800;
@@ -77,7 +90,6 @@ const ProfilePage = () => {
     return () => clearInterval(progressInterval);
   }, [isWorking]);
 
-
   const [image, setImage] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -93,12 +105,12 @@ const ProfilePage = () => {
   };
 
   const validateForm = () => {
-    if(!formData.ccId.trim()) return toast.error("ccId is required");
-    if(!formData.cfId.trim()) return toast.error("cfId is required");
-    if(!formData.leetId.trim()) return toast.error("leetId is required");
+    if (!formData.ccId.trim()) return toast.error("ccId is required");
+    if (!formData.cfId.trim()) return toast.error("cfId is required");
+    if (!formData.leetId.trim()) return toast.error("leetId is required");
 
-    return true; 
-  }
+    return true;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -115,7 +127,7 @@ const ProfilePage = () => {
     console.log(trimmedData);
 
     updateCodingIds(trimmedData);
-  }
+  };
 
   const handleFileChange = async (e) => {
     setImage(e.target.files[0]);
@@ -124,11 +136,11 @@ const ProfilePage = () => {
     formData.append("objId", authUser._id);
     formData.append("image", e.target.files[0]);
     await updateImage(formData);
-  }
+  };
 
   const handleRemoveImage = async () => {
     await removeImage({ objId: authUser._id });
-  }
+  };
 
   const handleRefreshRatings = (e) => {
     e.preventDefault();
@@ -224,7 +236,6 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg text-black mt-20 mb-20">
-
       <video
         autoPlay
         loop
@@ -235,34 +246,26 @@ const ProfilePage = () => {
         <source src="/bgvideo2.mp4" type="video/mp4" />
       </video>
 
-      {
-        isWorking &&
-        (
-          <div className="fixed bottom-4 left-4 bg-black text-white rounded shadow-lg px-4 py-3 flex flex-col">
-            <div className="flex items-center gap-2 mb-1">
-              <CheckCircle className="text-green-500" size={20} />
-              <span>Updating...</span>
-            </div>
-            <div className="bg-gray-800 h-1 w-full rounded-full">
-              <div
-                className="bg-green-500 h-1 rounded-full transition-all duration-100 ease-linear"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+      {isWorking && (
+        <div className="fixed bottom-4 left-4 bg-black text-white rounded shadow-lg px-4 py-3 flex flex-col">
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle className="text-green-500" size={20} />
+            <span>Updating...</span>
           </div>
-        )
-      }
-
-
-
-
+          <div className="bg-gray-800 h-1 w-full rounded-full">
+            <div
+              className="bg-green-500 h-1 rounded-full transition-all duration-100 ease-linear"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
             <h2 className="text-xl font-bold mb-4">Your Form</h2>
             <div>
-
               <label>CodeChef ID</label>
               <input
                 type="text"
@@ -313,44 +316,47 @@ const ProfilePage = () => {
       )}
       {/* Header with Profile Info */}
       <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-8">
-       <div className="relative">
-       <img
-          src={authUser.profilePic || "/avatar.png"}
-          alt="Profile"
-          className="w-32 h-32 rounded-full border shadow-md object-cover"
-        />
-        <Camera onClick={()=>setMenuOpen(!menuOpen)} className="absolute bottom-1 right-1 cursor-pointer w-7 h-7 text-base-200 bg-white rounded-full p-1 shadow"/>
+        <div className="relative">
+          <img
+            src={authUser.profilePic || "/avatar.png"}
+            alt="Profile"
+            className="w-32 h-32 rounded-full border shadow-md object-cover"
+          />
+          <Camera
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="absolute bottom-1 right-1 cursor-pointer w-7 h-7 text-base-200 bg-white rounded-full p-1 shadow"
+          />
 
-        {menuOpen && (
-          <div
-            ref={divref}
-            className="absolute top-full w-48 bg-gray-800 rounded-md shadow-lg z-[9999]"
-          >
-            <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-white">
-                <input 
-                  type="file"
-                  accept="image/*"
-                  ref={menuRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => menuRef.current?.click()}
-                  className="text-white py-2 rounded"
-                >
-                📁 Upload photo
-                </button>
+          {menuOpen && (
+            <div
+              ref={divref}
+              className="absolute top-full w-48 bg-gray-800 rounded-md shadow-lg z-[9999]"
+            >
+              <ul className="py-2">
+                <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-white">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={menuRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => menuRef.current?.click()}
+                    className="text-white py-2 rounded"
+                  >
+                    📁 Upload photo
+                  </button>
                 </li>
-              <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-red-400">
-                <button onClick={handleRemoveImage} >🗑 Remove photo</button>
+                <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-red-400">
+                  <button onClick={handleRemoveImage}>🗑 Remove photo</button>
                 </li>
-            </ul>
-          </div>
-        )}
-       </div>
-        
+              </ul>
+            </div>
+          )}
+        </div>
+
         {/* here by making the menu div to be absolute and img div to be relative, it now anchors directly 
         to the img div otherwise in case of parent div containing z-index or overflow to be hidden lead to visibility issues */}
 
@@ -358,7 +364,9 @@ const ProfilePage = () => {
         <div className="flex-1">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">{authUser.fullname}</h1>
+              <h1 className="text-3xl font-bold text-gray-800">
+                {authUser.fullname}
+              </h1>
               <p className="text-gray-600 mt-1">{authUser.email}</p>
             </div>
             <div className="mt-3 md:mt-0 flex flex-wrap gap-2">
@@ -382,22 +390,23 @@ const ProfilePage = () => {
             <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
               <div>
                 <p className="text-gray-500 text-sm font-medium">College</p>
-                <p className="font-semibold text-gray-800">{authUser.college || "Not specified"}</p>
+                <p className="font-semibold text-gray-800">
+                  {authUser.college || "Not specified"}
+                </p>
               </div>
             </div>
             <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
               <div>
                 <p className="text-gray-500 text-sm font-medium">Branch</p>
-                <p className="font-semibold text-gray-800">
-                  {authUser.branch}
-                </p>
+                <p className="font-semibold text-gray-800">{authUser.branch}</p>
               </div>
             </div>
             <div className="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200 transition-all flex items-center">
-              
               <div>
                 <p className="text-gray-500 text-sm font-medium">Year</p>
-                <p className="font-semibold text-gray-800">{authUser.year || "Not specified"}</p>
+                <p className="font-semibold text-gray-800">
+                  {authUser.year || "Not specified"}
+                </p>
               </div>
             </div>
           </div>
@@ -421,8 +430,9 @@ const ProfilePage = () => {
                 className="text-sm px-2 py-1 rounded-full"
                 style={{ backgroundColor: leetColor, color: "white" }}
               >
-              {authUser.leetRating != null ? authUser.leetRating.toFixed(0) : "N/A"}
-
+                {authUser.leetRating != null
+                  ? authUser.leetRating.toFixed(0)
+                  : "N/A"}
               </span>
             </div>
             <div className="mt-3 space-y-2">
@@ -761,7 +771,7 @@ const ProfilePage = () => {
                 {Math.round(
                   (authUser.totalSolvedLeetQuestions /
                     authUser.totalLeetQuestions) *
-                  100
+                    100
                 )}
                 %
               </p>
@@ -797,16 +807,16 @@ const ProfilePage = () => {
                 {parseInt(authUser.chefStars) < 2
                   ? "Become 2* on CC"
                   : parseInt(authUser.chefStars) < 3
-                    ? "Become 3* on CC"
-                    : parseInt(authUser.chefStars) < 4
-                      ? "Become 4* on CC"
-                      : parseInt(authUser.chefStars) < 5
-                        ? "Become 5* on CC"
-                        : parseInt(authUser.chefStars) < 6
-                          ? "Become 6* on CC"
-                          : parseInt(authUser.chefStars) < 7
-                            ? "Become 7* on CC"
-                            : "You're already a legend!!!"}
+                  ? "Become 3* on CC"
+                  : parseInt(authUser.chefStars) < 4
+                  ? "Become 4* on CC"
+                  : parseInt(authUser.chefStars) < 5
+                  ? "Become 5* on CC"
+                  : parseInt(authUser.chefStars) < 6
+                  ? "Become 6* on CC"
+                  : parseInt(authUser.chefStars) < 7
+                  ? "Become 7* on CC"
+                  : "You're already a legend!!!"}
               </p>
               <div className="mt-2 text-sm text-amber-700">
                 <p>Your next achievement target</p>
@@ -822,16 +832,16 @@ const ProfilePage = () => {
                 {authUser.forcesRating < 1200
                   ? "Reach Pupil on CF"
                   : authUser.forcesRating < 1400
-                    ? "Reach Specialist on CF"
-                    : authUser.forcesRating < 1600
-                      ? "Reach Expert on CF"
-                      : authUser.forcesRating < 1900
-                        ? "Reach Candidate Master on CF"
-                        : authUser.chefStars < 5
-                          ? "Reach 5★ on CodeChef"
-                          : authUser.leetTopPercentage > 5
-                            ? "Top 5% on LeetCode"
-                            : "Grandmaster Status"}
+                  ? "Reach Specialist on CF"
+                  : authUser.forcesRating < 1600
+                  ? "Reach Expert on CF"
+                  : authUser.forcesRating < 1900
+                  ? "Reach Candidate Master on CF"
+                  : authUser.chefStars < 5
+                  ? "Reach 5★ on CodeChef"
+                  : authUser.leetTopPercentage > 5
+                  ? "Top 5% on LeetCode"
+                  : "Grandmaster Status"}
               </p>
               <div className="mt-2 text-sm text-teal-700">
                 <p>Your next achievement target</p>

@@ -5,6 +5,8 @@ import { formatMessageTime, formatMessageDate } from "../lib/utils.js";
 import MessageInput from "./MessageInput.jsx";
 import ChatSkeleton from "../skeleton-screen/ChatSkeleton.jsx";
 
+import toast from "react-hot-toast";
+
 const ChatPage = () => {
   const {
     isMessagesLoading,
@@ -33,9 +35,18 @@ const ChatPage = () => {
     fetchMessages();
 
     const timer = setTimeout(() => {
-      console.log("5 seconds passed!");
-      alert("Messages older than 4 days will be automatically deleted.")
+      console.log("3 seconds passed!");
+
+      toast("Messages older than 4 days will be automatically deleted.", {
+        icon: "⚠️",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     }, 3000);
+
 
     // Cleanup (optional, but good practice)
     return () => clearTimeout(timer);
@@ -52,7 +63,7 @@ const ChatPage = () => {
   if (isMessagesLoading) {
     return <ChatSkeleton />;
   }
-  if (isSending){
+  if (isSending) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900">
         <div className="bg-white/10 backdrop-blur-lg p-12 rounded-2xl shadow-2xl flex flex-col items-center border border-white/20">

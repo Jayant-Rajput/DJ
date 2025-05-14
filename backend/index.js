@@ -32,7 +32,7 @@ app.use(express.json({ limit: "10mb" })); //profile picture upload from frontend
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://haccnitrr.netlify.app",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -57,7 +57,7 @@ cron.schedule("0 */12 * * *", async () => {
 });
 
 
-cron.schedule("0 0 * * *", async () => {          //run everyday at 00:00
+cron.schedule("0 */12 * * *", async () => {          //run everyday at 00:00
   try {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 4);

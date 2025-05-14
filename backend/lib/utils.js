@@ -43,8 +43,12 @@ export const fetchDataAndUpdateDB = async () => {
 
 const addContestsToDB = async (contests) => {
   try {
+    
     for (const contest of contests) {
-      const existingContest = await Contest.findOne({ title: contest.title });
+      const existingContest = await Contest.findOne({
+        title: contest.title,
+        rawStartTime: contest.raw_start_time,
+      });
 
       if (!existingContest) {
         const newContest = new Contest({
@@ -85,7 +89,8 @@ export const ratingsFetchKrDeBhai = async (ccId, cfId, leetId) => {
     let chefContestCount = -1;
 
     try {
-      const { currentRating, stars, contests, totalProblemsSolved } = await scrapCodechefData(ccId);
+      const { currentRating, stars, contests, totalProblemsSolved } =
+        await scrapCodechefData(ccId);
       chefRating = currentRating;
       chefStars = stars;
       chefTotalProblemSolved = totalProblemsSolved;
