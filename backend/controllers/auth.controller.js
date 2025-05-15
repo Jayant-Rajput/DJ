@@ -6,7 +6,7 @@ import ApiError from "../constants.js/ApiError.js";
 import nodemailer from "nodemailer";
 import dns from "dns";
 import axios from "axios";
-import { ratingsFetchKrDeBhai } from "../lib/utils.js";
+import { ccRatingFetchKrDeBhai, cfRatingFetchKrDeBhai, leetRatingFetchKrDeBhai } from "../lib/utils.js";
 import OtpModel from "../models/otp.model.js";
 
 export const isDisposableEmail = async (email) => {
@@ -61,7 +61,9 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const updatedRatings = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
+    const updatedCcData = await ccRatingFetchKrDeBhai(ccId);
+    const updatedCfData = await cfRatingFetchKrDeBhai(cfId);
+    const updatedLeetData = await leetRatingFetchKrDeBhai(leetId);
 
 
     const newUser = new User({
@@ -74,7 +76,9 @@ export const signup = async (req, res) => {
       codechefId: ccId,
       codeforcesId: cfId,
       leetcodeId: leetId,
-      ...updatedRatings,
+      ...updatedCcData,
+      ...updatedCfData,
+      ...updatedLeetData,
       authProvider: "local",
     });
 
@@ -132,11 +136,15 @@ export const refreshRating = async (req, res) => {
   try{
     const {objId, leetId, ccId, cfId} = req.body;
 
-    const updatedData = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
+    const updatedCcData = await ccRatingFetchKrDeBhai(ccId);
+    const updatedCfData = await cfRatingFetchKrDeBhai(cfId);
+    const updatedLeetData = await leetRatingFetchKrDeBhai(leetId);
 
     await User.updateOne(
       {_id: objId},
-      {$set : updatedData}
+      {$set : updatedCcData},
+      {$set : updatedCfData},
+      {$set : updatedLeetData}
     );
 
     const updatedUser = await User.findById(objId).lean();
@@ -160,7 +168,9 @@ export const updateCodingIds = async (req, res) => {
 
     console.log(ccId, cfId, leetId);
 
-    const ratingsUpdated = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
+    const updatedCcData = await ccRatingFetchKrDeBhai(ccId);
+    const updatedCfData = await cfRatingFetchKrDeBhai(cfId);
+    const updatedLeetData = await leetRatingFetchKrDeBhai(leetId);
 
     await User.updateOne(
       {_id: objId},
@@ -168,7 +178,9 @@ export const updateCodingIds = async (req, res) => {
         codechefId: ccId,
         codeforcesId: cfId,
         leetcodeId: leetId,
-        ...ratingsUpdated
+        ...updatedCcData,
+        ...updatedCfData,
+        ...updatedLeetData,
       }}
     )
 
@@ -338,7 +350,9 @@ export const oauthUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     
-    const updatedRatings = await ratingsFetchKrDeBhai(ccId, cfId, leetId);
+    const updatedCcData = await ccRatingFetchKrDeBhai(ccId);
+    const updatedCfData = await cfRatingFetchKrDeBhai(cfId);
+    const updatedLeetData = await leetRatingFetchKrDeBhai(leetId);
 
     const newUser = new User({
       fullname,
@@ -350,7 +364,9 @@ export const oauthUser = async (req, res) => {
       codechefId: ccId,
       codeforcesId: cfId,
       leetcodeId: leetId,
-      ...updatedRatings,
+      ...updatedCcData,
+      ...updatedCfData,
+      ...updatedLeetData,
       authProvider
     });
 

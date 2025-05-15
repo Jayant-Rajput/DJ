@@ -81,37 +81,50 @@ const updateFinishedContests = async () => {
   }
 };
 
-export const ratingsFetchKrDeBhai = async (ccId, cfId, leetId) => {
-  try {
-    let chefRating = -1;
-    let chefStars = "stars";
+export const ccRatingFetchKrDeBhai = async (ccId) => {
+  try{
+    
     let chefTotalProblemSolved = -1;
-    let chefContestCount = -1;
 
-    try {
-      const { currentRating, stars, contests, totalProblemsSolved } =
-        await scrapCodechefData(ccId);
-      chefRating = currentRating;
-      chefStars = stars;
-      chefTotalProblemSolved = totalProblemsSolved;
-      chefContestCount = contests;
-    } catch (error) {
-      console.log("Error in scraping codechef rating : ", error);
+    const { currentRating, stars, contests, totalProblemsSolved } = await scrapCodechefData(ccId);
+
+    const updatedData = {
+      chefRating : currentRating,
+      chefStars : stars,
+      chefTotalProblemSolved : totalProblemsSolved,
+      chefContestCount : contests,
     }
 
-    let updatedLeetData = null;
-    try {
-      updatedLeetData = await leetDataFetch(leetId);
-    } catch (error) {
-      console.log("Error in fetching leet data : ", error);
+    return updatedData;
+  } catch (error) {
+    console.log("Error in ccRatingFetchKrDeBhai : ", error);
+  }
+}
+
+export const cfRatingFetchKrDeBhai = async (cfId) => {
+  try{
+    let updatedForcesData = await forcesDataFetch(cfId);
+
+    const updatedData = {
+      forcesRating: updatedForcesData.forcesRating,
+      forcesRank: updatedForcesData.forcesRank,
+      forcesMaxRating: updatedForcesData.forcesMaxRating,
+      forcesMaxRank: updatedForcesData.forcesMaxRank,
+      forcesContestCount: updatedForcesData.forcesContestCount,
+      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
+      forcesTotalProblemsolvedByRating:
+      updatedForcesData.forcesTotalProblemsolvedByRating,
     }
 
-    let updatedForcesData = null;
-    try {
-      updatedForcesData = await forcesDataFetch(cfId);
-    } catch (error) {
-      console.log("Error in fetching forces data : ", error);
-    }
+    return updatedData;
+  } catch(error){
+    console.log("Error in cfRatingFetchKrDeBhai : ", error);
+  }
+}
+
+export const leetRatingFetchKrDeBhai = async (leetId) => {
+  try{
+    let updatedLeetData = await leetDataFetch(leetId);
 
     const updatedData = {
       totalLeetQuestions: updatedLeetData.totalLeetQuestions,
@@ -129,23 +142,11 @@ export const ratingsFetchKrDeBhai = async (ccId, cfId, leetId) => {
       leetGlobalRanking: updatedLeetData.leetGlobalRanking,
       leetTotalParticipants: updatedLeetData.leetTotalParticipants,
       leetTopPercentage: updatedLeetData.leetTopPercentage,
-      // leetBadges: updatedLeetData.leetBadges,                 //handle it later.
-      forcesRating: updatedForcesData.forcesRating,
-      forcesRank: updatedForcesData.forcesRank,
-      forcesMaxRating: updatedForcesData.forcesMaxRating,
-      forcesMaxRank: updatedForcesData.forcesMaxRank,
-      forcesContestCount: updatedForcesData.forcesContestCount,
-      forcesTotalProblemSolved: updatedForcesData.forcesTotalProblemSolved,
-      forcesTotalProblemsolvedByRating:
-        updatedForcesData.forcesTotalProblemsolvedByRating,
-      chefRating,
-      chefStars,
-      chefTotalProblemSolved,
-      chefContestCount,
-    };
+    }
 
     return updatedData;
-  } catch (error) {
-    console.log("ERROR in ratingsFetchKrDeBhai function : ", error);
+  } catch(error){
+    console.log("Error in leetRatingFetchKrDeBhai : ", error);
   }
-};
+}
+
