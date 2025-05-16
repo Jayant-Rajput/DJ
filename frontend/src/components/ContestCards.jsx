@@ -33,7 +33,7 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
         console.log("Days", days, "hours", hours, "minutes", minutes, "seconds", seconds);
 
-        if(days === 1 && hours === 3 && (minutes === 39 && seconds <=15) ){
+        if(days === 1 && hours === 3 && (minutes === 39 && seconds <=17) ){
           console.log("Inside if condition");
           sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
         }
