@@ -31,6 +31,8 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
         setTimeLeft({ days, hours, minutes, seconds });
 
+        console.log("Days", days, "hours", hours, "minutes", minutes, "seconds", seconds);
+
         if(days === 1 && hours === 6 && (minutes === 59 || minutes === 30 || minutes === 20) && seconds === 0){
           console.log("Inside if condition");
           sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
