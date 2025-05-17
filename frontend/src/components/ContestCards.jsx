@@ -7,8 +7,9 @@ const ContestCards = ({ contest, isBookmarked }) => {
   const { authUser } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState({});
   const [isHovered, setIsHovered] = useState(false);
-  const [msgSent, setMsgSent] = useState(false);
+  // const [msgSent, setMsgSent] = useState(false);
 
+  let msgSent = false;
 
   // Calculate the time left for upcoming contests
   useEffect(() => {
@@ -34,10 +35,14 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
         // console.log("Days", days, "hours", hours, "minutes", minutes, "seconds", seconds);
 
-        if(days === 0 && hours === 3 && (minutes === 40 && seconds <=59 ) && (!msgSent)){
+        // if(msgSent && (days === 0 && hours === 3 && minutes === 24 && seconds <=10 ))
+
+
+        if((!msgSent) && (days === 0 && hours === 3 && minutes === 20 && seconds <=10 )){
+          msgSent = true;
           console.log("Inside if condition");
-          // sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
-          setMsgSent(true);
+          console.log(msgSent);
+          sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
         }
       }, 1000);
 
