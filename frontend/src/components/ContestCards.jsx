@@ -32,11 +32,11 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
         setTimeLeft({ days, hours, minutes, seconds });
 
-        console.log("Days", days, "hours", hours, "minutes", minutes, "seconds", seconds);
+        // console.log("Days", days, "hours", hours, "minutes", minutes, "seconds", seconds);
 
         if(days === 0 && hours === 3 && (minutes === 40 && seconds <=59 ) && (!msgSent)){
           console.log("Inside if condition");
-          sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
+          // sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
           setMsgSent(true);
         }
       }, 1000);
