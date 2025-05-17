@@ -37,8 +37,9 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
         // if(msgSent && (days === 0 && hours === 3 && minutes === 24 && seconds <=10 ))
 
-        if((days === 0 && hours === 3 && minutes === 5 && seconds <=10 )){
+        if((days === 0 && hours === 3 && minutes === 2 && seconds <=20 )){
           console.log(msgSent);
+          console.log("HIIII");
         }
 
         if((!msgSent) && (days === 0 && hours === 3 && minutes === 5 && seconds <=10 )){
