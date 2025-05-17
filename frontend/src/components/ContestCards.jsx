@@ -38,7 +38,7 @@ const ContestCards = ({ contest, isBookmarked }) => {
         // if(msgSent && (days === 0 && hours === 3 && minutes === 24 && seconds <=10 ))
 
 
-        if((!msgSent) && (days === 0 && hours === 3 && minutes === 20 && seconds <=10 )){
+        if((!msgSent) && (days === 0 && hours === 3 && minutes === 18 && seconds <=10 )){
           msgSent = true;
           console.log("Inside if condition");
           console.log(msgSent);
