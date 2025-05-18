@@ -142,9 +142,13 @@ export const refreshRating = async (req, res) => {
 
     await User.updateOne(
       {_id: objId},
-      {$set : updatedCcData},
-      {$set : updatedCfData},
-      {$set : updatedLeetData}
+      {
+        $set : {
+          ...updatedCcData,
+          ...updatedCfData,
+          ...updatedLeetData
+        }
+     }
     );
 
     const updatedUser = await User.findById(objId).lean();
