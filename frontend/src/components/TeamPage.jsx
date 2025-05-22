@@ -17,7 +17,7 @@ const teamMembers = [
 {
   name: "Diptesh Raj",
     role: "Full Stack Developer",
-      image: "Diptesh_photo.png",
+      image: "Diptesh_img.png",
         description: "Hey, I’m Diptesh Raj, final year ECE undergrad at NIT Raipur. I love building things that solve real problems and enjoy the creative process that comes with it. Whether it’s brainstorming with a team or diving into something new, I’m always up for a challenge. Outside of tech, I’m just a curious soul who loves exploring ideas and learning along the way.",
     socials: {
     linkedin: "https://www.linkedin.com/in/diptesh-raj-06bb7824a",
