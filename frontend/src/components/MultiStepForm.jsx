@@ -141,6 +141,12 @@ const MultiStepForm = () => {
 
   return (
     <div className="flex flex-col items-center p-6 border rounded-lg shadow-lg bg-white max-w-lg mx-auto mt-50 text-black mb-30">
+      {
+        steps[step].label === "Step 2: Competitive Programming IDs" ? 
+        <p className="text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 text-center italic leading-relaxed shadow-sm">
+          If you do not possess a coding ID on any platform, kindly indicate this by entering a '.' in the respective field.
+        </p>: ""
+      }
       <h2 className="text-xl font-bold mb-4 text-blue-600">
         {steps[step].label}
       </h2>
