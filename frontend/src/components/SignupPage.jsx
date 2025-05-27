@@ -539,7 +539,7 @@ const SignupPage = () => {
                     />
                   </svg>
                 </span>
-                Coding Profiles
+                Coding Profiles (leave it, if dont wants to share)
               </h3>
               <div className="space-y-4">
                 <div>

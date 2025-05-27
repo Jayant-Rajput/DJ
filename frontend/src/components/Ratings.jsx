@@ -340,6 +340,7 @@ const Ratings = () => {
     {filteredData.length > 0 ? (
       filteredData.map((user, index) => {
         const platformData = getUserPlatformData(user);
+        if (platformData.handle === '.') return null; 
         return (
           <div
             key={index}

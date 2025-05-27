@@ -10,7 +10,7 @@ function Model({ children }) {
 
   useFrame(() => {
     if (modelRef.current) {
-      modelRef.current.rotation.y += 0.006 // Rotates around Y-axis
+      modelRef.current.rotation.y += 0.004 // Rotates around Y-axis
     }
   });
 

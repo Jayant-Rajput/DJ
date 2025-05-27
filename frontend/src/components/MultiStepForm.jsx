@@ -87,7 +87,7 @@ const MultiStepForm = () => {
         formData.year.trim() !== "",
     },
     {
-      label: "Step 2: Competitive Programming IDs",
+      label: `Step 2: Competitive Programming IDs (put dots "." if dont wants to share)`,
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input

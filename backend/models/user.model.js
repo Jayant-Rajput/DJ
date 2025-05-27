@@ -7,9 +7,9 @@ const userSchema = new mongoose.Schema({
     branch: { type:String },
     year: { type:String },
     college: { type:String },
-    codechefId: { type:String, required: true },
-    codeforcesId: { type:String, required: true },
-    leetcodeId: { type:String, required: true },
+    codechefId: { type:String, required: true, default: '.' },
+    codeforcesId: { type:String, required: true, default: '.' },
+    leetcodeId: { type:String, required: true, default: '.' },
     profilePic: { type: String},
     notiToken: {type: String},
 
