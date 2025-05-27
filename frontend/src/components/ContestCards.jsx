@@ -9,6 +9,57 @@ const ContestCards = ({ contest, isBookmarked }) => {
   const [isHovered, setIsHovered] = useState(false);
   // const [msgSent, setMsgSent] = useState(false);
 
+
+  const calendarOptions = ["Google", "Outlook", "Apple"];
+  const [calendarDropdown, setCalendarDropdown] = useState(false);
+  const handleAddToCalendar = (calendarType) => {
+    const startDate = new Date(contest.rawStartTime)
+     .toISOString()
+     .replace(/-|:|\.\d\d\d/g, "");
+    const endDate = new Date(contest.rawStartTime + contest.rawDuration)
+     .toISOString()
+     .replace(/-|:|\.\d\d\d/g, "");
+    let calendarUrl;
+    switch (calendarType) {
+    case "google":
+     calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(
+      contest.platform + " - " + contest.title
+     )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
+      "Find more info at " + contest.url
+     )}&location=Online&sf=true&output=xml`;
+     break;
+    case "outlook":
+     calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
+      contest.platform + " - " + contest.title
+     )}&startdt=${startDate}&enddt=${endDate}&body=${encodeURIComponent(
+      "Find more info at " + contest.url
+     )}&location=Online`;
+     break;
+    case "apple":
+     const icsContent = `
+     BEGIN:VCALENDAR
+     VERSION:2.0
+     BEGIN:VEVENT
+     DTSTART:${startDate}
+     DTEND:${endDate}
+     SUMMARY:${contest.platform + " - " + contest.title}
+     DESCRIPTION:Find more info at ${contest.url}
+     LOCATION:Online
+     END:VEVENT
+     END:VCALENDAR
+    `.trim();
+     const blob = new Blob([icsContent], { type: "text/calendar" });
+     const link = document.createElement("a");
+     link.href = URL.createObjectURL(blob);
+     link.download = `${contest.platform} contest ${contest.title}.ics`;
+     link.click();
+     return;
+    default:
+     return;
+    }
+    window.open(calendarUrl, "_blank");
+   };
+
   let msgSent = false;
 
   // Calculate the time left for upcoming contests
@@ -34,14 +85,14 @@ const ContestCards = ({ contest, isBookmarked }) => {
         setTimeLeft({ days, hours, minutes, seconds });
 
 
-        if((!msgSent) && (days === 0 && hours === 2 && (minutes === 16 || minutes === 14) && seconds <=20 )){
+        if ((!msgSent) && (days === 0 && hours === 2 && (minutes === 16 || minutes === 14) && seconds <= 20)) {
           msgSent = true;
           console.log("Inside if condition");
           console.log(msgSent);
-          sendNoti({title: contest.title, rawStartTime:  contest.rawStartTime});
+          sendNoti({ title: contest.title, rawStartTime: contest.rawStartTime });
         }
 
-        if(days === 0 && hours === 2 && minutes===15 && seconds <=20 ){
+        if (days === 0 && hours === 2 && minutes === 15 && seconds <= 20) {
           msgSent = false;
         }
       }, 1000);
@@ -110,15 +161,13 @@ const ContestCards = ({ contest, isBookmarked }) => {
 
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden transition-all duration-500 transform ${
-        isHovered ? "shadow-xl shadow-blue-500/20" : "shadow-lg"
-      }`}
+      className={`relative rounded-2xl overflow-hidden transition-all duration-500 transform ${isHovered ? "shadow-xl shadow-blue-500/20" : "shadow-lg"
+        }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Top colored bar */}
       <div className={`h-2 bg-gradient-to-r ${platformStyle.gradient}`}></div>
-
       {/* Card content */}
       <div className=" opacity-70 bg-gray-800 p-6">
         {/* Platform badge */}
@@ -128,16 +177,14 @@ const ContestCards = ({ contest, isBookmarked }) => {
           >
             {platformStyle.icon} {contest.platform}
           </div>
-
           {/* Bookmark button */}
           <button
             onClick={isBookmarked ? handleRemoveBookmark : handleBookmark}
             className="text-gray-300 hover:text-yellow-400 transition-colors cursor-pointer"
           >
             <svg
-              className={`w-6 h-6 ${
-                isBookmarked ? "text-yellow-400 fill-current" : "text-gray-400"
-              }`}
+              className={`w-6 h-6 ${isBookmarked ? "text-yellow-400 fill-current" : "text-gray-400"
+                }`}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -151,28 +198,23 @@ const ContestCards = ({ contest, isBookmarked }) => {
             </svg>
           </button>
         </div>
-
         {/* Contest title */}
         <h2 className="text-xl font-semibold text-white mb-3 line-clamp-2 h-14">
           {contest.title}
         </h2>
-
         {/* Status indicator */}
         <div className="flex items-center mb-3">
           <div
-            className={`w-3 h-3 rounded-full mr-2 ${
-              isUpcoming ? "bg-green-500 animate-pulse" : "bg-gray-500"
-            }`}
+            className={`w-3 h-3 rounded-full mr-2 ${isUpcoming ? "bg-green-500 animate-pulse" : "bg-gray-500"
+              }`}
           ></div>
           <span
-            className={`text-sm ${
-              isUpcoming ? "text-green-400" : "text-gray-400"
-            }`}
+            className={`text-sm ${isUpcoming ? "text-green-400" : "text-gray-400"
+              }`}
           >
             {isUpcoming ? "Upcoming" : "Finished"}
           </span>
         </div>
-
         {/* Countdown timer for upcoming contests */}
         {isUpcoming && !timeLeft.expired && (
           <div className="mb-4">
@@ -205,7 +247,6 @@ const ContestCards = ({ contest, isBookmarked }) => {
             </div>
           </div>
         )}
-
         {/* Contest details */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm">
@@ -242,6 +283,37 @@ const ContestCards = ({ contest, isBookmarked }) => {
           </div>
         </div>
 
+        {/* Add to Calendar - Fixed positioning */}
+        <div className="relative mb-4 z-50">
+          <button
+            onClick={() => setCalendarDropdown(!calendarDropdown)}
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Add to Calendar
+          </button>
+          {calendarDropdown && (
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-gray-900 rounded-lg border border-gray-600 shadow-2xl overflow-hidden z-50 backdrop-blur-sm transform transition-all duration-200 ease-out animate-in slide-in-from-bottom-2">
+              {calendarOptions.map((option, index) => (
+                <div
+                  key={option}
+                  onClick={() => handleAddToCalendar(option.toLowerCase())}
+                  className={`px-4 py-3 hover:bg-gray-700 cursor-pointer text-center text-gray-200 hover:text-white transition-all duration-200 ${
+                    index !== calendarOptions.length - 1 ? 'border-b border-gray-700' : ''
+                  }`}
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Action buttons */}
         <div className="flex gap-2 mt-4">
           <a
@@ -252,7 +324,6 @@ const ContestCards = ({ contest, isBookmarked }) => {
           >
             View Contest
           </a>
-
           {contest.solutionLink && (
             <a
               href={contest.solutionLink}
