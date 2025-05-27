@@ -14,29 +14,29 @@ const ContestCards = ({ contest, isBookmarked }) => {
   const [calendarDropdown, setCalendarDropdown] = useState(false);
   const handleAddToCalendar = (calendarType) => {
     const startDate = new Date(contest.rawStartTime)
-     .toISOString()
-     .replace(/-|:|\.\d\d\d/g, "");
+      .toISOString()
+      .replace(/-|:|\.\d\d\d/g, "");
     const endDate = new Date(contest.rawStartTime + contest.rawDuration)
-     .toISOString()
-     .replace(/-|:|\.\d\d\d/g, "");
+      .toISOString()
+      .replace(/-|:|\.\d\d\d/g, "");
     let calendarUrl;
     switch (calendarType) {
-    case "google":
-     calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(
-      contest.platform + " - " + contest.title
-     )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
-      "Find more info at " + contest.url
-     )}&location=Online&sf=true&output=xml`;
-     break;
-    case "outlook":
-     calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
-      contest.platform + " - " + contest.title
-     )}&startdt=${startDate}&enddt=${endDate}&body=${encodeURIComponent(
-      "Find more info at " + contest.url
-     )}&location=Online`;
-     break;
-    case "apple":
-     const icsContent = `
+      case "google":
+        calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(
+          contest.platform + " - " + contest.title
+        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
+          "Find more info at " + contest.url
+        )}&location=Online&sf=true&output=xml`;
+        break;
+      case "outlook":
+        calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
+          contest.platform + " - " + contest.title
+        )}&startdt=${startDate}&enddt=${endDate}&body=${encodeURIComponent(
+          "Find more info at " + contest.url
+        )}&location=Online`;
+        break;
+      case "apple":
+        const icsContent = `
      BEGIN:VCALENDAR
      VERSION:2.0
      BEGIN:VEVENT
@@ -48,17 +48,17 @@ const ContestCards = ({ contest, isBookmarked }) => {
      END:VEVENT
      END:VCALENDAR
     `.trim();
-     const blob = new Blob([icsContent], { type: "text/calendar" });
-     const link = document.createElement("a");
-     link.href = URL.createObjectURL(blob);
-     link.download = `${contest.platform} contest ${contest.title}.ics`;
-     link.click();
-     return;
-    default:
-     return;
+        const blob = new Blob([icsContent], { type: "text/calendar" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${contest.platform} contest ${contest.title}.ics`;
+        link.click();
+        return;
+      default:
+        return;
     }
     window.open(calendarUrl, "_blank");
-   };
+  };
 
   let msgSent = false;
 
@@ -283,36 +283,41 @@ const ContestCards = ({ contest, isBookmarked }) => {
           </div>
         </div>
 
-        {/* Add to Calendar - Fixed positioning */}
-        <div className="relative mb-4 z-50">
-          <button
-            onClick={() => setCalendarDropdown(!calendarDropdown)}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg flex items-center justify-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            Add to Calendar
-          </button>
-          {calendarDropdown && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-gray-900 rounded-lg border border-gray-600 shadow-2xl overflow-hidden z-50 backdrop-blur-sm transform transition-all duration-200 ease-out animate-in slide-in-from-bottom-2">
-              {calendarOptions.map((option, index) => (
-                <div
-                  key={option}
-                  onClick={() => handleAddToCalendar(option.toLowerCase())}
-                  className={`px-4 py-3 hover:bg-gray-700 cursor-pointer text-center text-gray-200 hover:text-white transition-all duration-200 ${
-                    index !== calendarOptions.length - 1 ? 'border-b border-gray-700' : ''
-                  }`}
-                >
-                  {option}
+
+        {/* Add to calendar section */}
+        {
+          isUpcoming
+            ?
+            <div className="relative mb-4 z-50">
+              <button
+                onClick={() => setCalendarDropdown(!calendarDropdown)}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Add to Calendar
+              </button>
+              {calendarDropdown && (
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-gray-900 rounded-lg border border-gray-600 shadow-2xl overflow-hidden z-50 backdrop-blur-sm transform transition-all duration-200 ease-out animate-in slide-in-from-bottom-2">
+                  {calendarOptions.map((option, index) => (
+                    <div
+                      key={option}
+                      onClick={() => handleAddToCalendar(option.toLowerCase())}
+                      className={`px-4 py-3 hover:bg-gray-700 cursor-pointer text-center text-gray-200 hover:text-white transition-all duration-200 ${index !== calendarOptions.length - 1 ? 'border-b border-gray-700' : ''
+                        }`}
+                    >
+                      {option}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
+            : ""
+        }
 
         {/* Action buttons */}
         <div className="flex gap-2 mt-4">
