@@ -13,7 +13,7 @@ import TypewriterHeading from "./TypewriterHeading.jsx";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { totalUsers, authUser } = useAuthStore();
+  const { totalUsers, authUser, isWorking } = useAuthStore();
   const { messages, subscribeToMessage, unsubscribeToMessage } = useChatStore();
   const { isFetchingBlogs, AllBlogs, getAllBlogs, getBlog } = useBlogStore();
   const [userCount, setUserCount] = useState(0);
@@ -89,7 +89,8 @@ const HomePage = () => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center md:text-left">
               "HACC IT"
             </h1>
-            <div className="md:w-1/2 mt-10 sm:mt-4" /> {/* Adjusted the margin here */}
+            <div className="md:w-1/2 mt-10 sm:mt-4" />{" "}
+            {/* Adjusted the margin here */}
             {/* Hide the model on mobile, show it on larger screens */}
             <div className="mt-90 hidden md:block">
               <ModelChk />
@@ -108,7 +109,11 @@ const HomePage = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
         >
           Now we are family of
-          <AnimatedCount totalUsers={totalUsers} />
+          {isWorking ? (
+            <span className="text-sm"> (umm...counting)</span>
+          ) : (
+            <AnimatedCount totalUsers={totalUsers} />
+          )}
         </motion.h3>
         <motion.p
           className="text-xl sm:text-2xl md:text-5xl text-gray-300 text-center"
@@ -270,7 +275,7 @@ const HomePage = () => {
                   </h3>
                   <p className="text-gray-300 mb-4">{blog.summary}</p>
                   <Link
-                    to={`/blogs/${blog._id}`}
+                    to={authUser ? `/blogs/${blog._id}` : `/login`}
                     className="text-sm font-semibold px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors"
                   >
                     Read More
