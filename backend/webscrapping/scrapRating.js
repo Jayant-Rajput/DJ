@@ -10,7 +10,7 @@ export const scrapCodechefData = async (username) => {
   const response = await request(url);
   let $ = cheerio.load(response);
 
-  let currentRating = $('div[class="rating-number"]').text().trim();
+  let currentRating = $('div[class="rating-number"]').text().trim().match(/^\d+/)[0];
   let stars = $('span[class="rating"]').text().trim();
 
   let contests = $('h3:contains("Contests")').text().match(/\d+/)?.[0] || "0";
