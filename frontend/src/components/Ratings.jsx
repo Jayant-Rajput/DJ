@@ -332,7 +332,7 @@ const Ratings = () => {
       <div className="col-span-3">Full Name</div>
       <div className="col-span-3">Handle</div>
       <div className="col-span-2">College</div>
-      <div className="col-span-1">Year</div>
+
       <div className="col-span-1 text-right">Rating</div>
     </div>
 
@@ -366,9 +366,7 @@ const Ratings = () => {
             <div onClick={()=>handleCodingProfile(user)} className="col-span-2 text-white truncate">
               {user.college || "N/A"}
             </div>
-            <div onClick={()=>handleCodingProfile(user)} className="col-span-1 text-white">
-              {user.year || "N/A"}
-            </div>
+            
             <div onClick={()=>handleCodingProfile(user)}
               className={`col-span-1 text-right font-medium ${getRatingColorClass(
                 platformData.rating

@@ -46,7 +46,7 @@ app.use("/api/ratings", RatingRoutes);
 app.use(express.static("public"));
 
 cron.schedule("0 */6 * * *", async () => {
-  //run in every 6 hours
+  //run in every 6 hours   "0 */6 * * *"  */2 * * * *
   try {
     console.log("Inside cron job try block");
     await fetchDataAndUpdateDB();
@@ -57,7 +57,7 @@ cron.schedule("0 */6 * * *", async () => {
 });
 
 
-cron.schedule("0 */12 * * *", async () => {          //run everyday at 00:00
+cron.schedule("0 */12 * * *", async () => {          //run everyday at 00:00  "0 */12 * * *"
   try {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 4);
