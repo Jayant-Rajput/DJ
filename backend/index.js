@@ -45,8 +45,8 @@ app.use("/api/contest", contestRoutes);
 app.use("/api/ratings", RatingRoutes);
 app.use(express.static("public"));
 
-cron.schedule("0 */6 * * *", async () => {
-  //run in every 6 hours   "0 */6 * * *"  */2 * * * *
+cron.schedule("*/10 * * * *", async () => {
+  //run in every 10 minutes
   try {
     console.log("Inside cron job try block");
     await fetchDataAndUpdateDB();
