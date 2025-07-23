@@ -45,6 +45,11 @@ app.use("/api/contest", contestRoutes);
 app.use("/api/ratings", RatingRoutes);
 app.use(express.static("public"));
 
+
+app.get('/healthCheck', (res) => {
+  res.sendStatus(200);
+});
+
 cron.schedule("*/10 * * * *", async () => {
   //run in every 10 minutes
   try {
