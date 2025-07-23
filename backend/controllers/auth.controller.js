@@ -412,7 +412,7 @@ export const generateOTP = async (req, res) => {
     let mailOptions = {
         from: process.env.EMAIL_RECEIVER,
         to: `<${email}>`, 
-        subject: `New contact form submission from ${process.env.EMAIL_RECEIVER}`,
+        subject: `We've processed your request to HACC`,
         text: `Hey user\n Welcome to HACC \n Your OTP is ${randomSixDigitNumber}`
     };
 
