@@ -46,7 +46,7 @@ app.use("/api/ratings", RatingRoutes);
 app.use(express.static("public"));
 
 
-app.get('/healthCheck', (res) => {
+app.get('/healthCheck', (req, res) => {
   res.sendStatus(200);
 });
 
